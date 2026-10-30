@@ -1,0 +1,1979 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ADIUM Con Voz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: banda carmesí con onda de voz, barra pegajosa con pestañas y filtros, cada pestaña = una vista (resumen, gestionadas, mapa de calor, agentes, campañas, abandonos) */
+:root{
+  --bg:#fbf7f7; --surface:#ffffff; --surface-2:#f6eced; --fg:#22181a; --muted:#6f5d60; --line:#ecdcdf;
+  --red:#c8102e; --red-deep:#7a0019; --red-soft:#f9e1e5; --rose:#ef8a9a; --heat0:#f3eff0;
+  --ok:#1f7a4d; --ok-soft:#e3f3ea; --warn:#a15c00; --warn-soft:#fdf0dc; --slate:#8a7a7d;
+  --display:"Red Hat Display",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --r:16px;
+  --shadow:0 1px 2px rgba(60,10,20,.05),0 6px 20px -8px rgba(60,10,20,.12);
+  --shadow-hi:0 2px 4px rgba(60,10,20,.06),0 16px 36px -12px rgba(122,0,25,.22);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#150d0f; --surface:#1f1417; --surface-2:#2a1b1f; --fg:#f6eaec; --muted:#bba3a8; --line:#3a262b;
+  --red:#ff4d67; --red-deep:#a3122c; --red-soft:#3d1520; --rose:#ff98a8; --heat0:#241a1c;
+  --ok:#5fd39a; --ok-soft:#173326; --warn:#f2b45a; --warn-soft:#3a2a12; --slate:#9c8b8e; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -10px rgba(0,0,0,.6); --shadow-hi:0 2px 4px rgba(0,0,0,.45),0 18px 40px -14px rgba(0,0,0,.75); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#150d0f; --surface:#1f1417; --surface-2:#2a1b1f; --fg:#f6eaec; --muted:#bba3a8; --line:#3a262b;
+  --red:#ff4d67; --red-deep:#a3122c; --red-soft:#3d1520; --rose:#ff98a8; --heat0:#241a1c;
+  --ok:#5fd39a; --ok-soft:#173326; --warn:#f2b45a; --warn-soft:#3a2a12; --slate:#9c8b8e; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -10px rgba(0,0,0,.6); --shadow-hi:0 2px 4px rgba(0,0,0,.45),0 18px 40px -14px rgba(0,0,0,.75); color-scheme:dark}
+*{box-sizing:border-box} [hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.45}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band{background:linear-gradient(120deg,#7a0019 0%,#c8102e 60%,#e0263f 100%);color:#fff;position:relative;overflow:hidden}
+.band canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.28;pointer-events:none}
+.band .wrap{position:relative;padding-block:26px 24px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
+.brand .eyebrow{font:600 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:#ffd5dc}
+.brand h1{font:900 clamp(28px,5vw,44px)/1.02 var(--display);margin:8px 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.brand h1 span{font-weight:500;opacity:.85}
+.brand .sub{color:#ffd5dc;font-size:13px}
+.brand .sub b{color:#fff;font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:600 13px/1 var(--body);border-radius:999px;padding:11px 16px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn svg{width:15px;height:15px}
+.btn-light{background:#fff;color:#7a0019}
+.btn-light:hover{background:#ffe9ed}
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)}
+.btn-ghost:hover{background:rgba(255,255,255,.22)}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+/* barra pegajosa */
+.bar-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{all:unset;cursor:pointer;font:600 13.5px/1 var(--body);color:var(--muted);padding:14px 14px 12px;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{color:var(--red);border-bottom-color:var(--red)}
+.filters{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:end;padding-block:10px 12px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f label,.f .lb{font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.f select,.f input{font:500 13px var(--body);color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.f select{max-width:260px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{all:unset;cursor:pointer;font:600 12.5px/1 var(--body);padding:7px 11px;border-radius:7px;color:var(--muted);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--red);color:#fff}
+.seg button:focus-visible{outline:3px solid var(--rose)}
+/* contenido */
+main{padding-block:24px 48px}
+.view{display:grid;gap:22px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi .lab{font:600 11px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kpi .val{font:700 28px/1.05 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.01em;overflow-wrap:anywhere}
+.kpi .val.sm{font-size:19px}
+.kpi .note{font-size:12px;color:var(--muted)}
+.kpi.hero{background:var(--red-deep);border-color:var(--red-deep);color:#fff}
+.kpi.hero .lab,.kpi.hero .note{color:#ffcdd5}
+.kpi.hero .val{font-size:36px}
+.kpi.alt{background:var(--red-soft);border-color:transparent}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 var(--body);padding:5px 9px;border-radius:999px;width:max-content;max-width:100%}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--red-soft);color:var(--red)}
+.kpi.hero .pill{background:rgba(255,255,255,.16);color:#fff}
+.grid2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px}
+.grid2.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:900px){.grid2,.grid2.even{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.card h2{font:700 17px/1.2 var(--display);margin:0;text-wrap:balance}
+.hint{color:var(--muted);font-size:12.5px;margin:4px 0 0}
+.card-head{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.btn-sm{font:600 12px/1 var(--body);border-radius:999px;padding:8px 12px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-sm:hover{border-color:var(--red);color:var(--red)}
+.btn-sm svg{width:13px;height:13px}
+.btn-sm:disabled{opacity:.5;cursor:not-allowed}
+.formula{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.formula td{padding:10px 12px;border-bottom:1px solid var(--line)}
+.formula td:last-child{text-align:right;font:500 15px var(--mono);white-space:nowrap}
+.formula tr.hl td{background:var(--red-soft);font-weight:600}
+.formula tr.hl td:last-child{color:var(--red);font-weight:600}
+.formula .f-exp{display:block;font:400 11.5px var(--mono);color:var(--muted);margin-top:2px}
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.duo > div{border:1px solid var(--line);border-radius:12px;padding:11px 12px;display:grid;gap:3px}
+.duo > div.on{border-color:var(--red);background:var(--red-soft)}
+.duo .t{font:600 11px/1.2 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.duo .v{font:700 22px/1 var(--display);font-variant-numeric:tabular-nums}
+.duo .s{font-size:12px;color:var(--muted)}
+.chart-box{position:relative;height:290px}
+.chart-box.sm{height:240px}
+.chart-box.tall{height:340px}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table.data{border-collapse:collapse;width:100%;min-width:980px;font-variant-numeric:tabular-nums;font-size:13px}
+table.data.narrow{min-width:520px}
+table.data th{background:var(--surface-2);text-align:right;font:600 11px/1.25 var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:0;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+table.data th button,table.data th span{all:unset;cursor:pointer;display:block;padding:10px;box-sizing:border-box}
+table.data th span{cursor:default}
+table.data th:first-child,table.data td:first-child{text-align:left}
+table.data th.sorted{color:var(--red)}
+table.data td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.data tbody tr:hover td{background:var(--surface-2)}
+table.data tfoot td{font-weight:700;background:var(--red-soft);border-bottom:0}
+table.data td.ag{font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis}
+table.data td.dim{color:var(--muted);font-style:italic;font-weight:500}
+table.data tr.top td{background:color-mix(in srgb,var(--red-soft) 60%,transparent)}
+.pct{font-family:var(--mono);font-weight:500}
+.bar{display:inline-block;height:6px;border-radius:3px;background:var(--red);vertical-align:middle;margin-right:6px}
+.tag{font:600 11px/1 var(--body);padding:4px 8px;border-radius:999px}
+.tag.v{background:var(--red-soft);color:var(--red)} .tag.x{background:var(--surface-2);color:var(--muted)}
+/* mapa de calor */
+.heat-wrap{overflow-x:auto}
+.heat{border-collapse:separate;border-spacing:3px;font-variant-numeric:tabular-nums;font-size:12px}
+.heat th{font:600 11px/1.1 var(--body);color:var(--muted);padding:4px 6px;white-space:nowrap}
+.heat th.rh{text-align:right;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.heat th.tot{color:var(--fg)}
+.heat td{min-width:38px;height:32px;text-align:center;border-radius:6px;font-family:var(--mono);font-weight:500;padding:0 4px}
+.heat td.zero{background:repeating-linear-gradient(135deg,var(--heat0) 0 5px,transparent 5px 9px);color:var(--muted);opacity:.85}
+.heat td.sum{background:transparent;color:var(--fg);font-weight:600}
+.heat tr.we th.rh{color:var(--slate);font-style:italic}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:12px;font-size:12px;color:var(--muted)}
+.legend .scale{display:inline-block;width:140px;height:10px;border-radius:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--red) 12%,var(--surface)),var(--red-deep))}
+.legend .z{display:inline-block;width:18px;height:12px;border-radius:3px;background:repeating-linear-gradient(135deg,var(--heat0) 0 4px,transparent 4px 7px);border:1px solid var(--line);vertical-align:middle;margin-right:4px}
+.insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.insights div{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--muted)}
+.insights b{display:block;color:var(--fg);font-size:14px;margin-bottom:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{all:unset;cursor:pointer;font:600 12px/1 var(--body);padding:7px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
+.chip[aria-pressed="true"]{background:var(--red-soft);color:var(--red);border-color:var(--red)}
+.chip:focus-visible{outline:3px solid var(--rose)}
+.chip b{font-family:var(--mono);margin-left:4px}
+table.data td.st{white-space:normal;min-width:180px;text-align:left}
+table.data td.wrap{white-space:normal;text-align:left;min-width:150px}
+.st-ok{color:var(--ok);font-weight:600}
+.st-al{color:var(--red);font-weight:700}
+.st-na{color:var(--muted)}
+.sub{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+.kpi.warnk{border-color:var(--red);background:var(--red-soft)}
+.kpi.warnk .val{color:var(--red)}
+.check{display:inline-flex;align-items:center;gap:6px;font:600 12.5px var(--body);color:var(--fg);cursor:pointer}
+.check input{accent-color:var(--red);width:16px;height:16px}
+.informe{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+.informe .card-head h2{font:800 22px/1.15 var(--display)}
+.inf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.inf-item{border:1px solid var(--line);border-left:4px solid var(--rose);border-radius:10px;padding:12px 14px;min-width:0}
+.inf-item.ok{border-left-color:var(--ok)} .inf-item.al{border-left-color:var(--red)}
+.inf-item h3{margin:0 0 6px;font:700 11.5px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.inf-item p{margin:0;line-height:1.55;font-size:13.5px}
+.inf-list{margin:8px 0 0;padding-left:18px;display:grid;gap:5px;font-size:13px}
+.sub-h{font:700 13px/1.2 var(--display);margin:18px 0 8px;color:var(--fg)}
+.tdesc{display:block;font-weight:400;color:var(--muted);font-size:11.5px;white-space:normal;max-width:420px}
+.foot{color:var(--muted);font-size:12px;display:grid;gap:4px;margin-top:22px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:13px;z-index:20;max-width:calc(100% - 32px)}
+.dropzone{position:fixed;inset:0;background:rgba(122,0,25,.82);color:#fff;display:flex;align-items:center;justify-content:center;font:700 24px var(--display);z-index:30;text-align:center;padding:20px}
+.sched{display:grid;gap:10px}
+.sched-row{display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(2,minmax(96px,1fr)) minmax(150px,1.6fr);gap:10px;align-items:end;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sched-row .ln{font:700 14px var(--display);align-self:center;overflow-wrap:anywhere}
+.sched-row .ln small{display:block;font:400 11.5px var(--body);color:var(--muted)}
+.days{display:flex;gap:4px;flex-wrap:wrap}
+.days label{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:30px;border:1px solid var(--line);border-radius:8px;font:600 11.5px var(--body);color:var(--muted);cursor:pointer;background:var(--surface)}
+.days input{position:absolute;opacity:0;pointer-events:none}
+.days label:has(input:checked){background:var(--red);border-color:var(--red);color:#fff}
+.days label:has(input:focus-visible){outline:3px solid var(--rose)}
+@media (max-width:640px){.sched-row{grid-template-columns:repeat(2,minmax(0,1fr))}.sched-row .ln,.sched-row .days{grid-column:1/-1}}
+.st-wa{color:var(--warn);font-weight:600}
+.callout{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--muted);margin-top:12px}
+.callout b{color:var(--fg)}
+/* ---- acabado ---- */
+.band{background:radial-gradient(120% 140% at 85% -20%,#ff3d5a 0%,transparent 45%),linear-gradient(118deg,#4a0010 0%,#7a0019 34%,#c8102e 78%,#e0263f 100%)}
+.band::after{content:"";position:absolute;inset:auto 0 0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)}
+.band .wrap{padding-block:22px 22px;align-items:flex-start}
+.org{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.org-logo{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+.org-logo img{height:26px;width:auto;display:block}
+.org-slot{width:26px;height:26px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.55)}
+.org-name{font:800 13px/1 var(--display);letter-spacing:.14em;text-transform:uppercase;color:#fff}
+.org .eyebrow{color:#ffd5dc}
+.brand h1{font-size:clamp(30px,5.2vw,50px);margin:14px 0 8px}
+.live{display:inline-flex;align-items:center;gap:7px}
+.live i{width:8px;height:8px;border-radius:50%;background:#7dffb0;box-shadow:0 0 0 0 rgba(125,255,176,.7);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(125,255,176,.6)}70%{box-shadow:0 0 0 8px rgba(125,255,176,0)}100%{box-shadow:0 0 0 0 rgba(125,255,176,0)}}
+.pulse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%;margin-top:4px}
+.pulse > div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:12px 14px;backdrop-filter:blur(8px);min-width:0}
+.pulse .pl{font:600 10.5px/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase;color:#ffcdd5}
+.pulse .pv{font:800 26px/1.1 var(--display);color:#fff;font-variant-numeric:tabular-nums;margin-top:6px;overflow-wrap:anywhere}
+.pulse .ps{font-size:11.5px;color:#ffd5dc;margin-top:2px}
+.pulse .ps b{color:#fff;font-weight:600}
+@media (max-width:760px){.pulse{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bar-top{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(60,10,20,.35);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:saturate(1.4) blur(12px)}
+.tab{display:inline-flex;align-items:center;gap:7px;border-radius:10px 10px 0 0;transition:color .15s,background .15s}
+.tab svg{width:15px;height:15px;opacity:.75}
+.tab:hover{background:var(--surface-2)}
+.tab[aria-selected="true"] svg{opacity:1}
+.card,.informe{box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--line) 80%,transparent)}
+.kpi{box-shadow:var(--shadow);transition:transform .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-hi)}
+.kpi.hero{background:linear-gradient(150deg,#a3122c 0%,#7a0019 55%,#5c0013 100%);box-shadow:var(--shadow-hi)}
+.kpi.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);pointer-events:none}
+.card h2{font-size:18px;letter-spacing:-.005em}
+.view{animation:rise .35s ease both}
+@keyframes rise{from{transform:translateY(6px)}to{transform:none}}
+.tbl-wrap{box-shadow:inset 0 0 0 1px transparent}
+table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surface-2) 45%,transparent)}
+.btn-light{box-shadow:0 6px 18px -8px rgba(0,0,0,.45)}
+.foot{margin-top:30px;gap:14px}
+.foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.foot-grid > div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;line-height:1.5}
+.foot-grid b{display:block;color:var(--fg);font:700 12px/1.2 var(--body);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.sign{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;align-items:center;border-top:1px solid var(--line);padding-top:14px;color:var(--muted)}
+.sign strong{color:var(--fg);font:700 13px var(--display)}
+.ttools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
+.ttools input{font:500 12.5px var(--body);color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:7px 12px 7px 30px;min-width:0;width:220px;max-width:100%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='m20 20-4.2-4.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-size:14px;background-position:10px 50%}
+.ttools .cnt{font-size:12px;color:var(--muted)}
+.ttools .sp{flex:1}
+@media (prefers-reduced-motion:reduce){.band canvas{display:none}.view{animation:none}.live i{animation:none}.kpi{transition:none}}
+</style>
+
+<header class="band">
+  <canvas id="wave" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="brand">
+      <div class="org"><span class="org-logo" id="orgLogo"><span class="org-slot" aria-hidden="true"></span><span class="org-name">Conexus Group</span></span><span class="eyebrow">Cuenta ADIUM · Programa Con Voz</span></div>
+      <h1>Abandono, gestionadas <span>y conexiones</span></h1>
+      <div class="sub" id="meta">Cargando…</div>
+    </div>
+    <div class="actions">
+      <input type="file" id="file" accept=".xlsx,.xls,.csv" hidden>
+      <button class="btn btn-ghost" id="btnReset" type="button" hidden title="Borra el archivo guardado en este navegador y vuelve a los datos precargados">Quitar archivo guardado</button>
+      <button class="btn btn-light" id="btnLoad" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16"/></svg>Cargar Excel</button>
+      <button class="btn btn-ghost dl" data-dl="xlsx" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>Reporte Excel completo</button>
+    </div>
+    <div class="pulse" id="pulse" aria-label="Indicadores principales del filtro actual"></div>
+  </div>
+</header>
+
+<div class="bar-top">
+  <div class="wrap">
+    <nav class="tabs" role="tablist" aria-label="Vistas del tablero">
+      <button class="tab" role="tab" data-v="resumen" id="tab-resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13h4v7H4zM10 8h4v12h-4zM16 4h4v16h-4z"/></svg>Resumen</button>
+      <button class="tab" role="tab" data-v="inflow" id="tab-inflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/><path d="m17 15 3 3-3 3"/></svg>Gestionadas</button>
+      <button class="tab" role="tab" data-v="calor" id="tab-calor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Mapa de calor</button>
+      <button class="tab" role="tab" data-v="agentes" id="tab-agentes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Agentes</button>
+      <button class="tab" role="tab" data-v="detalle" id="tab-detalle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Detalle por agente</button>
+      <button class="tab" role="tab" data-v="campanas" id="tab-campanas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Campañas</button>
+      <button class="tab" role="tab" data-v="abandonos" id="tab-abandonos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/><path d="m16 3 5 5M21 3l-5 5"/></svg>Abandonos</button>
+      <button class="tab" role="tab" data-v="conex" id="tab-conex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>Login y líneas</button>
+    </nav>
+    <div class="filters">
+      <div class="f"><label for="fDesde">Desde</label><input type="date" id="fDesde"></div>
+      <div class="f"><label for="fHasta">Hasta</label><input type="date" id="fHasta"></div>
+      <div class="f"><label for="fCamp">Campaña</label><select id="fCamp"></select></div>
+      <div class="f"><label for="fAg">Agente</label><select id="fAg"></select></div>
+      <div class="f"><span class="lb" id="lbDir">Tipo de llamada</span>
+        <div class="seg" role="group" aria-labelledby="lbDir" id="segDir">
+          <button type="button" data-d="all" aria-pressed="true">Todas</button>
+          <button type="button" data-d="in" aria-pressed="false">Entrantes</button>
+          <button type="button" data-d="out" aria-pressed="false">Salientes</button>
+        </div>
+      </div>
+      <div class="f"><span class="lb" id="lbMode">Abandono en la fórmula</span>
+        <div class="seg" role="group" aria-labelledby="lbMode" id="segMode">
+          <button type="button" data-m="all" aria-pressed="true">Todas (sin filtro)</button>
+          <button type="button" data-m="ge" aria-pressed="false">Mayor a 10 seg</button>
+          <button type="button" data-m="lt" aria-pressed="false">Menor a 10 seg</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="callout" id="dataWarn" hidden style="margin:0 0 18px;border:1px solid var(--warn);background:var(--warn-soft);color:var(--fg)"></div>
+  <!-- RESUMEN -->
+  <section class="view" id="v-resumen" role="tabpanel" aria-labelledby="tab-resumen">
+    <div class="informe">
+      <div class="card-head">
+        <div><h2 id="infTitle">Informe</h2><p class="hint" id="infHint"></p></div>
+        <button class="btn-sm dl" data-dl="informe" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>Descargar informe (.txt)</button>
+      </div>
+      <div class="inf-grid" id="infBody"></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-head" style="margin-bottom:6px"><h2>Fórmula de abandono</h2><button class="btn-sm dl" data-dl="formula" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button></div>
+        <p class="hint" id="fHint" style="margin-bottom:12px"></p>
+        <table class="formula" id="formula"></table>
+        <div class="duo" id="duo"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Evolución diaria</h2><p class="hint" id="dayHint">Contestadas y abandonadas por día, con el % de abandono</p></div>
+        </div>
+        <div class="chart-box"><canvas id="chDay" role="img" aria-label="Gráfico diario de contestadas y abandonadas"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Tipos de abandono</h2><p class="hint" id="tiposHint">Según la columna Razón de las llamadas entrantes abandonadas. Elija una campaña (cuenta) arriba para ver solo la suya.</p></div>
+        <button class="btn-sm dl" data-dl="tipos" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tTipos"></table></div>
+      <h3 class="sub-h">No son abandono, pero conviene vigilarlos</h3>
+      <div class="tbl-wrap"><table class="data narrow" id="tNoAb"></table></div>
+      <h3 class="sub-h">Por cuenta (campaña)</h3>
+      <div class="tbl-wrap"><table class="data" id="tTiposCa" style="min-width:900px"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>¿Cuánto esperan los pacientes antes de colgar?</h2><p class="hint" id="espHint">Tiempo de la columna Espera en las llamadas abandonadas</p></div>
+        <button class="btn-sm dl" data-dl="espera" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="kpis" id="kpisEsp"></div>
+      <div class="tbl-wrap" style="margin-top:14px"><table class="data narrow" id="tEsp"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Gestionadas por resultado</h2><p class="hint" id="resHint">Todos los estados de la columna Resultado. Elija un agente arriba para ver solo los suyos.</p></div>
+        <button class="btn-sm dl" data-dl="resultados" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tRes"></table></div>
+    </div>
+    <div class="card">
+      <h2>Lo más destacado del periodo</h2>
+      <div class="insights" id="insights"></div>
+    </div>
+  </section>
+
+  <!-- INFLOW -->
+  <section class="view" id="v-inflow" role="tabpanel" aria-labelledby="tab-inflow" hidden>
+    <div class="kpis" id="kpisIn"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Gestionadas por fecha</h2><p class="hint">Filas con Resultado de cada día. Los días sin barra no tuvieron actividad de llamada.</p></div>
+        <button class="btn-sm dl" data-dl="dia" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por fecha</button>
+      </div>
+      <div class="chart-box tall"><canvas id="chInDay" role="img" aria-label="Gestionadas por fecha"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Contestadas y abandonadas por hora</h2><p class="hint" id="caHint">Total del periodo en cada franja. La línea es el % de abandono de esa hora (misma fórmula).</p></div>
+        <button class="btn-sm dl" data-dl="horaca" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por hora</button>
+      </div>
+      <div class="chart-box tall"><canvas id="chCAHour" role="img" aria-label="Contestadas y abandonadas por hora"></canvas></div>
+      <div class="tbl-wrap" style="margin-top:14px"><table class="data narrow" id="tCAHour"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Abandonadas: día, hora y número</h2><p class="hint" id="abdHint">Cada llamada abandonada con el número que llamó y la línea a la que entró. «Devolución» busca si después hubo una saliente a ese número o el paciente volvió a llamar y fue atendido.</p></div>
+        <div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap">
+          <div class="f"><label for="abSearch">Buscar número o agente</label><input type="search" id="abSearch" placeholder="Ej. 5025 8595" style="width:190px"></div>
+          <label class="check"><input type="checkbox" id="abNoCb"> Solo sin devolución</label>
+          <button class="btn-sm dl" data-dl="abdet" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+        </div>
+      </div>
+      <div class="kpis" id="kpisAbd" style="margin-bottom:14px"></div>
+      <div class="tbl-wrap" style="max-height:520px;overflow-y:auto"><table class="data" id="tAbDet" style="min-width:1080px"></table></div>
+    </div>
+    <div class="grid2 even">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Gestionadas por hora</h2><p class="hint">Total del periodo en cada franja horaria</p></div>
+          <button class="btn-sm dl" data-dl="hora" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por hora</button>
+        </div>
+        <div class="chart-box"><canvas id="chInHour" role="img" aria-label="Gestionadas por hora"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Gestionadas por día de la semana</h2><p class="hint">Total y promedio por día</p></div><button class="btn-sm dl" data-dl="dow" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button></div>
+        <div class="chart-box"><canvas id="chInDow" role="img" aria-label="Gestionadas por día de la semana"></canvas></div>
+      </div>
+    </div>
+    <div class="grid2 even">
+      <div class="card">
+        <div class="card-head"><div><h2>Gestionadas por país</h2><p class="hint">Según la columna País del export (las pausas y eventos no tienen país)</p></div><button class="btn-sm dl" data-dl="pais" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button></div>
+        <div class="chart-box"><canvas id="chInPais" role="img" aria-label="Gestionadas por país"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Detalle por fecha</h2><p class="hint">Ordene por cualquier columna</p></div><button class="btn-sm dl" data-dl="dia" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button></div>
+        <div class="tbl-wrap" style="max-height:290px;overflow-y:auto"><table class="data narrow" id="tDay"></table></div>
+      </div>
+    </div>
+  
+
+    <div class="card" style="margin-top:22px">
+      <div class="card-head">
+        <div><h2>Detalle por país</h2><p class="hint">Gestionadas, contestadas, abandonadas y espera por país. Haga clic en un encabezado para ordenar.</p></div>
+        <button class="btn-sm dl" data-dl="pais" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tPais"></table></div>
+    </div>
+  </section>
+  <!-- MAPA DE CALOR -->
+  <section class="view" id="v-calor" role="tabpanel" aria-labelledby="tab-calor" hidden>
+    <div class="card">
+      <div class="card-head">
+        <div><h2 id="hTitle">Mapa de calor</h2><p class="hint" id="hHint"></p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">
+          <div class="f"><label for="hView">Ver</label>
+            <select id="hView">
+              <option value="in-dow">Gestionadas · día de semana × hora</option>
+              <option value="in-date">Gestionadas · fecha × hora</option>
+              <option value="ag-date">Gestión por agente · agente × fecha</option>
+              <option value="ag-hour">Gestión por agente · agente × hora</option>
+              <option value="ab-date">Abandonos · fecha × hora</option>
+              <option value="pais-date">Gestionadas por país · país × fecha</option>
+              <option value="co-date">Contestadas · fecha × hora</option>
+              <option value="ta-date">Tiempo hablado por agente (minutos) · agente × fecha</option>
+              <option value="pa-date">Pausas por agente (minutos) · agente × fecha</option>
+              <option value="pzn-ag">Pausas por tipo (cantidad) · agente × tipo de pausa</option>
+              <option value="pzt-ag">Pausas por tipo (minutos) · agente × tipo de pausa</option>
+              <option value="pzn-date">Pausas por tipo (cantidad) · tipo × fecha</option>
+              <option value="pzt-date">Pausas por tipo (minutos) · tipo × fecha</option>
+              <option value="cx-date">Tiempo conectado por agente (minutos) · agente × fecha</option>
+            </select>
+          </div>
+          <button class="btn-sm dl" data-dl="heat" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV del mapa</button>
+        </div>
+      </div>
+      <div class="heat-wrap"><table class="heat" id="heat"></table></div>
+      <div class="legend"><span>Menos</span><span class="scale"></span><span>Más</span><span><span class="z"></span>Sin gestión / sin llamadas</span><span id="hWeekend"></span></div>
+      <div class="insights" id="hIns"></div>
+    </div>
+  </section>
+
+  <!-- AGENTES -->
+  <section class="view" id="v-agentes" role="tabpanel" aria-labelledby="tab-agentes" hidden>
+    <div class="kpis" id="kpisAg"></div>
+    <div class="grid2 even">
+      <div class="card">
+        <div class="card-head"><div><h2>Gestionadas por agente</h2><p class="hint">Registros de cada agente por resultado</p></div></div>
+        <div class="chart-box"><canvas id="chAgG" role="img" aria-label="Gestiones por agente"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Tiempo en pausa por tipo</h2><p class="hint">Horas acumuladas en el periodo</p></div></div>
+        <div class="chart-box"><canvas id="chAgP" role="img" aria-label="Pausas por agente"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Todos los resultados por agente</h2><p class="hint">Cada estado de la columna Resultado por agente. Gestionadas = suma de los resultados.</p></div>
+        <button class="btn-sm dl" data-dl="agres" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tAgRes"></table></div>
+    </div>
+    <div class="grid2 even">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Tiempo hablado por agente</h2><p class="hint">Suma de la columna Duración de las llamadas contestadas, entrantes y salientes</p></div>
+          <button class="btn-sm dl" data-dl="hablado" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+        </div>
+        <div class="chart-box"><canvas id="chAgTalk" role="img" aria-label="Tiempo hablado por agente"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Tiempo hablado: detalle</h2><p class="hint">h:mm:ss · promedio por llamada contestada</p></div></div>
+        <div class="tbl-wrap"><table class="data narrow" id="tTalk"></table></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Pausas por agente y tipo de pausa</h2><p class="hint">Cantidad de pausas y tiempo total de cada tipo. También están en el Mapa de calor.</p></div>
+        <button class="btn-sm dl" data-dl="pausas" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tPz"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Métricas por agente</h2><p class="hint">Haga clic en un encabezado para ordenar. La fila resaltada (★) es el agente con más gestiones de llamada: entrantes contestadas + salientes.</p></div>
+        <button class="btn-sm dl" data-dl="agente" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por agente</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tAg"></table></div>
+    </div>
+  </section>
+
+  <!-- DETALLE POR AGENTE -->
+  <section class="view" id="v-detalle" role="tabpanel" aria-labelledby="tab-detalle" hidden>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Tipo de llamada × Resultado</h2><p class="hint" id="pvHint">Igual que una tabla dinámica: cuenta todas las filas del archivo. Elija un agente arriba para ver solo el suyo.</p></div>
+        <button class="btn-sm dl" data-dl="pivot" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="f" style="margin-bottom:12px"><span class="lb">Filtrar por resultado (clic para quitar o poner)</span><div class="chips" id="resChips"></div></div>
+      <div class="tbl-wrap"><table class="data narrow" id="tPivot"></table></div>
+    </div>
+    <div class="kpis" id="kpisDisp"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Llamadas perdidas y disponibilidad del agente</h2><p class="hint">Para cada entrante abandonada y cada intento de timbrado evadido, revisa si ese agente estaba en otra llamada en ese momento. Si no lo estaba, se marca como alerta.</p></div>
+        <button class="btn-sm dl" data-dl="disp" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por agente</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tDisp"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Detalle de llamadas</h2><p class="hint" id="detHint"></p></div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <label class="check"><input type="checkbox" id="onlyLost"> Solo abandonadas y evadidas</label>
+          <label class="check"><input type="checkbox" id="onlyAlert"> Solo alertas</label>
+          <button class="btn-sm dl" data-dl="detalle" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV del detalle</button>
+        </div>
+      </div>
+      <div class="tbl-wrap" style="max-height:560px;overflow-y:auto"><table class="data" id="tDet" style="min-width:1100px"></table></div>
+    </div>
+  </section>
+
+  <!-- CAMPAÑAS -->
+  <section class="view" id="v-campanas" role="tabpanel" aria-labelledby="tab-campanas" hidden>
+    <div class="kpis" id="kpisCa"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Métricas por campaña</h2></div>
+        <button class="btn-sm dl" data-dl="campana" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por campaña</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tCa"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h2>Gestionadas por resultado</h2><p class="hint">Todas las campañas del filtro</p></div></div>
+      <div class="chart-box sm"><canvas id="chOut" role="img" aria-label="Resultado de llamadas salientes"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ABANDONOS -->
+  <section class="view" id="v-abandonos" role="tabpanel" aria-labelledby="tab-abandonos" hidden>
+    <div class="kpis" id="kpisAb"></div>
+    <div class="grid2 even">
+      <div class="card">
+        <div class="card-head"><div><h2>¿Cuánto esperaron antes de colgar?</h2><p class="hint">Abandonos por rango de espera. La línea punteada separa menos y más de 10 seg.</p></div></div>
+        <div class="chart-box"><canvas id="chAbWait" role="img" aria-label="Abandonos por tiempo de espera"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Abandonos por hora</h2><p class="hint">Mayor y menor a 10 seg</p></div></div>
+        <div class="chart-box"><canvas id="chAbHour" role="img" aria-label="Abandonos por hora"></canvas></div>
+      </div>
+    </div>
+    <div class="grid2 even">
+      <div class="card">
+        <h2>Contestadas y abandonadas</h2>
+        <p class="hint" style="margin-bottom:12px">Las dos partes de la fórmula</p>
+        <div class="chart-box sm"><canvas id="chIn" role="img" aria-label="Contestadas y abandonadas"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Detalle de abandonos</h2><p class="hint">Cada llamada abandonada y su grupo</p></div>
+          <button class="btn-sm dl" data-dl="aband" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV abandonos</button>
+        </div>
+        <div class="tbl-wrap" style="max-height:290px;overflow-y:auto"><table class="data narrow" id="tAb"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGIN Y LÍNEAS -->
+  <section class="view" id="v-conex" role="tabpanel" aria-labelledby="tab-conex" hidden>
+    <div class="kpis" id="kpisLn"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Horario establecido por línea</h2><p class="hint">La línea se abre con el primer login de sus agentes y se cierra con el último logout. Cambie las horas si el horario es otro; el tablero lo recuerda en este navegador.</p></div>
+        <div class="f"><label for="tol">Tolerancia (min)</label><input type="number" id="tol" min="0" max="60" step="1" value="5" style="width:90px"></div>
+      </div>
+      <div class="sched" id="sched"></div>
+      <div class="callout" id="tzNote"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Apego al horario por línea</h2><p class="hint">Apego = días en que la línea abrió y cerró a tiempo ÷ días evaluados. La meta es 100%.</p></div>
+        <button class="btn-sm dl" data-dl="apego" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tApego"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Apertura y cierre de línea por día</h2><p class="hint" id="lnHint">Cada día hábil del periodo. Cobertura = parte del horario en que al menos un agente de la línea estaba conectado.</p></div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <label class="check"><input type="checkbox" id="onlyFail"> Solo incumplimientos</label>
+          <button class="btn-sm dl" data-dl="lineas" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+        </div>
+      </div>
+      <div class="tbl-wrap" style="max-height:560px;overflow-y:auto"><table class="data" id="tLn" style="min-width:1060px"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Login y logout por agente: resumen</h2><p class="hint">Promedios de los días con conexión</p></div>
+        <button class="btn-sm dl" data-dl="loginres" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tLogAg" style="min-width:1000px"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Login y logout por agente y día</h2><p class="hint">Desconectado entre sesiones = tiempo entre un logout y el siguiente login del mismo día. Ocupación = tiempo hablado ÷ tiempo conectado.</p></div>
+        <button class="btn-sm dl" data-dl="login" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap" style="max-height:560px;overflow-y:auto"><table class="data" id="tLog" style="min-width:1150px"></table></div>
+    </div>
+  </section>
+
+  <section class="foot">
+    <h2 class="sub-h" style="margin:0">Cómo se calcula</h2>
+    <div class="foot-grid">
+      <div><b>Gestionadas</b>Filas con Resultado, es decir, actividad de llamada (entrantes, salientes e intentos de timbrado). No cuenta pausas, eventos, mute ni hold.</div>
+      <div><b>Fórmula</b>%contestadas = contestadas ÷ (contestadas + abandonadas); %tasa abandono = 100% − %contestadas. Contestadas = Resultado «Contestada»; abandonadas = Resultado «Abandonada» (todas, o solo las mayores o menores a 10 seg con los botones de arriba).</div>
+      <div><b>Tipos de abandono</b>1) en cola / IVR = Razón «Cliente abandono» sin agente; 2) al timbrar al agente = Razón «Cliente abandono (ultimo timbrado)». Las salientes canceladas o sin respuesta no son abandono: son intentos sin contacto.</div>
+      <div><b>Disponibilidad</b>La hora del export es el final de cada llamada. Si mientras el cliente esperaba el agente no tenía otra llamada, se marca alerta ⚠.</div>
+      <div><b>Agente con más gestiones de llamada</b>Entrantes que contestó + salientes que hizo (cualquier resultado). No cuenta intentos de timbrado ni abandonos.</div>
+      <div><b>Tiempo hablado</b>Suma de la Duración de las llamadas contestadas (entrantes y salientes).</div>
+      <div><b>Filtro Tipo de llamada</b>Entrantes deja las llamadas entrantes y los intentos de timbrado; Salientes deja las salientes. Las pausas y los login/logout se mantienen siempre.</div>
+      <div><b>Login y líneas</b>La línea abre con el primer login de un agente de esa cuenta y cierra con el último logout. Cada agente se asigna a la cuenta donde tiene más llamadas.</div>
+    </div>
+    <div class="sign"><span>Diseño y análisis: <strong>Soraya Carvajal</strong> · Conexus Group · Cuenta ADIUM Con Voz</span><span id="src"></span></div>
+  </section>
+</main>
+<div class="dropzone" id="dz" hidden>Suelte el Excel para actualizar el tablero</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const SAMPLE = []; // Versión pública: sin datos precargados. Cada persona carga su export con «Cargar Excel».
+const SIN_AG = "Sin agente (abandonó en cola)";
+const SIN_PAIS = "Sin país";
+const THR = 10;
+let ROWS = [], SOURCE = "sin datos: cargue el export";
+let MODE = "all", VIEW = "resumen", DIR = "all";
+const $ = id => document.getElementById(id);
+
+/* ---------- normalización ---------- */
+function toSec(v){
+  if (v === null || v === undefined || v === "") return null;
+  if (typeof v === "number") return Math.round(v < 1 ? v * 86400 : v);
+  if (v instanceof Date) return v.getUTCHours()*3600 + v.getUTCMinutes()*60 + v.getUTCSeconds();
+  const s = String(v).trim(); if (!s) return null;
+  const p = s.split(":").map(Number);
+  if (p.some(isNaN)) return null;
+  return p.reduce((a, b) => a * 60 + b, 0);
+}
+function toISO(v){
+  if (v instanceof Date) { const d = new Date(v.getTime() - v.getTimezoneOffset()*60000); return d.toISOString().slice(0,19); }
+  if (typeof v === "number") { const d = new Date(Math.round((v - 25569) * 86400000)); return d.toISOString().slice(0,19); }
+  const s = String(v || "").trim();
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\s*(.*)$/);
+  if (m) { let t = (m[4]||"").trim() || "00:00:00"; if (/^\d:/.test(t)) t = "0" + t; return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}T${t}`; }
+  return s.replace(" ", "T");
+}
+function joinFH(f, h){
+  const d = toISO(f);
+  if (h === null || h === undefined || h === "") return d;
+  const s = toSec(h); if (s == null) return d;
+  const t = [Math.floor(s/3600) % 24, Math.floor(s%3600/60), s%60].map(x => String(x).padStart(2,"0")).join(":");
+  return d.slice(0,10) + "T" + t;
+}
+function fromSample(a){ return a.map(r => ({fecha:r[0], tipo:r[1], desc:r[2], res:r[3], razon:r[4], dur:r[5], esp:r[6], ag:r[7], camp:r[8], pais:r[9], didO:r[10]||"", didD:r[11]||"", tot:r[12]})); }
+const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z]/g,"");
+function fromSheet(aoa){
+  let h = -1;
+  for (let i = 0; i < Math.min(aoa.length, 15); i++) { const r = aoa[i].map(norm); if (r.includes("tipo") && r.includes("resultado")) { h = i; break; } }
+  if (h < 0) throw new Error("No encontré las columnas «Tipo» y «Resultado» en la hoja.");
+  const H = aoa[h].map(norm), ix = n => H.indexOf(n);
+  const c = {fecha:ix("fechahora")>=0?ix("fechahora"):ix("fecha"), hora:ix("hora"), tipo:ix("tipo"), desc:ix("descripcion"), res:ix("resultado"), razon:ix("razon"), dur:ix("duracion"), esp:ix("espera"), ag:ix("agente"), camp:ix("campana"), pais:ix("pais"), didO:ix("didorigen"), didD:ix("diddestino"), tot:ix("durtotal")};
+  const g = (r, k) => c[k] >= 0 ? String(r[c[k]] ?? "").trim() : "";
+  return aoa.slice(h+1).filter(r => r && r[c.tipo]).map(r => ({
+    fecha: joinFH(r[c.fecha], c.hora >= 0 ? r[c.hora] : null), tipo: g(r,"tipo"), desc: g(r,"desc"), res: g(r,"res"), razon: g(r,"razon"),
+    dur: toSec(r[c.dur]), esp: toSec(r[c.esp]), ag: g(r,"ag"), camp: g(r,"camp"), pais: g(r,"pais"), didO: g(r,"didO"), didD: g(r,"didD"), tot: c.tot >= 0 ? toSec(r[c.tot]) : null
+  }));
+}
+function pickSheet(wb){
+  const pref = wb.SheetNames.find(n => /asofarma|consulta/i.test(n));
+  const order = pref ? [pref, ...wb.SheetNames.filter(n => n !== pref)] : wb.SheetNames;
+  for (const n of order) {
+    const aoa = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, raw:true, defval:""});
+    try { const rows = fromSheet(aoa); if (rows.length) return {name:n, rows}; } catch(e) {}
+  }
+  throw new Error("Ninguna hoja tiene el formato del export (Tipo, Resultado, Duracion, Espera, Agente, Campana).");
+}
+
+/* ---------- cálculo ---------- */
+const IN = "Llamada Entrante", OUT = "Llamada Saliente", TIMB = "Intento de timbrado";
+const VACIO = "(sin resultado)";
+const ANS = r => r.res === "Contestada" || r.res === "Completada"; // el export viejo decía «Completada»
+const DOW = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"], DOWL = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+const dayOf = r => (r.fecha||"").slice(0,10);
+const hourOf = r => parseInt((r.fecha||"").slice(11,13), 10);
+const dowOf = d => { const [y,m,x] = d.split("-").map(Number); return new Date(y, m-1, x).getDay(); };
+const isGe = r => (r.esp ?? 0) >= THR;
+// Tipo de abandono: «Cliente abandono (ultimo timbrado)» = colgó mientras le timbraba a un agente; «Cliente abandono» sin agente = colgó en cola / IVR
+const abTipo = r => /timbrad/i.test(r.razon || "") || (r.ag && !/cliente abandono$/i.test(r.razon || "")) ? "T" : "Q";
+const inMode = r => MODE === "all" || (MODE === "ge") === isGe(r);
+function emptyAcc(){ return {abQ:0, abT:0, abQesp:0, abTesp:0, reg:0, sinResN:0, inE:0, inf:0, gestR:0, rc:{}, comp:0, durC:0, abGe:0, abLt:0, noAt:0, evad:0, sal:0, salC:0, espIn:0, espN:0, abEsp:0, abEspN:0, abEspMax:null, abEspMin:null, abEspGe:0, abEspLt:0, pausa:0, pz:{}, pzN:{}, talk:0, talkIn:0, talkOut:0, compIn:0, compOut:0, gLl:0, days:new Set()}; }
+// reg = todas las filas · inf = filas con Resultado (actividad de llamada) · comp = filas con Resultado «Contestada» (cualquier tipo) · ab = filas con Resultado «Abandonada»
+function add(a, r){
+  a.reg++;
+  if (r.res) { a.inf++; a.rc[r.res] = (a.rc[r.res] || 0) + 1; a.gestR++; a.days.add(dayOf(r)); } else a.sinResN++;
+  if (ANS(r)) { a.comp++; a.durC += r.dur || 0; if (r.tipo === IN && r.esp != null) { a.espIn += r.esp; a.espN++; }
+    a.talk += r.dur || 0; if (r.tipo === IN) { a.compIn++; a.talkIn += r.dur || 0; } else if (r.tipo === OUT) { a.compOut++; a.talkOut += r.dur || 0; } }
+  if ((r.tipo === IN && ANS(r)) || (r.tipo === OUT && r.res)) a.gLl++;
+  else if (r.res === "Abandonada") {
+    const e = r.esp || 0;
+    if (isGe(r)) { a.abGe++; a.abEspGe += e; } else { a.abLt++; a.abEspLt += e; }
+    if (inMode(r)) { if (abTipo(r) === "T") { a.abT++; a.abTesp += e; } else { a.abQ++; a.abQesp += e; } }
+    a.abEsp += e; a.abEspN++; a.abEspMax = a.abEspMax == null ? e : Math.max(a.abEspMax, e); a.abEspMin = a.abEspMin == null ? e : Math.min(a.abEspMin, e);
+  }
+  if (r.tipo === TIMB) a.evad++;
+  if (r.tipo === IN) a.inE++;
+  if (r.tipo === OUT) { a.sal++; if (ANS(r)) a.salC++; }
+  if (r.tipo === "Pausa") { a.pausa += r.dur || 0; const k = r.desc || "Otra"; a.pz[k] = (a.pz[k]||0) + (r.dur||0); a.pzN[k] = (a.pzN[k]||0) + 1; }
+}
+const rate = (c, x) => (c + x) ? x / (c + x) : null;
+function finish(a){
+  a.abAll = a.abGe + a.abLt;
+  a.ab = MODE === "ge" ? a.abGe : MODE === "lt" ? a.abLt : a.abAll;
+  a.tot = a.comp + a.ab;
+  a.pComp = a.tot ? a.comp / a.tot : null; a.pAb = a.tot ? 1 - a.pComp : null;
+  a.pAbGe = rate(a.comp, a.abGe); a.pAbLt = rate(a.comp, a.abLt); a.pAbAll = rate(a.comp, a.abAll);
+  a.gest = a.gestR;
+  a.canc = a.rc["Cancelada"] || 0; a.sinR = a.rc["Sin respuesta"] || 0; a.sinRes = a.sinResN;
+  a.pCont = a.sal ? a.salC / a.sal : null;
+  a.nDays = a.days.size; a.gDia = a.nDays ? a.gest / a.nDays : null;
+  a.tmo = a.comp ? a.durC / a.comp : null;
+  a.espProm = a.espN ? a.espIn / a.espN : null;
+  a.abEspProm = a.abEspN ? a.abEsp / a.abEspN : null;
+  a.pAbQ = a.tot ? a.abQ / a.tot : null; a.pAbT = a.tot ? a.abT / a.tot : null;
+  a.abQespProm = a.abQ ? a.abQesp / a.abQ : null; a.abTespProm = a.abT ? a.abTesp / a.abT : null;
+  a.abEspPromGe = a.abGe ? a.abEspGe / a.abGe : null; a.abEspPromLt = a.abLt ? a.abEspLt / a.abLt : null;
+  a.talkProm = (a.compIn + a.compOut) ? a.talk / (a.compIn + a.compOut) : null;
+  a.pzCnt = Object.values(a.pzN).reduce((x, y) => x + y, 0);
+  return a;
+}
+// Entrantes = llamadas entrantes + intentos de timbrado · Salientes = llamadas salientes. Lo que no es llamada (pausas, eventos, mute, hold) se mantiene.
+const dirOk = r => DIR === "all" || !(r.tipo === IN || r.tipo === OUT || r.tipo === TIMB) || (DIR === "in" ? r.tipo !== OUT : r.tipo === OUT);
+const dirLabel = () => DIR === "in" ? "solo entrantes" : DIR === "out" ? "solo salientes" : "";
+function filtered(){
+  const d1 = $("fDesde").value, d2 = $("fHasta").value, ca = $("fCamp").value, ag = $("fAg").value;
+  return ROWS.filter(r => {
+    const d = dayOf(r);
+    if (d1 && d < d1) return false; if (d2 && d > d2) return false;
+    if (ca && r.camp !== ca) return false;
+    if (ag && (r.ag || SIN_AG) !== ag) return false;
+    return dirOk(r);
+  });
+}
+function group(rows, keyFn){
+  const m = new Map();
+  for (const r of rows) { const k = keyFn(r); if (k === null) continue; if (!m.has(k)) m.set(k, emptyAcc()); add(m.get(k), r); }
+  return [...m].map(([k, a]) => ({k, ...finish(a)}));
+}
+function daysBetween(d1, d2){
+  const out = []; if (!d1 || !d2) return out;
+  const [y,m,d] = d1.split("-").map(Number); let t = new Date(y, m-1, d);
+  for (let i = 0; i < 400; i++) {
+    const s = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;
+    if (s > d2) break; out.push(s); t.setDate(t.getDate()+1);
+  }
+  return out;
+}
+
+/* ---------- formato ---------- */
+const nf = new Intl.NumberFormat("es-CO");
+const n1 = new Intl.NumberFormat("es-CO", {maximumFractionDigits:1});
+const n2 = new Intl.NumberFormat("es-CO", {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtN = v => v == null ? "—" : nf.format(v);
+const fmtP = v => v == null ? "—" : n2.format(v * 100) + "%";
+const fmtT = s => { if (s == null) return "—"; s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h ? h + ":" + String(m).padStart(2,"0") : m) + ":" + String(x).padStart(2,"0"); };
+const fmtD = d => { const [y,m,x] = d.split("-"); return `${x}/${m}`; };
+const fmtDL = d => `${DOWL[dowOf(d)]} ${fmtD(d)}`;
+const fmtH = h => `${String(h).padStart(2,"0")}:00`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const modeLabel = () => MODE === "ge" ? "mayor a 10 seg" : MODE === "lt" ? "menor a 10 seg" : "todas (sin filtro de espera)";
+function extremes(list, key){
+  const xs = list.filter(x => x[key] > 0);
+  if (!xs.length) return {max:null, min:null};
+  const mx = Math.max(...xs.map(x => x[key])), mn = Math.min(...xs.map(x => x[key]));
+  return {max:{v:mx, ks:xs.filter(x => x[key]===mx).map(x => x.k)}, min:{v:mn, ks:xs.filter(x => x[key]===mn).map(x => x.k)}};
+}
+const joinY = a => a.length <= 1 ? (a[0] ?? "") : a.slice(0,-1).join(", ") + " y " + a[a.length-1];
+
+/* ---------- estado y render ---------- */
+let S = {}, charts = {};
+function compute(){
+  const rows = filtered();
+  const T = finish(rows.reduce((a, r) => (add(a, r), a), emptyAcc()));
+  const byAg = group(rows, r => r.ag || SIN_AG).sort((a,b) => (a.k === SIN_AG) - (b.k === SIN_AG) || b.gLl - a.gLl || b.inf - a.inf);
+  const byCa = group(rows, r => r.camp || "(Sin campaña)");
+  const dates = rows.map(dayOf).filter(Boolean).sort();
+  const d1 = $("fDesde").value || dates[0], d2 = $("fHasta").value || dates[dates.length-1];
+  const allDays = daysBetween(d1, d2);
+  const dm = new Map(group(rows, dayOf).map(x => [x.k, x]));
+  const byDay = allDays.map(d => dm.get(d) || {k:d, ...finish(emptyAcc())});
+  const hm = new Map(group(rows.filter(r => !isNaN(hourOf(r))), hourOf).map(x => [x.k, x]));
+  const hrsWith = [...hm].filter(([, a]) => a.inf > 0).map(([h]) => h);
+  const h0 = hrsWith.length ? Math.min(...hrsWith) : 7, h1 = hrsWith.length ? Math.max(...hrsWith) : 18;
+  const hours = []; for (let h = h0; h <= h1; h++) hours.push(h);
+  const byHour = hours.map(h => hm.get(h) || {k:h, ...finish(emptyAcc())});
+  const byDow = [1,2,3,4,5,6,0].map(w => {
+    const ds = byDay.filter(d => dowOf(d.k) === w);
+    const inf = ds.reduce((s, d) => s + d.inf, 0);
+    return {k:w, inf, n:ds.length, avg: ds.length ? inf / ds.length : 0};
+  });
+  const byPais = group(rows.filter(r => r.res), r => r.pais || SIN_PAIS).sort((a,b) => (a.k === SIN_PAIS) - (b.k === SIN_PAIS) || b.inf - a.inf);
+  const abList = rows.filter(r => r.res === "Abandonada").sort((a,b) => b.fecha.localeCompare(a.fecha));
+  const pauseTypes = [...new Set(rows.filter(r => r.tipo === "Pausa").map(r => r.desc || "Otra"))].sort();
+  const resList = ordBy([...new Set(rows.filter(r => r.res).map(r => r.res))], RES_ORDER);
+  S = {rows, T, byAg, byCa, byDay, byHour, hours, byDow, byPais, abList, pauseTypes, allDays, resList};
+}
+
+function render(){
+  compute();
+  const {T, rows} = S;
+  const camps = [...new Set(rows.map(r => r.camp).filter(Boolean))];
+  const ds = S.allDays;
+  $("meta").innerHTML = `<b>${esc(camps.join(", ") || "—")}</b> · ${ds.length ? `${fmtD(ds[0])} a ${fmtD(ds[ds.length-1])} ${ds[0].slice(0,4)}` : "sin fechas"} · ${fmtN(rows.length)} registros${DIR !== "all" ? ` · <b>${dirLabel()}</b>` : ""}`;
+  $("src").textContent = "Fuente: " + SOURCE;
+  renderPulse();
+  renderResumen(); renderTipos(); renderInforme(); renderInflow(); renderHeat(); renderAgentes(); renderCampanas(); renderAbandonos(); renderDetalle(); renderConex();
+  drawCharts();
+}
+
+function renderPulse(){
+  const {T} = S, L = lineData(), top = S.byAg.find(a => a.k !== SIN_AG);
+  const last = ROWS.length ? ROWS.reduce((m, r) => r.fecha > m ? r.fecha : m, "") : "";
+  $("pulse").innerHTML = `
+    <div><div class="pl">Llamadas gestionadas</div><div class="pv">${fmtN(T.inf)}</div><div class="ps"><b>${fmtN(T.comp)}</b> contestadas${DIR !== "all" ? " · " + dirLabel() : ""}</div></div>
+    <div><div class="pl">Tasa de abandono</div><div class="pv">${fmtP(T.pAb)}</div><div class="ps">${fmtN(T.ab)} abandonadas · meta &lt; 5%</div></div>
+    <div><div class="pl">Apego de líneas</div><div class="pv">${fmtP(L.T.pApego)}</div><div class="ps">${fmtN(L.T.ok)} de ${fmtN(L.T.evalT)} días a tiempo · meta 100%</div></div>
+    <div><div class="pl">Tiempo hablado</div><div class="pv">${fmtT(T.talk)}</div><div class="ps">${top && top.gLl ? `Líder: <b>${esc(short(top.k))}</b>` : ""}</div></div>`;
+  if (last) $("meta").innerHTML += ` · <span class="live"><i></i>Datos al ${fmtD(last.slice(0,10))} ${last.slice(11,16)}</span>`;
+}
+function peakDH(){
+  const m = new Map();
+  for (const r of S.rows) { if (!r.res) continue; const h = hourOf(r); if (isNaN(h)) continue; const k = dayOf(r) + "|" + h; m.set(k, (m.get(k) || 0) + 1); }
+  if (!m.size) return "";
+  const mx = Math.max(...m.values()), ks = [...m].filter(([, v]) => v === mx).map(([k]) => k).sort();
+  return `${joinY(ks.map(k => { const [d, h] = k.split("|"); return `${fmtDL(d)} a las ${fmtH(+h)}`; }))}: ${fmtN(mx)} gestiones`;
+}
+function statusPill(p){
+  if (p == null) return `<span class="pill warn">Sin llamadas</span>`;
+  if (p < 0.05) return `<span class="pill ok">Dentro de meta (&lt; 5%)</span>`;
+  if (p < 0.10) return `<span class="pill warn">Atención (5–10%)</span>`;
+  return `<span class="pill bad">Crítico (≥ 10%)</span>`;
+}
+function renderResumen(){
+  const {T} = S;
+  const ex = extremes(S.byDay, "inf"), top = S.byAg.find(a => a.k !== SIN_AG);
+  $("kpis").innerHTML = `
+    <div class="kpi"><div class="lab">Gestionadas</div><div class="val">${fmtN(T.inf)}</div><div class="note">filas con Resultado · de ${fmtN(T.reg)} registros</div></div>
+    <div class="kpi"><div class="lab">Contestadas</div><div class="val">${fmtN(T.comp)}</div><div class="note">Resultado «Contestada»</div></div>
+    <div class="kpi"><div class="lab">Abandonadas</div><div class="val">${fmtN(T.ab)}</div><div class="note">${modeLabel()}</div></div>
+    <div class="kpi"><div class="lab">Contestadas + abandonadas</div><div class="val">${fmtN(T.tot)}</div><div class="note">base de la fórmula</div></div>
+    <div class="kpi"><div class="lab">% Contestadas</div><div class="val">${fmtP(T.pComp)}</div><div class="note">${fmtN(T.comp)} ÷ ${fmtN(T.tot)}</div></div>
+    <div class="kpi hero"><div class="lab">% Tasa de abandono</div><div class="val">${fmtP(T.pAb)}</div>${statusPill(T.pAb)}</div>`;
+  $("fHint").textContent = `Abandonadas incluidas: ${modeLabel()}. Cámbielo con los botones de arriba.`;
+  $("formula").innerHTML = `
+    <tr><td>contestadas</td><td>${n2.format(T.comp)}</td></tr>
+    <tr><td>abandonadas<span class="f-exp">${modeLabel()}</span></td><td>${n2.format(T.ab)}</td></tr>
+    <tr><td>suma contestadas + abandonadas</td><td>${n2.format(T.tot)}</td></tr>
+    <tr class="hl"><td>%contestadas<span class="f-exp">contestadas / (contestadas + abandonadas)</span></td><td>${fmtP(T.pComp)}</td></tr>
+    <tr class="hl"><td>%tasa abandono<span class="f-exp">100% − %contestadas</span></td><td>${fmtP(T.pAb)}</td></tr>`;
+  const q = (x, p) => `Tasa ${fmtP(p)} · ${fmtN(x)} ÷ (${fmtN(T.comp)} + ${fmtN(x)})`;
+  $("duo").innerHTML = `
+    <div class="${MODE==="ge"?"on":""}"><span class="t">Abandonadas mayor a 10 seg</span><span class="v">${fmtN(T.abGe)}</span><span class="s">${q(T.abGe, T.pAbGe)}</span></div>
+    <div class="${MODE==="lt"?"on":""}"><span class="t">Abandonadas menor a 10 seg</span><span class="v">${fmtN(T.abLt)}</span><span class="s">${q(T.abLt, T.pAbLt)}</span></div>`;
+  const fmtTL = x => x == null ? "—" : fmtT(x);
+  $("kpisEsp").innerHTML = `
+    <div class="kpi hero"><div class="lab">Espera total antes de abandonar</div><div class="val">${fmtTL(T.abEspN ? T.abEsp : null)}</div><div class="note">suma de ${fmtN(T.abEspN)} llamadas abandonadas (h:mm:ss)</div></div>
+    <div class="kpi"><div class="lab">Espera promedio</div><div class="val">${fmtTL(T.abEspProm)}</div><div class="note">por llamada abandonada</div></div>
+    <div class="kpi"><div class="lab">Espera más larga</div><div class="val">${fmtTL(T.abEspMax)}</div><div class="note">máximo antes de colgar</div></div>
+    <div class="kpi"><div class="lab">Espera más corta</div><div class="val">${fmtTL(T.abEspMin)}</div><div class="note">mínimo antes de colgar</div></div>
+    <div class="kpi alt"><div class="lab">Comparación: espera de las contestadas</div><div class="val">${fmtTL(T.espProm)}</div><div class="note">promedio de entrantes que sí fueron atendidas</div></div>`;
+  $("tEsp").innerHTML = `<thead><tr><th><span>Grupo</span></th><th><span>Llamadas</span></th><th><span>Espera total</span></th><th><span>Espera promedio</span></th></tr></thead><tbody>
+    <tr><td class="ag">Abandonadas mayor a 10 seg</td><td>${fmtN(T.abGe)}</td><td class="pct">${T.abGe ? fmtT(T.abEspGe) : "—"}</td><td class="pct">${fmtTL(T.abEspPromGe)}</td></tr>
+    <tr><td class="ag">Abandonadas menor a 10 seg</td><td>${fmtN(T.abLt)}</td><td class="pct">${T.abLt ? fmtT(T.abEspLt) : "—"}</td><td class="pct">${fmtTL(T.abEspPromLt)}</td></tr>
+    </tbody><tfoot><tr><td>Todas las abandonadas</td><td>${fmtN(T.abEspN)}</td><td class="pct">${T.abEspN ? fmtT(T.abEsp) : "—"}</td><td class="pct">${fmtTL(T.abEspProm)}</td></tr></tfoot>`;
+  const agSel = $("fAg").value;
+  $("espHint").textContent = (agSel ? `Agente: ${agSel}. ` : "") + "Tiempo de la columna Espera en las llamadas abandonadas: lo que esperó el paciente antes de colgar.";
+  $("resHint").textContent = agSel ? `Agente: ${agSel}. Todos los estados de la columna Resultado.` : "Todos los estados de la columna Resultado. Elija un agente arriba para ver solo los suyos.";
+  const RL = S.resList, mx = Math.max(1, ...RL.map(x => T.rc[x] || 0));
+  $("tRes").innerHTML = `<thead><tr><th><span>Resultado</span></th><th><span>Cantidad</span></th><th><span>% de gestionadas</span></th><th style="text-align:left"><span></span></th></tr></thead><tbody>${
+    RL.map(x => { const v = T.rc[x] || 0; const f = x === "Contestada" || x === "Completada" || x === "Abandonada";
+      return `<tr><td class="ag">${esc(x)}${f ? ' <span class="tag v">en la fórmula</span>' : ""}</td><td>${fmtN(v)}</td><td class="pct">${fmtP(T.inf ? v / T.inf : null)}</td><td style="text-align:left;width:40%"><span class="bar" style="width:${Math.round(100 * v / mx)}%;max-width:100%;${f ? "" : "background:var(--rose)"}"></span></td></tr>`; }).join("")
+  }</tbody><tfoot><tr><td>Total gestionadas</td><td>${fmtN(T.inf)}</td><td class="pct">100%</td><td></td></tr>
+    <tr><td class="dim" style="background:var(--surface);font-weight:500">No cuenta como gestionada: sin resultado (pausas, eventos, mute, hold)</td><td class="dim" style="background:var(--surface);font-weight:500">${fmtN(T.sinRes)}</td><td style="background:var(--surface)"></td><td style="background:var(--surface)"></td></tr></tfoot>`;
+  const hx = extremes(S.byHour, "inf"), bestDow = [...S.byDow].sort((a,b) => b.avg - a.avg)[0];
+  const abDay = extremes(S.byDay, "abAll");
+  $("insights").innerHTML = [
+    ["Día con más gestionadas", ex.max ? `${joinY(ex.max.ks.map(fmtDL))}: ${fmtN(ex.max.v)} gestiones` : "Sin datos"],
+    ["Día con menos gestionadas", ex.min ? `${joinY(ex.min.ks.map(fmtDL))}: ${fmtN(ex.min.v)} gestiones` : "Sin datos"],
+    ["Hora pico del periodo", hx.max ? `${joinY(hx.max.ks.map(fmtH))}: ${fmtN(hx.max.v)} gestiones sumando ${plural(S.byDay.filter(d => d.inf > 0).length, "día", "días")} (promedio ${n1.format(hx.max.v / Math.max(1, S.byDay.filter(d => d.inf > 0).length))} por día)` : "Sin datos"],
+    ["Hora más cargada de un solo día", peakDH() || "Sin datos"],
+    ["Día de semana más cargado", bestDow && bestDow.avg ? `${DOWL[bestDow.k]}: ${n1.format(bestDow.avg)} gestiones en promedio` : "Sin datos"],
+    ["Agente con más gestiones de llamada", top && top.gLl ? `${top.k}: ${fmtN(top.gLl)} (${fmtN(top.compIn)} entrantes contestadas + ${fmtN(top.sal)} salientes)` : "Sin datos"],
+    ["Día con más abandonadas", abDay.max ? `${joinY(abDay.max.ks.map(fmtDL))}: ${abDay.max.v}` : "Ninguna abandonada"],
+  ].map(([t, v]) => `<div><b>${esc(t)}</b>${esc(v)}</div>`).join("");
+}
+
+function renderTipos(){
+  const {T, byCa} = S, ca = $("fCamp").value;
+  $("tiposHint").textContent = (ca ? `Cuenta: ${ca}. ` : "") + `Según la columna Razón de las entrantes abandonadas (${modeLabel()}). La tasa de cada tipo usa la misma base de la fórmula: contestadas + abandonadas.`;
+  const row = (name, desc, n, p, esp, tone) => `<tr><td class="ag" style="white-space:normal">${name}<span class="tdesc">${desc}</span></td><td>${fmtN(n)}</td><td class="pct">${fmtP(T.ab ? n / T.ab : null)}</td><td class="pct ${tone}">${fmtP(p)}</td><td class="pct">${esp == null ? "—" : fmtT(esp)}</td></tr>`;
+  $("tTipos").innerHTML = `<thead><tr><th><span>Tipo de abandono</span></th><th><span>Cantidad</span></th><th><span>% del abandono</span></th><th><span>Tasa</span></th><th><span>Espera prom. antes de colgar</span></th></tr></thead><tbody>
+    ${row("1. Abandono en cola / IVR", "Razón «Cliente abandono», sin agente asignado: el paciente colgó mientras esperaba en la cola o en el IVR, antes de que la llamada llegara a un agente.", T.abQ, T.pAbQ, T.abQespProm, "st-al")}
+    ${row("2. Abandono al timbrar al agente", "Razón «Cliente abandono (ultimo timbrado)»: la llamada ya le estaba timbrando a un agente y el paciente colgó antes de que contestara.", T.abT, T.pAbT, T.abTespProm, "st-al")}
+  </tbody><tfoot><tr><td>Total abandono</td><td>${fmtN(T.ab)}</td><td class="pct">${T.ab ? "100%" : "—"}</td><td class="pct">${fmtP(T.pAb)}</td><td class="pct">${T.ab ? fmtT((T.abQesp + T.abTesp) / T.ab) : "—"}</td></tr></tfoot>`;
+  const canc = S.rows.filter(r => r.tipo === OUT && r.res === "Cancelada").length, sinR = S.rows.filter(r => r.tipo === OUT && r.res === "Sin respuesta").length;
+  const nrow = (name, desc, n, base, baseLab) => `<tr><td class="ag" style="white-space:normal">${name}<span class="tdesc">${desc}</span></td><td>${fmtN(n)}</td><td class="pct">${fmtP(base ? n / base : null)}</td><td style="text-align:left;color:var(--muted)">${baseLab}</td></tr>`;
+  $("tNoAb").innerHTML = `<thead><tr><th><span>Concepto</span></th><th><span>Cantidad</span></th><th><span>%</span></th><th style="text-align:left"><span>% sobre</span></th></tr></thead><tbody>
+    ${nrow("Timbrado evadido", "«Intento de timbrado» con resultado Evadida: el sistema le timbró al agente y no contestó. La llamada pasa a otro agente o termina en abandono.", T.evad, T.inE, "entrantes")}
+    ${nrow("Saliente cancelada", "El agente llamó al paciente y colgó antes de que contestara (timbró unos 20 seg en promedio). No es abandono: es un intento sin contacto.", canc, T.sal, "salientes")}
+    ${nrow("Saliente sin respuesta", "El agente llamó y el paciente nunca contestó (timbró hasta el límite, unos 45 seg). Tampoco es abandono.", sinR, T.sal, "salientes")}
+  </tbody><tfoot><tr><td>Contactabilidad saliente (salientes contestadas ÷ salientes)</td><td>${fmtN(T.salC)}</td><td class="pct">${fmtP(T.pCont)}</td><td></td></tr></tfoot>`;
+  const cols = [["k","Cuenta (campaña)", d => `<b>${esc(d.k)}</b>`], ["comp","Contestadas", d => fmtN(d.comp)], ["abQ","Aband. cola / IVR", d => fmtN(d.abQ)], ["pAbQ","Tasa cola / IVR", d => `<span class="pct">${fmtP(d.pAbQ)}</span>`],
+    ["abT","Aband. al timbrar", d => fmtN(d.abT)], ["pAbT","Tasa al timbrar", d => `<span class="pct">${fmtP(d.pAbT)}</span>`], ["ab","Total abandono", d => fmtN(d.ab)], ["pAb","Tasa total", d => `<b class="pct">${fmtP(d.pAb)}</b>`],
+    ["evad","Timbrados evadidos", d => fmtN(d.evad)], ["canc","Salientes canceladas", d => fmtN(d.canc)], ["sinR","Salientes sin respuesta", d => fmtN(d.sinR)]];
+  renderSimpleTable("tTiposCa", byCa.filter(c => c.inf > 0), cols, {key:"inf", dir:-1});
+}
+function renderInflow(){
+  const {T, byDay, byHour} = S;
+  const ex = extremes(byDay, "inf"), hx = extremes(byHour, "inf");
+  const active = byDay.filter(d => d.inf > 0), zero = byDay.length - active.length;
+  $("kpisIn").innerHTML = `
+    <div class="kpi hero"><div class="lab">Total gestionadas</div><div class="val">${fmtN(T.inf)}</div><div class="note">filas con Resultado (actividad de llamada)</div></div>
+    <div class="kpi"><div class="lab">Día con más gestionadas</div><div class="val sm">${ex.max ? esc(joinY(ex.max.ks.map(fmtDL))) : "—"}</div><div class="note">${ex.max ? fmtN(ex.max.v) + " gestiones" : ""}</div></div>
+    <div class="kpi"><div class="lab">Día con menos gestionadas</div><div class="val sm">${ex.min ? esc(joinY(ex.min.ks.map(fmtDL))) : "—"}</div><div class="note">${ex.min ? fmtN(ex.min.v) + " gestiones · solo días con datos" : ""}</div></div>
+    <div class="kpi"><div class="lab">Promedio diario</div><div class="val">${active.length ? n1.format(T.inf / active.length) : "—"}</div><div class="note">${active.length} días con gestiones · ${zero} sin gestiones</div></div>
+    <div class="kpi"><div class="lab">Hora pico</div><div class="val">${hx.max ? esc(joinY(hx.max.ks.map(fmtH))) : "—"}</div><div class="note">${hx.max ? fmtN(hx.max.v) + " gestiones en el periodo" : ""}</div></div>
+    <div class="kpi"><div class="lab">Hora valle</div><div class="val">${hx.min ? esc(joinY(hx.min.ks.map(fmtH))) : "—"}</div><div class="note">${hx.min ? fmtN(hx.min.v) + " gestiones (horas con datos)" : ""}</div></div>`;
+  renderSimpleTable("tDay", byDay.filter(d => d.inf > 0), [
+    ["k","Fecha", d => fmtDL(d.k)], ["inf","Gestionadas", d => fmtN(d.inf)], ["comp","Contestadas", d => fmtN(d.comp)], ["abAll","Abandonadas", d => fmtN(d.abAll)],
+    ["pAb","% Abandono", d => `<span class="pct">${fmtP(d.pAb)}</span>`], ["abGe","Aband. > 10 s", d => fmtN(d.abGe)], ["abLt","Aband. < 10 s", d => fmtN(d.abLt)],
+    ["evad","Evadidas", d => fmtN(d.evad)], ["sinRes","Sin resultado", d => fmtN(d.sinRes)]
+  ], {key:"k", dir:1}, ex.max ? ex.max.ks : []);
+  const H = byHour.filter(h => h.inf > 0 || h.tot > 0);
+  $("caHint").textContent = `Total del periodo en cada franja. Abandonadas: ${modeLabel()}. La línea es el % de abandono de esa hora (misma fórmula).`;
+  const hca = extremes(H, "ab");
+  $("tCAHour").innerHTML = `<thead><tr><th><span>Hora</span></th><th><span>Contestadas<br>entrantes</span></th><th><span>Contestadas<br>salientes</span></th><th><span>Contestadas<br>total</span></th><th><span>Abandonadas</span></th><th><span>Contestadas +<br>abandonadas</span></th><th><span>% Contestadas</span></th><th><span>% Abandono</span></th></tr></thead><tbody>${
+    H.map(h => `<tr class="${hca.max && hca.max.ks.includes(h.k) ? "top" : ""}"><td>${fmtH(h.k)}</td><td>${fmtN(h.compIn)}</td><td>${fmtN(h.compOut)}</td><td><b>${fmtN(h.comp)}</b></td><td>${h.ab ? `<span class="st-al">${fmtN(h.ab)}</span>` : "0"}</td><td>${fmtN(h.tot)}</td><td class="pct">${fmtP(h.pComp)}</td><td class="pct">${fmtP(h.pAb)}</td></tr>`).join("")
+    || `<tr><td colspan="8" style="text-align:left;color:var(--muted)">Sin llamadas en este filtro</td></tr>`
+  }</tbody><tfoot><tr><td>Total</td><td>${fmtN(T.compIn)}</td><td>${fmtN(T.compOut)}</td><td>${fmtN(T.comp)}</td><td>${fmtN(T.ab)}</td><td>${fmtN(T.tot)}</td><td class="pct">${fmtP(T.pComp)}</td><td class="pct">${fmtP(T.pAb)}</td></tr></tfoot>`;
+  renderAbDet();
+  renderSimpleTable("tPais", S.byPais, [
+    ["k","País", d => `<span class="${d.k === SIN_PAIS ? "dim" : ""}" style="font-weight:600">${esc(d.k)}</span>`], ["inf","Gestionadas", d => fmtN(d.inf)], ["pInf","% de gestionadas", d => `<span class="pct">${fmtP(S.T.inf ? d.inf / S.T.inf : null)}</span>`],
+    ["inE","Entrantes", d => fmtN(d.inE)], ["sal","Salientes", d => fmtN(d.sal)], ["comp","Contestadas", d => fmtN(d.comp)], ["abAll","Abandonadas", d => fmtN(d.abAll)],
+    ["pAb","% Abandono", d => `<span class="pct">${fmtP(d.pAb)}</span>`], ["abEspProm","Espera prom. al abandonar", d => `<span class="pct">${d.abEspProm == null ? "—" : fmtT(d.abEspProm)}</span>`], ["tmo","TMO contestadas", d => `<span class="pct">${d.tmo == null ? "—" : fmtT(d.tmo)}</span>`]
+  ], {key:"inf", dir:-1});
+}
+const tblSort = {};
+function renderSimpleTable(id, data, cols, def, hl=[]){
+  const s = tblSort[id] = tblSort[id] || {...def};
+  const sorted = [...data].sort((a,b) => { const x = a[s.key], y = b[s.key]; return (typeof x === "string" ? String(x).localeCompare(String(y)) : (x ?? -1) - (y ?? -1)) * s.dir; });
+  $(id).innerHTML = `<thead><tr>${cols.map(c => `<th class="${s.key===c[0]?"sorted":""}"><button type="button" data-k="${c[0]}">${c[1]}${s.key===c[0]?(s.dir<0?" ↓":" ↑"):""}</button></th>`).join("")}</tr></thead><tbody>${
+    sorted.map(r => `<tr class="${hl.includes(r.k)?"top":""}">${cols.map(c => `<td>${c[2](r)}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${cols.length}" style="text-align:left;color:var(--muted)">Sin datos</td></tr>`}</tbody>`;
+  $(id).querySelectorAll("th button").forEach(b => b.onclick = () => { const k = b.dataset.k; s.dir = s.key === k ? -s.dir : (k === "k" ? 1 : -1); s.key = k; renderSimpleTable(id, data, cols, def, hl); });
+}
+
+/* ---------- mapa de calor ---------- */
+let HEAT = null;
+function heatData(view){
+  const {rows, allDays, hours} = S;
+  const inRows = rows.filter(r => r.res);
+  const gestRows = rows.filter(r => r.res);
+  const agents = S.byAg.filter(a => a.k !== SIN_AG && a.gest + a.pausa > 0).map(a => a.k);
+  const count = (list, rk, ck, rowsKeys, colKeys, val = () => 1) => {
+    const m = new Map(rowsKeys.map(k => [k, new Map(colKeys.map(c => [c, 0]))]));
+    for (const r of list) { const a = rk(r), b = ck(r); if (m.has(a) && m.get(a).has(b)) m.get(a).set(b, m.get(a).get(b) + val(r)); }
+    return rowsKeys.map(k => colKeys.map(c => m.get(k).get(c)));
+  };
+  const dowKeys = [1,2,3,4,5,6,0];
+  switch(view){
+    case "in-dow": return {title:"Gestionadas por día de semana y hora", hint:"Cuántas gestiones hubo en cada franja, sumando todo el periodo. Sirve para dimensionar turnos.",
+      rows: dowKeys.map(w => DOWL[w][0].toUpperCase() + DOWL[w].slice(1)), weekend: dowKeys.map(w => w===0||w===6), cols: hours.map(fmtH), unit:"gestiones",
+      m: count(inRows, r => dowOf(dayOf(r)), hourOf, dowKeys, hours)};
+    case "in-date": return {title:"Gestionadas por fecha y hora", hint:"Cada celda es una hora de un día. Las franjas rayadas no tuvieron actividad.",
+      rows: allDays.map(fmtDL), weekend: allDays.map(d => [0,6].includes(dowOf(d))), cols: hours.map(fmtH), unit:"gestiones",
+      m: count(inRows, dayOf, hourOf, allDays, hours)};
+    case "ab-date": return {title:"Abandonos por fecha y hora", hint:`Llamadas abandonadas (${modeLabel()}). Muestra en qué franjas se pierden llamadas.`,
+      rows: allDays.map(fmtDL), weekend: allDays.map(d => [0,6].includes(dowOf(d))), cols: hours.map(fmtH), unit:"abandonos",
+      m: count(rows.filter(r => r.res === "Abandonada" && (MODE === "all" || (MODE === "ge") === isGe(r))), dayOf, hourOf, allDays, hours)};
+    case "ag-date": return {title:"Gestión por agente y fecha", hint:"Gestiones diarias de cada agente (filas con resultado). Las celdas rayadas son días sin ninguna gestión.",
+      rows: agents, weekend: agents.map(() => false), cols: allDays.map(d => `${DOW[dowOf(d)]} ${fmtD(d)}`), colWeekend: allDays.map(d => [0,6].includes(dowOf(d))), unit:"gestiones",
+      m: count(gestRows, r => r.ag, dayOf, agents, allDays)};
+    case "ag-hour": return {title:"Gestión por agente y hora", hint:"En qué horas trabaja cada agente, sumando todo el periodo. Las celdas rayadas son horas sin gestión.",
+      rows: agents, weekend: agents.map(() => false), cols: hours.map(fmtH), unit:"gestiones",
+      m: count(gestRows, r => r.ag, hourOf, agents, hours)};
+    case "pais-date": { const pk = S.byPais.filter(p => p.k !== SIN_PAIS).map(p => p.k);
+      return {title:"Gestionadas por país y fecha", hint:"Registros de cada país por día (según la columna País).", rows: pk, weekend: pk.map(() => false),
+        cols: allDays.map(d => `${DOW[dowOf(d)]} ${fmtD(d)}`), colWeekend: allDays.map(d => [0,6].includes(dowOf(d))), unit:"gestiones",
+        m: count(rows.filter(r => r.pais), r => r.pais, dayOf, pk, allDays)}; }
+    case "co-date": return {title:"Contestadas por fecha y hora", hint:`Llamadas contestadas (entrantes y salientes${DIR !== "all" ? ", " + dirLabel() : ""}) en cada hora de cada día.`,
+      rows: allDays.map(fmtDL), weekend: allDays.map(d => [0,6].includes(dowOf(d))), cols: hours.map(fmtH), unit:"contestadas",
+      m: count(rows.filter(ANS), dayOf, hourOf, allDays, hours)};
+    case "ta-date": return {title:"Tiempo hablado por agente y fecha (minutos)", hint:"Minutos hablados en llamadas contestadas cada día.",
+      rows: agents, weekend: agents.map(() => false), cols: allDays.map(d => `${DOW[dowOf(d)]} ${fmtD(d)}`), colWeekend: allDays.map(d => [0,6].includes(dowOf(d))), unit:"min",
+      m: count(rows.filter(ANS), r => r.ag, dayOf, agents, allDays, r => (r.dur || 0) / 60).map(row => row.map(v => Math.round(v)))};
+    case "pzn-ag": case "pzt-ag": { const t = view === "pzt-ag", pa = agents.filter(a => (S.byAg.find(x => x.k === a) || {}).pzCnt);
+      return {title:`Pausas por agente y tipo (${t ? "minutos" : "cantidad"})`, hint: t ? "Minutos totales de cada tipo de pausa en el periodo." : "Cuántas pausas de cada tipo tomó cada agente en el periodo.",
+        rows: pa, weekend: pa.map(() => false), cols: S.pauseTypes, unit: t ? "min" : "pausas",
+        m: count(rows.filter(r => r.tipo === "Pausa"), r => r.ag, r => r.desc || "Otra", pa, S.pauseTypes, t ? r => (r.dur || 0) / 60 : () => 1).map(row => row.map(v => Math.round(v)))}; }
+    case "pzn-date": case "pzt-date": { const t = view === "pzt-date";
+      return {title:`Pausas por tipo y fecha (${t ? "minutos" : "cantidad"})`, hint: t ? "Minutos de cada tipo de pausa por día (todos los agentes del filtro)." : "Cantidad de pausas de cada tipo por día (todos los agentes del filtro).",
+        rows: S.pauseTypes, weekend: S.pauseTypes.map(() => false), cols: allDays.map(d => `${DOW[dowOf(d)]} ${fmtD(d)}`), colWeekend: allDays.map(d => [0,6].includes(dowOf(d))), unit: t ? "min" : "pausas",
+        m: count(rows.filter(r => r.tipo === "Pausa"), r => r.desc || "Otra", dayOf, S.pauseTypes, allDays, t ? r => (r.dur || 0) / 60 : () => 1).map(row => row.map(v => Math.round(v)))}; }
+    case "cx-date": { const C = conexData(), ca = [...new Set(C.days.map(x => x.ag))];
+      const m = ca.map(a => allDays.map(d => { const x = C.days.find(y => y.ag === a && y.day === d); return x ? Math.round(x.conn / 60000) : 0; }));
+      return {title:"Tiempo conectado por agente y fecha (minutos)", hint:"Minutos con sesión abierta (entre login y logout) cada día.",
+        rows: ca, weekend: ca.map(() => false), cols: allDays.map(d => `${DOW[dowOf(d)]} ${fmtD(d)}`), colWeekend: allDays.map(d => [0,6].includes(dowOf(d))), unit:"min", m}; }
+    case "pa-date": return {title:"Pausas por agente y fecha (minutos)", hint:"Minutos en pausa por día (baño, clasificando, almuerzo, capacitación). Útil para ver días atípicos.",
+      rows: agents, weekend: agents.map(() => false), cols: allDays.map(d => `${DOW[dowOf(d)]} ${fmtD(d)}`), colWeekend: allDays.map(d => [0,6].includes(dowOf(d))), unit:"min",
+      m: count(rows.filter(r => r.tipo === "Pausa"), r => r.ag, dayOf, agents, allDays, r => (r.dur || 0) / 60).map(row => row.map(v => Math.round(v)))};
+  }
+}
+function renderHeat(){
+  const view = $("hView").value, H = HEAT = heatData(view);
+  $("hTitle").textContent = H.title; $("hHint").textContent = H.hint;
+  const max = Math.max(1, ...H.m.flat());
+  const rowT = H.m.map(r => r.reduce((a,b) => a+b, 0)), colT = H.cols.map((_, j) => H.m.reduce((a, r) => a + r[j], 0));
+  const cellBg = v => { const p = Math.round(12 + 88 * Math.sqrt(v / max)); return `background:color-mix(in srgb,var(--red-deep) ${p}%,var(--surface));color:${p > 55 ? "#fff" : "var(--fg)"}`; };
+  $("heat").innerHTML = `<thead><tr><th></th>${H.cols.map((c, j) => `<th style="${H.colWeekend && H.colWeekend[j] ? "color:var(--slate);font-style:italic" : ""}">${esc(c)}</th>`).join("")}<th class="tot">Total</th></tr></thead><tbody>${
+    H.rows.map((rn, i) => `<tr class="${H.weekend[i]?"we":""}"><th class="rh" title="${esc(rn)}">${esc(rn)}</th>${H.m[i].map((v, j) => v ? `<td style="${cellBg(v)}" title="${esc(rn)} · ${esc(H.cols[j])}: ${v} ${H.unit}">${v}</td>` : `<td class="zero" title="${esc(rn)} · ${esc(H.cols[j])}: sin ${H.unit}">·</td>`).join("")}<td class="sum">${fmtN(rowT[i])}</td></tr>`).join("")
+  }<tr><th class="rh tot">Total</th>${colT.map(v => `<td class="sum">${fmtN(v)}</td>`).join("")}<td class="sum">${fmtN(rowT.reduce((a,b)=>a+b,0))}</td></tr></tbody>`;
+  $("hWeekend").textContent = (H.weekend.some(Boolean) || (H.colWeekend||[]).some(Boolean)) ? "Fin de semana en cursiva" : "";
+  // hallazgos
+  let best = {v:-1}, zeros = 0, cells = 0;
+  H.m.forEach((r, i) => r.forEach((v, j) => { cells++; if (!v) zeros++; if (v > best.v) best = {v, i, j}; }));
+  const ins = [];
+  if (best.v > 0) ins.push(["Celda más alta", `${H.rows[best.i]} · ${H.cols[best.j]}: ${best.v} ${H.unit}`]);
+  const ci = colT.indexOf(Math.max(...colT)); if (colT[ci] > 0) ins.push(["Columna más cargada", `${H.cols[ci]}: ${fmtN(colT[ci])} ${H.unit}`]);
+  ins.push(["Celdas sin actividad", `${zeros} de ${cells} (${fmtP(cells ? zeros / cells : null)})`]);
+  if (view === "ag-date") {
+    const lab = S.allDays.map((d, j) => [0,6].includes(dowOf(d)) ? -1 : j).filter(j => j >= 0 && colT[j] > 0);
+    H.rows.forEach((a, i) => { const miss = lab.filter(j => !H.m[i][j]).length; if (miss) ins.push([`${a}`, `${miss} día${miss===1?"":"s"} hábil${miss===1?"":"es"} con operación sin gestiones propias`]); });
+  }
+  $("hIns").innerHTML = ins.map(([t, v]) => `<div><b>${esc(t)}</b>${esc(v)}</div>`).join("");
+}
+
+/* ---------- agentes / campañas ---------- */
+const COLS = [
+  ["k","Agente","txt"],["gLl","Gestiones de llamada (entr. contest. + salientes)","n"],["inf","Gestionadas","n"],["comp","Contestadas","n"],["abAll","Abandonadas","n"],["tot","Cont. + aband.","n"],["pComp","% Contestadas","p"],["pAb","% Abandono","pa"],
+  ["abQ","Aband. cola / IVR","n"],["pAbQ","Tasa cola / IVR","p"],["abT","Aband. al timbrar","n"],["pAbT","Tasa al timbrar","p"],["abGe","Aband. > 10 s","n"],["pAbGe","% > 10 s","p"],["abLt","Aband. < 10 s","n"],["pAbLt","% < 10 s","p"],
+  ["evad","Evadidas","n"],["canc","Canceladas","n"],["sinR","Sin respuesta","n"],["sinRes","Sin resultado","n"],["abEsp","Espera total al abandonar","t"],["abEspProm","Espera prom. al abandonar","t"],["nDays","Días activos","n"],["tmo","TMO contestadas","t"],["talk","Tiempo hablado","t"],["talkIn","Hablado entrantes","t"],["talkOut","Hablado salientes","t"],["pzCnt","Cantidad de pausas","n"],["pausa","Tiempo pausa","t"]
+];
+const sortState = {tAg:{key:"gLl",dir:-1}, tCa:{key:"inf",dir:-1}};
+function cell(c, v){
+  if (c[2] === "n") return fmtN(v);
+  if (c[2] === "d") return v == null ? "—" : n1.format(v);
+  if (c[2] === "t") return fmtT(v);
+  if (c[2] === "pa") return v == null ? "—" : `<span class="bar" style="width:${Math.max(2, Math.min(40, v*400))}px"></span><span class="pct">${fmtP(v)}</span>`;
+  return `<span class="pct">${fmtP(v)}</span>`;
+}
+function renderTable(id, data, total, label, hlKey){
+  const s = sortState[id];
+  const sorted = [...data].sort((a, b) => { const x = a[s.key], y = b[s.key]; return s.key === "k" ? String(x).localeCompare(String(y)) * s.dir : ((x ?? -1) - (y ?? -1)) * s.dir; });
+  const cols = COLS.map((c, i) => i === 0 ? [c[0], label, c[2]] : c);
+  const th = cols.map(c => `<th class="${s.key===c[0]?"sorted":""}"><button type="button" data-k="${c[0]}">${c[1]}${s.key===c[0]?(s.dir<0?" ↓":" ↑"):""}</button></th>`).join("");
+  const body = sorted.map(r => `<tr class="${r.k===hlKey?"top":""}">${cols.map((c,i) => i===0 ? `<td class="ag ${r.k===SIN_AG||r.k==="(Sin campaña)"?"dim":""}" title="${esc(r.k)}">${r.k===hlKey?"★ ":""}${esc(r.k)}</td>` : `<td>${cell(c, r[c[0]])}</td>`).join("")}</tr>`).join("");
+  const foot = `<tr>${cols.map((c,i) => i===0 ? `<td>Total</td>` : `<td>${c[0]==="nDays" ? "" : cell(c, total[c[0]])}</td>`).join("")}</tr>`;
+  $(id).innerHTML = `<thead><tr>${th}</tr></thead><tbody>${body || `<tr><td colspan="${cols.length}" style="text-align:left;color:var(--muted)">Sin datos para este filtro</td></tr>`}</tbody><tfoot>${foot}</tfoot>`;
+  $(id).querySelectorAll("th button").forEach(b => b.onclick = () => { const k = b.dataset.k; s.dir = s.key === k ? -s.dir : (k === "k" ? 1 : -1); s.key = k; renderTable(id, data, total, label, hlKey); });
+}
+function renderAgentes(){
+  const ags = S.byAg.filter(a => a.k !== SIN_AG && a.inf > 0);
+  const top = ags[0], topT = [...ags].sort((a,b) => b.talk - a.talk)[0], topC = [...ags].sort((a,b) => b.comp - a.comp)[0];
+  const withCalls = ags.filter(a => a.tot > 0);
+  const worst = [...withCalls].sort((a,b) => (b.pAb ?? 0) - (a.pAb ?? 0))[0];
+  const best = [...withCalls].sort((a,b) => (a.pAb ?? 0) - (b.pAb ?? 0) || b.comp - a.comp)[0];
+  $("kpisAg").innerHTML = `
+    <div class="kpi hero"><div class="lab">Agente con más gestiones de llamada</div><div class="val sm">${top ? esc(short(top.k)) : "—"}</div><div class="note">${top ? `${fmtN(top.gLl)} gestiones · ${fmtN(top.compIn)} entrantes contestadas + ${fmtN(top.sal)} salientes` : ""}</div></div>
+    <div class="kpi"><div class="lab">Mayor tiempo hablado</div><div class="val sm">${topT && topT.talk ? esc(short(topT.k)) : "—"}</div><div class="note">${topT && topT.talk ? fmtT(topT.talk) + " en " + fmtN(topT.compIn + topT.compOut) + " contestadas" : ""}</div></div>
+    <div class="kpi"><div class="lab">Más contestadas</div><div class="val sm">${topC ? esc(short(topC.k)) : "—"}</div><div class="note">${topC ? fmtN(topC.comp) + " contestadas" : ""}</div></div>
+    <div class="kpi"><div class="lab">Menor % abandono</div><div class="val sm">${best ? esc(short(best.k)) : "—"}</div><div class="note">${best ? fmtP(best.pAb) : ""}</div></div>
+    <div class="kpi"><div class="lab">Mayor % abandono</div><div class="val sm">${worst ? esc(short(worst.k)) : "—"}</div><div class="note">${worst ? fmtP(worst.pAb) + " · " + fmtN(worst.ab) + " abandonadas" : ""}</div></div>
+    <div class="kpi"><div class="lab">Agentes con gestionadas</div><div class="val">${ags.length}</div><div class="note">${ags.length ? n1.format(ags.reduce((s, a) => s + a.inf, 0) / ags.length) : "—"} gestiones promedio</div></div>`;
+  renderTable("tAg", S.byAg, S.T, "Agente", top && top.k);
+  renderTalkPz();
+  const RL = S.resList;
+  $("tAgRes").innerHTML = `<thead><tr><th><span>Agente</span></th>${RL.map(x => `<th><span>${esc(x)}</span></th>`).join("")}<th><span>Gestionadas</span></th><th><span>Sin resultado<br>(no cuenta como gestionada)</span></th></tr></thead><tbody>${
+    S.byAg.map(a => `<tr><td class="ag ${a.k===SIN_AG?"dim":""}">${esc(a.k)}</td>${RL.map(x => `<td>${a.rc[x] ? fmtN(a.rc[x]) : '<span class="st-na">·</span>'}</td>`).join("")}<td><b>${fmtN(a.inf)}</b></td><td class="st-na">${fmtN(a.sinRes)}</td></tr>`).join("")
+  }</tbody><tfoot><tr><td>Total</td>${RL.map(x => `<td>${fmtN(S.T.rc[x] || 0)}</td>`).join("")}<td>${fmtN(S.T.inf)}</td><td>${fmtN(S.T.sinRes)}</td></tr></tfoot>`;
+}
+function renderTalkPz(){
+  const A = S.byAg.filter(a => a.k !== SIN_AG && (a.talk > 0 || a.compIn + a.compOut > 0));
+  renderSimpleTable("tTalk", A, [
+    ["k","Agente", d => `<b>${esc(d.k)}</b>`], ["talk","Total", d => `<span class="pct">${fmtT(d.talk)}</span>`],
+    ["talkIn","Entrantes", d => `<span class="pct">${fmtT(d.talkIn)}</span><span class="sub">${fmtN(d.compIn)} llamadas</span>`],
+    ["talkOut","Salientes", d => `<span class="pct">${fmtT(d.talkOut)}</span><span class="sub">${fmtN(d.compOut)} llamadas</span>`],
+    ["talkProm","Promedio", d => `<span class="pct">${d.talkProm == null ? "—" : fmtT(d.talkProm)}</span>`]
+  ], {key:"talk", dir:-1});
+  const PT = S.pauseTypes, P = S.byAg.filter(a => a.k !== SIN_AG && a.pzCnt > 0);
+  $("tPz").innerHTML = `<thead><tr><th><span>Agente</span></th>${PT.map(p => `<th><span>${esc(p)}<br>cantidad</span></th><th><span>${esc(p)}<br>tiempo</span></th>`).join("")}<th><span>Total<br>cantidad</span></th><th><span>Total<br>tiempo</span></th></tr></thead><tbody>${
+    P.map(a => `<tr><td class="ag">${esc(a.k)}</td>${PT.map(p => a.pzN[p] ? `<td>${fmtN(a.pzN[p])}</td><td class="pct">${fmtT(a.pz[p])}</td>` : `<td class="st-na">·</td><td class="st-na">·</td>`).join("")}<td><b>${fmtN(a.pzCnt)}</b></td><td class="pct"><b>${fmtT(a.pausa)}</b></td></tr>`).join("")
+    || `<tr><td colspan="${PT.length * 2 + 3}" style="text-align:left;color:var(--muted)">Sin pausas en este filtro</td></tr>`
+  }</tbody><tfoot><tr><td>Total</td>${PT.map(p => `<td>${fmtN(S.T.pzN[p] || 0)}</td><td class="pct">${fmtT(S.T.pz[p] || 0)}</td>`).join("")}<td>${fmtN(S.T.pzCnt)}</td><td class="pct">${fmtT(S.T.pausa)}</td></tr></tfoot>`;
+}
+function renderCampanas(){
+  const {T} = S;
+  $("kpisCa").innerHTML = `
+    <div class="kpi hero"><div class="lab">Campañas</div><div class="val">${S.byCa.filter(c => c.k !== "(Sin campaña)").length}</div><div class="note">${esc(S.byCa.map(c => c.k).join(", "))}</div></div>
+    <div class="kpi"><div class="lab">Gestionadas</div><div class="val">${fmtN(T.inf)}</div><div class="note">filas con Resultado</div></div>
+    <div class="kpi"><div class="lab">Contestadas</div><div class="val">${fmtN(T.comp)}</div><div class="note">TMO ${fmtT(T.tmo)}</div></div>
+    <div class="kpi"><div class="lab">Abandonadas</div><div class="val">${fmtN(T.ab)}</div><div class="note">${modeLabel()}</div></div>
+    <div class="kpi"><div class="lab">% Tasa de abandono</div><div class="val">${fmtP(T.pAb)}</div><div class="note">${fmtN(T.ab)} ÷ ${fmtN(T.tot)}</div></div>`;
+  renderTable("tCa", S.byCa, T, "Campaña");
+}
+function renderAbandonos(){
+  const {T, abList} = S;
+  const sinAg = abList.filter(r => !r.ag).length;
+  $("kpisAb").innerHTML = `
+    <div class="kpi hero"><div class="lab">Abandonadas totales</div><div class="val">${fmtN(T.abGe + T.abLt)}</div><div class="note">${fmtN(sinAg)} sin agente asignado (en cola)</div></div>
+    <div class="kpi alt"><div class="lab">Mayor a 10 seg</div><div class="val">${fmtN(T.abGe)}</div><div class="note">Tasa ${fmtP(T.pAbGe)}</div></div>
+    <div class="kpi alt"><div class="lab">Menor a 10 seg</div><div class="val">${fmtN(T.abLt)}</div><div class="note">Tasa ${fmtP(T.pAbLt)}</div></div>
+    <div class="kpi"><div class="lab">Espera antes de colgar</div><div class="val">${T.abEspN ? fmtT(T.abEsp) : "—"}</div><div class="note">total · promedio ${T.abEspProm == null ? "—" : fmtT(T.abEspProm)} por llamada</div></div>
+    <div class="kpi"><div class="lab">Timbrados evadidos</div><div class="val">${fmtN(T.evad)}</div><div class="note">le timbró al agente y no contestó</div></div>`;
+  $("tAb").innerHTML = `<thead><tr><th><span>Fecha / hora</span></th><th style="text-align:left"><span>Agente</span></th><th><span>Espera</span></th><th><span>Grupo</span></th></tr></thead><tbody>${
+    abList.map(r => `<tr><td>${esc(r.fecha.replace("T"," "))}</td><td class="${r.ag?"":"dim"}" style="text-align:left">${esc(r.ag || SIN_AG)}</td><td class="pct">${fmtT(r.esp ?? 0)}</td><td>${isGe(r) ? '<span class="tag v">Mayor a 10 seg</span>' : '<span class="tag x">Menor a 10 seg</span>'}</td></tr>`).join("")
+    || `<tr><td colspan="4" style="text-align:left;color:var(--muted)">Sin abandonos en este filtro</td></tr>`}</tbody>`;
+}
+
+/* ---------- detalle por agente: tipo × resultado y disponibilidad ---------- */
+const TS = r => { const t = Date.parse(r.fecha); return isNaN(t) ? null : t; };
+let IDX = {busy:new Map(), pausa:new Map(), sess:new Map(), abEsp:new Map()};
+const RES_OFF = new Set();
+const resKey = r => r.res || VACIO;
+function buildIndex(){
+  // La hora del export es el FIN de la llamada (la pausa «Clasificando» arranca justo después).
+  const busy = new Map(), pausa = new Map(), sess = new Map(), abEsp = new Map();
+  const push = (m, k, v) => { if (!m.has(k)) m.set(k, []); m.get(k).push(v); };
+  for (const r of ROWS) {
+    const t = TS(r); if (t == null || !r.ag) continue;
+    if (r.tipo === IN && ANS(r)) push(busy, r.ag, {s: t - (r.dur||0)*1000, e: t, r});
+    else if (r.tipo === OUT) { const L = r.tot || ((r.dur||0) + (r.esp||0)); push(busy, r.ag, {s: t - L*1000, e: t, r}); }
+    else if (r.tipo === "Pausa") push(pausa, r.ag, {s: t, e: t + (r.dur||0)*1000, r});
+    else if (r.tipo === "Evento" && /logout/i.test(r.razon) && r.dur) push(sess, r.ag, {s: t - r.dur*1000, e: t});
+    else if (r.tipo === "Evento" && /login/i.test(r.razon)) push(sess, r.ag, {s: t, e: null});
+    if (r.tipo === IN && r.res === "Abandonada") abEsp.set(r.ag + "|" + r.fecha, r.esp || 0);
+  }
+  // Login sin logout: sesión abierta hasta el fin del día (o hasta el siguiente logout)
+  for (const [ag, l] of sess) {
+    const closed = l.filter(x => x.e != null);
+    const out = [...closed];
+    l.filter(x => x.e == null).forEach(x => {
+      if (!closed.some(c => Math.abs(c.s - x.s) < 2000)) { const d = new Date(x.s); d.setHours(23,59,59,0); out.push({s:x.s, e:d.getTime()}); }
+    });
+    sess.set(ag, out);
+  }
+  IDX = {busy, pausa, sess, abEsp};
+  buildNumIdx();
+}
+const isLost = r => (r.tipo === IN && r.res === "Abandonada") || r.tipo === TIMB;
+const fmtClock = ms => { const d = new Date(ms); return [d.getHours(), d.getMinutes(), d.getSeconds()].map(x => String(x).padStart(2,"0")).join(":"); };
+function availability(r){
+  if (!isLost(r)) return null;
+  const t = TS(r); if (t == null) return null;
+  let esp = r.tipo === IN ? (r.esp || 0) : (IDX.abEsp.get(r.ag + "|" + r.fecha) ?? 0);
+  const w = {s: t - esp*1000, e: t};
+  const hit = (iv) => iv.s < w.e && iv.e > w.s || (iv.s <= w.s && iv.e >= w.e);
+  const callOf = b => {
+    const num = b.r.tipo === OUT ? b.r.didD : b.r.didO;
+    return {tipo: b.r.tipo === OUT ? "Saliente" : "Entrante", num: num || "sin número", s: b.s, e: b.e, ag: b.r.ag};
+  };
+  if (!r.ag) {
+    const onCall = [];
+    for (const [ag, l] of IDX.busy) { const b = l.find(hit); if (b) onCall.push(callOf(b)); }
+    return {noAg:true, busy: onCall.length > 0, calls: onCall, w};
+  }
+  const b = (IDX.busy.get(r.ag) || []).find(hit);
+  const p = (IDX.pausa.get(r.ag) || []).find(hit);
+  const ss = IDX.sess.get(r.ag);
+  const conn = ss && ss.length ? ss.some(x => x.s <= w.e && x.e >= w.s) : null;
+  return {noAg:false, busy: !!b, call: b ? callOf(b) : null, pausa: p ? (p.r.desc || "Pausa") : null, conn, w};
+}
+function statusText(a){
+  if (!a) return {cls:"st-na", main:"—", sub:""};
+  if (a.noAg) return a.busy
+    ? {cls:"st-ok", main:"Sin agente asignado · agentes ocupados", sub:a.calls.map(c => `${c.ag.split("@")[0]}: ${c.tipo.toLowerCase()} ${c.num}`).join(" · ")}
+    : {cls:"st-al", main:"⚠ Sin agente asignado · ningún agente en llamada", sub:"Nadie estaba en llamada mientras el cliente esperaba"};
+  if (a.busy) return {cls:"st-ok", main:"En otra llamada", sub:`${a.call.tipo} ${a.call.num} · ${fmtClock(a.call.s)}–${fmtClock(a.call.e)}`};
+  const extra = [a.pausa ? `en pausa: ${a.pausa}` : "sin pausa registrada", a.conn === false ? "sin sesión (desconectado)" : a.conn ? "conectado" : ""].filter(Boolean).join(" · ");
+  return {cls:"st-al", main:"⚠ No estaba en otra llamada", sub: extra};
+}
+const TIPO_ORDER = [IN, OUT, TIMB, "Pausa", "Evento", "Mute", "Hold"];
+const RES_ORDER = ["Contestada", "Completada", "Abandonada", "Evadida", "Cancelada", "Sin respuesta", "No atendida", "Rechazada"];
+const ordBy = (list, order) => [...list].sort((a, b) => { const x = order.indexOf(a), y = order.indexOf(b); return (x < 0 ? 99 : x) - (y < 0 ? 99 : y) || a.localeCompare(b); });
+function pivotData(){
+  const rows = S.rows;
+  const tipos = ordBy([...new Set(rows.map(r => r.tipo))], TIPO_ORDER);
+  const ress = ordBy([...new Set(rows.map(resKey))], [...RES_ORDER, VACIO]);
+  const on = ress.filter(x => !RES_OFF.has(x));
+  const m = tipos.map(t => on.map(x => rows.filter(r => r.tipo === t && resKey(r) === x).length));
+  return {tipos, ress, on, m};
+}
+function pivotAoa(){ const P = pivotData(); return [["Tipo \\ Resultado", ...P.on, "Total"], ...P.tipos.map((t, i) => [t, ...P.m[i], P.m[i].reduce((a,b)=>a+b,0)]), ["Total", ...P.on.map((_, j) => P.m.reduce((a, r) => a + r[j], 0)), P.m.flat().reduce((a,b)=>a+b,0)]]; }
+function lostByAgent(){
+  const map = new Map();
+  const get = k => { if (!map.has(k)) map.set(k, {k, abBusy:0, abFree:0, evBusy:0, evFree:0, abTot:0, evTot:0}); return map.get(k); };
+  let noAgBusy = 0, noAgFree = 0;
+  for (const r of S.rows) {
+    if (!isLost(r)) continue;
+    const a = availability(r); if (!a) continue;
+    if (a.noAg) { a.busy ? noAgBusy++ : noAgFree++; continue; }
+    const g = get(r.ag);
+    if (r.tipo === IN) { g.abTot++; a.busy ? g.abBusy++ : g.abFree++; } else { g.evTot++; a.busy ? g.evBusy++ : g.evFree++; }
+  }
+  return {list:[...map.values()].sort((a,b) => (b.abFree+b.evFree) - (a.abFree+a.evFree) || a.k.localeCompare(b.k)), noAgBusy, noAgFree};
+}
+function dispAoa(){
+  const L = lostByAgent();
+  return [["Agente","Entrantes abandonadas · agente SIN llamada (alerta)","Entrantes abandonadas · agente en llamada","Intentos de timbrado evadidos · agente SIN llamada (alerta)","Intentos de timbrado evadidos · agente en llamada","Total abandonadas","Total evadidas"],
+    ...L.list.map(g => [g.k, g.abFree, g.abBusy, g.evFree, g.evBusy, g.abTot, g.evTot]),
+    ["Sin agente asignado (abandonó en cola) · ningún agente en llamada", L.noAgFree, "", "", "", L.noAgFree + L.noAgBusy, ""],
+    ["Sin agente asignado (abandonó en cola) · agentes ocupados", "", L.noAgBusy, "", "", "", ""]];
+}
+function detRows(forceLost){
+  let rows = S.rows.filter(r => !RES_OFF.has(resKey(r)));
+  if (forceLost || $("onlyLost").checked) rows = rows.filter(isLost);
+  let out = rows.map(r => ({r, a: availability(r)}));
+  if ($("onlyAlert").checked) out = out.filter(x => x.a && !x.a.busy);
+  return out.sort((x, y) => y.r.fecha.localeCompare(x.r.fecha));
+}
+function detAoa(forceLost){
+  return [["Fecha","Hora","Agente","Tipo","Resultado","Razón","Espera (seg)","Estado del agente","Detalle (llamada simultánea / pausa)","Número origen","Número destino","Campaña"],
+    ...detRows(forceLost).map(({r, a}) => { const st = statusText(a); return [r.fecha.slice(0,10), r.fecha.slice(11,19), r.ag || SIN_AG, r.tipo, r.res, r.razon, r.esp ?? "", a ? st.main : "", a ? st.sub : "", r.didO, r.didD, r.camp]; })];
+}
+function renderDetalle(){
+  const P = pivotData(), agSel = $("fAg").value;
+  $("pvHint").textContent = agSel ? `Agente: ${agSel}. Cuenta todas las filas del archivo, igual que una tabla dinámica.` : "Igual que una tabla dinámica: cuenta todas las filas del archivo. Elija un agente arriba para ver solo el suyo.";
+  const cnt = x => S.rows.filter(r => resKey(r) === x).length;
+  $("resChips").innerHTML = P.ress.map(x => `<button type="button" class="chip" data-r="${esc(x)}" aria-pressed="${!RES_OFF.has(x)}">${esc(x)}<b>${cnt(x)}</b></button>`).join("");
+  $("resChips").querySelectorAll(".chip").forEach(b => b.onclick = () => { const x = b.dataset.r; RES_OFF.has(x) ? RES_OFF.delete(x) : RES_OFF.add(x); renderDetalle(); });
+  const colT = P.on.map((_, j) => P.m.reduce((a, r) => a + r[j], 0)), all = colT.reduce((a,b)=>a+b,0);
+  $("tPivot").innerHTML = `<thead><tr><th><span>Tipo \\ Resultado</span></th>${P.on.map(x => `<th><span>${esc(x)}</span></th>`).join("")}<th><span>Total</span></th></tr></thead><tbody>${
+    P.tipos.map((t, i) => { const tot = P.m[i].reduce((a,b)=>a+b,0); return tot ? `<tr><td class="ag">${esc(t)}</td>${P.m[i].map(v => `<td>${v ? fmtN(v) : '<span class="st-na">·</span>'}</td>`).join("")}<td><b>${fmtN(tot)}</b></td></tr>` : ""; }).join("")
+  }</tbody><tfoot><tr><td>Total general</td>${colT.map(v => `<td>${fmtN(v)}</td>`).join("")}<td>${fmtN(all)}</td></tr></tfoot>`;
+
+  const L = lostByAgent();
+  const sum = k => L.list.reduce((a, g) => a + g[k], 0);
+  $("kpisDisp").innerHTML = `
+    <div class="kpi warnk"><div class="lab">Abandonadas · agente sin llamada</div><div class="val">${fmtN(sum("abFree"))}</div><div class="note">alerta: el agente estaba libre</div></div>
+    <div class="kpi"><div class="lab">Abandonadas · agente en llamada</div><div class="val">${fmtN(sum("abBusy"))}</div><div class="note">el agente estaba ocupado</div></div>
+    <div class="kpi warnk"><div class="lab">Timbrados evadidos · agente sin llamada</div><div class="val">${fmtN(sum("evFree"))}</div><div class="note">alerta: le timbró y no contestó estando libre</div></div>
+    <div class="kpi"><div class="lab">Timbrados evadidos · agente en llamada</div><div class="val">${fmtN(sum("evBusy"))}</div><div class="note">no podía contestar</div></div>
+    <div class="kpi"><div class="lab">Abandonadas sin agente asignado</div><div class="val">${fmtN(L.noAgFree + L.noAgBusy)}</div><div class="note">${fmtN(L.noAgBusy)} con agentes ocupados · ${fmtN(L.noAgFree)} con nadie en llamada</div></div>`;
+  const cellA = v => v ? `<span class="st-al">${fmtN(v)}</span>` : "0";
+  $("tDisp").innerHTML = `<thead><tr><th><span>Agente</span></th><th><span>Abandonadas<br>agente SIN llamada ⚠</span></th><th><span>Abandonadas<br>agente en llamada</span></th><th><span>Evadidas<br>agente SIN llamada ⚠</span></th><th><span>Evadidas<br>agente en llamada</span></th><th><span>Total<br>abandonadas</span></th><th><span>Total<br>evadidas</span></th></tr></thead><tbody>${
+    L.list.map(g => `<tr><td class="ag">${esc(g.k)}</td><td>${cellA(g.abFree)}</td><td>${fmtN(g.abBusy)}</td><td>${cellA(g.evFree)}</td><td>${fmtN(g.evBusy)}</td><td>${fmtN(g.abTot)}</td><td>${fmtN(g.evTot)}</td></tr>`).join("")
+    || `<tr><td colspan="7" style="text-align:left;color:var(--muted)">Ningún abandono ni timbrado evadido asignado a un agente en este filtro</td></tr>`
+  }<tr><td class="ag dim">${SIN_AG}</td><td>${cellA(L.noAgFree)}<span class="sub">nadie en llamada</span></td><td>${fmtN(L.noAgBusy)}<span class="sub">agentes ocupados</span></td><td>—</td><td>—</td><td>${fmtN(L.noAgFree + L.noAgBusy)}</td><td>—</td></tr></tbody>`;
+
+  const D = detRows(false), MAXR = 400;
+  $("detHint").textContent = `${fmtN(D.length)} filas${D.length > MAXR ? ` · se muestran las ${MAXR} más recientes (el CSV trae todas)` : ""}. La hora del export es el final de la llamada; la espera es el tiempo que el cliente esperó antes de colgar.`;
+  $("tDet").innerHTML = `<thead><tr><th><span>Fecha</span></th><th><span>Hora</span></th><th style="text-align:left"><span>Agente</span></th><th style="text-align:left"><span>Tipo</span></th><th style="text-align:left"><span>Resultado</span></th><th style="text-align:left"><span>Razón</span></th><th><span>Espera</span></th><th style="text-align:left"><span>Estado del agente</span></th><th style="text-align:left"><span>Número origen → destino</span></th></tr></thead><tbody>${
+    D.slice(0, MAXR).map(({r, a}) => { const st = statusText(a); return `<tr><td>${fmtD(r.fecha.slice(0,10))}</td><td class="pct">${r.fecha.slice(11,19)}</td><td class="${r.ag ? "" : "dim"}" style="text-align:left">${esc(r.ag || SIN_AG)}</td><td style="text-align:left">${esc(r.tipo)}</td><td style="text-align:left">${r.res ? esc(r.res) : '<span class="st-na">—</span>'}</td><td class="wrap">${esc(r.razon || r.desc || "")}</td><td class="pct">${r.esp != null ? fmtT(r.esp) : "—"}</td><td class="st"><span class="${st.cls}">${esc(st.main)}</span>${st.sub ? `<span class="sub">${esc(st.sub)}</span>` : ""}</td><td class="pct" style="text-align:left">${esc(r.didO || "—")} → ${esc(r.didD || "—")}</td></tr>`; }).join("")
+    || `<tr><td colspan="9" style="text-align:left;color:var(--muted)">Sin filas para este filtro</td></tr>`}</tbody>`;
+}
+
+/* ---------- abandonadas: número y devolución ---------- */
+const num8 = v => { const d = String(v || "").replace(/\D/g, ""); return d.length >= 7 ? d.slice(-8) : ""; };
+let NUMIDX = new Map();
+function buildNumIdx(){
+  // Contactos posteriores por número: salientes al número (DID destino) y entrantes contestadas desde el número (DID origen)
+  NUMIDX = new Map();
+  const push = (k, x) => { if (!k) return; if (!NUMIDX.has(k)) NUMIDX.set(k, []); NUMIDX.get(k).push(x); };
+  for (const r of ROWS) { const t = TS(r); if (t == null || !r.res) continue;
+    if (r.tipo === OUT) push(num8(r.didD), {t, r, kind:"Saliente"});
+    else if (r.tipo === IN && ANS(r)) push(num8(r.didO), {t, r, kind:"Volvió a llamar"}); }
+  for (const l of NUMIDX.values()) l.sort((a,b) => a.t - b.t);
+}
+function callback(r){
+  const k = num8(r.didO), t = TS(r);
+  if (!k) return {st:"oculto"};
+  const after = (NUMIDX.get(k) || []).filter(x => x.t > t);
+  const ok = after.find(x => ANS(x.r));
+  if (ok) return {st:"ok", x:ok, min:(ok.t - t) / 60000, tries: after.filter(x => x.t <= ok.t).length};
+  if (after.length) return {st:"try", x:after[after.length-1], tries: after.length};
+  return {st:"no"};
+}
+const fmtMin = m => m < 60 ? `${Math.round(m)} min` : m < 1440 ? `${Math.floor(m/60)} h ${Math.round(m%60)} min` : `${Math.round(m/1440)} d`;
+function cbText(c){
+  if (c.st === "oculto") return {cls:"st-na", main:"Número oculto", sub:"no se puede rastrear"};
+  if (c.st === "no") return {cls:"st-al", main:"⚠ Sin devolución", sub:"no hubo saliente ni nueva llamada atendida"};
+  const x = c.x, when = `${fmtD(dayOf(x.r))} ${x.r.fecha.slice(11,16)}`, who = short(x.r.ag);
+  if (c.st === "try") return {cls:"st-wa", main:`Intentos sin contacto (${c.tries})`, sub:`último: ${x.kind.toLowerCase()} ${when} · ${x.r.res}${who ? " · " + who : ""}`};
+  return {cls:"st-ok", main:`Contactado en ${fmtMin(c.min)}`, sub:`${x.kind} ${when}${who ? " · " + who : ""}${c.tries > 1 ? ` · ${c.tries} intentos` : ""}`};
+}
+function abDetRows(){
+  const q = ($("abSearch").value || "").toLowerCase().replace(/\s/g, ""), qd = q.replace(/\D/g, "");
+  return S.abList.map(r => ({r, c: callback(r)})).filter(({r, c}) => {
+    if ($("abNoCb").checked && c.st !== "no") return false;
+    if (!q) return true;
+    return (qd && (String(r.didO).replace(/\D/g, "").includes(qd) || String(r.didD).replace(/\D/g, "").includes(qd))) || String(r.ag || "").toLowerCase().includes(q);
+  });
+}
+function renderAbDet(){
+  const all = S.abList.map(r => callback(r)), n = st => all.filter(c => c.st === st).length, oks = all.filter(c => c.st === "ok");
+  $("kpisAbd").innerHTML = `
+    <div class="kpi"><div class="lab">Abandonadas</div><div class="val">${fmtN(all.length)}</div><div class="note">todas las del filtro de fechas</div></div>
+    <div class="kpi"><div class="lab">Contactadas después</div><div class="val">${fmtN(n("ok"))}</div><div class="note">${fmtP(all.length ? n("ok") / all.length : null)} · la mitad en menos de ${oks.length ? fmtMin([...oks.map(c => c.min)].sort((x,y) => x-y)[Math.floor((oks.length-1)/2)]) : "—"}</div></div>
+    <div class="kpi"><div class="lab">Intentos sin contacto</div><div class="val">${fmtN(n("try"))}</div><div class="note">se le llamó y no contestó</div></div>
+    <div class="kpi ${n("no") ? "warnk" : ""}"><div class="lab">Sin devolución</div><div class="val">${fmtN(n("no"))}</div><div class="note">nadie le devolvió la llamada</div></div>
+    <div class="kpi"><div class="lab">Número oculto</div><div class="val">${fmtN(n("oculto"))}</div><div class="note">no se puede rastrear</div></div>`;
+  const D = abDetRows();
+  $("abdHint").textContent = `${fmtN(D.length)} de ${fmtN(all.length)} abandonadas. Número del paciente = DID origen; línea = DID destino. «Devolución» busca, después del abandono y en todo el archivo, una saliente a ese número o una nueva llamada suya que sí fue atendida.`;
+  $("tAbDet").innerHTML = `<thead><tr><th><span>Fecha</span></th><th><span>Hora</span></th><th style="text-align:left"><span>Número del paciente<br>(origen)</span></th><th style="text-align:left"><span>Línea marcada<br>(destino)</span></th><th style="text-align:left"><span>País</span></th><th style="text-align:left"><span>Tipo de abandono</span></th><th><span>Espera</span></th><th style="text-align:left"><span>Agente</span></th><th style="text-align:left"><span>Devolución</span></th></tr></thead><tbody>${
+    D.map(({r, c}) => { const t = cbText(c); return `<tr><td>${fmtDL(dayOf(r))}</td><td class="pct">${r.fecha.slice(11,19)}</td><td class="pct" style="text-align:left"><b>${esc(r.didO || "—")}</b></td><td class="pct" style="text-align:left">${esc(r.didD || "—")}</td><td style="text-align:left">${esc(r.pais || "—")}</td>
+      <td style="text-align:left">${abTipo(r) === "T" ? '<span class="tag v">Al timbrar al agente</span>' : '<span class="tag x">En cola / IVR</span>'}</td><td class="pct">${fmtT(r.esp ?? 0)}</td><td class="${r.ag ? "" : "dim"}" style="text-align:left">${esc(r.ag ? short(r.ag) : "Sin agente")}</td>
+      <td class="st"><span class="${t.cls}">${esc(t.main)}</span><span class="sub">${esc(t.sub)}</span></td></tr>`; }).join("")
+    || `<tr><td colspan="9" style="text-align:left;color:var(--muted)">${S.abList.length ? "Ninguna abandonada coincide con la búsqueda" : DIR === "out" ? "Las salientes no tienen abandono; cambie el filtro a Todas o Entrantes" : "Sin abandonadas en este filtro"}</td></tr>`}</tbody>`;
+}
+function abDetAoa(){ return [["Fecha","Hora","Día","Número del paciente (origen)","Línea marcada (destino)","País","Campaña","Tipo de abandono","Espera (seg)","Agente","Devolución","Detalle de la devolución","Minutos hasta el contacto"],
+  ...abDetRows().map(({r, c}) => { const t = cbText(c); return [dayOf(r), r.fecha.slice(11,19), DOWL[dowOf(dayOf(r))], r.didO, r.didD, r.pais, r.camp, abTipo(r) === "T" ? "Al timbrar al agente" : "En cola / IVR", r.esp ?? 0, r.ag || "Sin agente", t.main, t.sub, c.st === "ok" ? Math.round(c.min) : ""]; })]; }
+
+/* ---------- login / logout y apertura / cierre de líneas ---------- */
+let AGLINE = new Map(), SESS = [], LASTDAY = "", FILEEND = 0, LASTACT = new Map();
+let SCHED = {}, TOL = 5;
+// Horario por defecto en la hora del archivo (según los login/logout de octubre)
+const SCHED_DEF = {"Asofarma_Oncologia":{a:"07:00", c:"17:00", d:[1,2,3,4,5]}, "AboxPlan":{a:"08:00", c:"17:00", d:[1,2,3,4,5]}};
+const schedOf = ln => SCHED[ln] || SCHED_DEF[ln] || {a:"08:00", c:"17:00", d:[1,2,3,4,5]};
+const dkey = ms => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const dayStart = d => { const [y,m,x] = d.split("-").map(Number); return new Date(y, m-1, x).getTime(); };
+const hm2ms = t => { const [h, m] = String(t).split(":").map(Number); return ((h||0)*60 + (m||0)) * 60000; };
+const clockS = x => x == null ? "—" : fmtClock(dayStart("2026-01-01") + x);
+const clockHM = x => x == null ? "—" : clockS(x).slice(0,5);
+const avgOf = l => l.length ? l.reduce((a,b) => a+b, 0) / l.length : null;
+function loadSched(){ try { const x = JSON.parse(localStorage.getItem("adium-sched") || "null"); if (x) { SCHED = x.s || {}; TOL = x.tol ?? 5; } } catch(e) {} $("tol").value = TOL; }
+function saveSched(){ TOL = Math.max(0, Math.min(60, +$("tol").value || 0)); try { localStorage.setItem("adium-sched", JSON.stringify({s:SCHED, tol:TOL})); } catch(e) {} }
+function prep(){
+  // Cada agente queda en la cuenta (línea) donde tiene más llamadas. Pausas y eventos sin campaña toman esa cuenta.
+  const cnt = new Map();
+  for (const r of ROWS) if (r.ag && r.camp && r.res) { if (!cnt.has(r.ag)) cnt.set(r.ag, new Map()); const m = cnt.get(r.ag); m.set(r.camp, (m.get(r.camp)||0) + 1); }
+  AGLINE = new Map([...cnt].map(([ag, m]) => [ag, [...m].sort((a,b) => b[1]-a[1])[0][0]]));
+  for (const r of ROWS) if (!r.camp && r.ag && !r.res && AGLINE.has(r.ag)) r.camp = AGLINE.get(r.ag);
+  LASTACT = new Map(); FILEEND = 0;
+  for (const r of ROWS) { const t = TS(r); if (t == null) continue; const e = t + (r.tipo === "Pausa" ? (r.dur||0)*1000 : 0); FILEEND = Math.max(FILEEND, e);
+    if (r.ag) { const k = r.ag + "|" + dkey(t); LASTACT.set(k, Math.max(LASTACT.get(k) || 0, e)); } }
+  LASTDAY = FILEEND ? dkey(FILEEND) : "";
+  // Sesiones: el logout trae la duración de la sesión; un login sin logout queda abierto hasta la última actividad del agente ese día
+  SESS = [];
+  const evs = ROWS.filter(r => r.tipo === "Evento" && r.ag && /^log(in|out)$/i.test(String(r.razon||"").trim())).map(r => ({r, t:TS(r)})).filter(x => x.t != null).sort((a,b) => a.t - b.t);
+  const pend = new Map();
+  const openS = (ag, st, next) => { const day = dkey(st); let e = Math.max(st, LASTACT.get(ag + "|" + day) || st); if (next != null) e = Math.min(e, next); SESS.push({ag, day, s:st, e, open:true, cut: day === LASTDAY}); };
+  for (const {r, t} of evs) {
+    if (/login/i.test(r.razon)) { if (pend.has(r.ag)) openS(r.ag, pend.get(r.ag), t); pend.set(r.ag, t); }
+    else { const p = pend.get(r.ag); const st = r.dur ? t - r.dur*1000 : (p ?? t); pend.delete(r.ag); SESS.push({ag:r.ag, day:dkey(st), s:st, e:t, open:false}); }
+  }
+  for (const [ag, st] of pend) openS(ag, st, null);
+}
+const union = iv => { let tot = 0, gap = 0, cur = null; for (const x of [...iv].sort((a,b) => a.s - b.s)) { if (!cur) cur = {...x}; else if (x.s <= cur.e) cur.e = Math.max(cur.e, x.e); else { tot += cur.e - cur.s; gap += x.s - cur.e; cur = {...x}; } } if (cur) tot += cur.e - cur.s; return {tot, gap}; };
+function conexData(){
+  const d1 = $("fDesde").value, d2 = $("fHasta").value, ca = $("fCamp").value, agF = $("fAg").value;
+  const ss = SESS.filter(x => (!d1 || x.day >= d1) && (!d2 || x.day <= d2) && (!ca || AGLINE.get(x.ag) === ca) && (!agF || x.ag === agF));
+  const g = new Map();
+  for (const x of ss) { const k = x.ag + "|" + x.day; if (!g.has(k)) g.set(k, []); g.get(k).push(x); }
+  const days = [...g].map(([k, l]) => {
+    l.sort((a,b) => a.s - b.s);
+    const [ag, day] = k.split("|"), base = dayStart(day);
+    const closed = l.filter(x => !x.open), lastC = closed.length ? Math.max(...closed.map(x => x.e)) : null;
+    const opn = l.filter(x => x.open && (lastC == null || x.e > lastC));
+    const u = union(l);
+    const rowsD = ROWS.filter(r => r.ag === ag && dayOf(r) === day);
+    const talk = rowsD.filter(ANS).reduce((a, r) => a + (r.dur||0), 0) * 1000, pz = rowsD.filter(r => r.tipo === "Pausa").reduce((a, r) => a + (r.dur||0), 0) * 1000;
+    const cut = opn.some(x => x.cut);
+    return {ag, day, line: AGLINE.get(ag) || "", first: l[0].s - base, last: opn.length ? null : (lastC == null ? null : lastC - base), noOut: opn.length > 0 && !cut, cut: opn.length > 0 && cut,
+      lastAct: opn.length ? opn[opn.length-1].e - base : null, nSes: l.length, conn: u.tot, gap: u.gap, talk, pz, ocup: u.tot ? talk / u.tot : null};
+  }).sort((a,b) => b.day.localeCompare(a.day) || a.ag.localeCompare(b.ag));
+  const am = new Map();
+  for (const d of days) { if (!am.has(d.ag)) am.set(d.ag, []); am.get(d.ag).push(d); }
+  const agents = [...am].map(([ag, l]) => { const lo = l.filter(x => x.last != null), conn = l.reduce((a,x) => a + x.conn, 0), talk = l.reduce((a,x) => a + x.talk, 0);
+    return {k:ag, ag, line: AGLINE.get(ag) || "", nDays: l.length, avgIn: avgOf(l.map(x => x.first)), maxIn: Math.max(...l.map(x => x.first)), minIn: Math.min(...l.map(x => x.first)),
+      avgOut: lo.length ? avgOf(lo.map(x => x.last)) : null, conn, connDay: conn / l.length, nSes: l.reduce((a,x) => a + x.nSes, 0), reco: l.reduce((a,x) => a + x.nSes - 1, 0),
+      gap: l.reduce((a,x) => a + x.gap, 0), noOut: l.filter(x => x.noOut).length, talk, pz: l.reduce((a,x) => a + x.pz, 0), ocup: conn ? talk / conn : null}; })
+    .sort((a,b) => b.conn - a.conn);
+  return {days, agents};
+}
+function sumL(l, k){
+  const okA = l.filter(o => o.aOk).length, evC = l.filter(o => o.cOk !== null), okC = evC.filter(o => o.cOk).length, ok = evC.filter(o => o.aOk && o.cOk).length, cv = l.filter(o => o.cov != null);
+  return {k, evalA: l.length, okA, pA: l.length ? okA / l.length : null, evalC: evC.length, okC, pC: evC.length ? okC / evC.length : null, evalT: evC.length, ok, pApego: evC.length ? ok / evC.length : null,
+    cov: cv.length ? avgOf(cv.map(o => o.cov)) : null, unc: l.reduce((a, o) => a + (o.uncovered || 0), 0), cut: l.length - evC.length};
+}
+function lineData(){
+  const d1 = $("fDesde").value, d2 = $("fHasta").value, ca = $("fCamp").value, tol = TOL * 60000;
+  const lines = [...new Set(AGLINE.values())].filter(l => !ca || l === ca).sort();
+  const out = [];
+  for (const ln of lines) {
+    const sc = schedOf(ln);
+    for (const day of daysBetween(d1, d2).filter(d => sc.d.includes(dowOf(d)) && d <= LASTDAY)) {
+      const base = dayStart(day), sA = base + hm2ms(sc.a), sC = base + hm2ms(sc.c), isCut = day === LASTDAY, endW = isCut ? Math.min(sC, FILEEND) : sC;
+      const l = SESS.filter(x => x.day === day && AGLINE.get(x.ag) === ln).sort((a,b) => a.s - b.s);
+      const o = {line: ln, day, sched: `${sc.a}–${sc.c}`};
+      if (!l.length) { Object.assign(o, {open:null, opener:"", close:null, closer:"", aOk:false, cOk: isCut ? null : false, aTxt:"No abrió", cTxt: isCut ? "Al corte del archivo" : "No abrió", cov:0, uncovered: Math.max(0, endW - sA)}); out.push(o); continue; }
+      o.open = l[0].s - base; o.opener = l[0].ag; o.aOk = l[0].s <= sA + tol;
+      const da = Math.round((l[0].s - sA) / 60000);
+      o.aTxt = o.aOk ? (da < 0 ? `A tiempo · ${-da} min antes` : "A tiempo") : `Tarde · ${da} min`;
+      const closed = l.filter(x => !x.open), lastC = closed.length ? closed.reduce((a,b) => b.e > a.e ? b : a) : null;
+      const opn = l.filter(x => x.open && (!lastC || x.e > lastC.e));
+      if (opn.length && isCut) { o.close = null; o.closer = opn[0].ag; o.cOk = null; o.cTxt = "Abierta al corte del archivo"; }
+      else if (opn.length) { o.close = null; o.closer = opn[0].ag; o.cOk = false; o.cTxt = `Sin logout · última actividad ${clockHM(opn[opn.length-1].e - base)}`; }
+      else { o.close = lastC.e - base; o.closer = lastC.ag; const dc = Math.round((sC - lastC.e) / 60000); o.cOk = lastC.e >= sC - tol; o.cTxt = o.cOk ? (dc < 0 ? `A tiempo · ${-dc} min después` : "A tiempo") : `Cerró antes · ${dc} min`; }
+      const cv = union(l.map(x => ({s: Math.max(x.s, sA), e: Math.min(x.e, endW)})).filter(x => x.e > x.s)).tot;
+      o.cov = endW > sA ? cv / (endW - sA) : null; o.uncovered = Math.max(0, endW - sA - cv);
+      out.push(o);
+    }
+  }
+  const fails = out.filter(o => o.aOk === false || o.cOk === false).map(o => ({line:o.line, day:o.day, why:[o.aOk === false ? "apertura " + o.aTxt.toLowerCase() : "", o.cOk === false ? "cierre " + o.cTxt.toLowerCase() : ""].filter(Boolean).join(" · ")}));
+  return {rows: out, lines: lines.map(ln => sumL(out.filter(o => o.line === ln), ln)), T: sumL(out, "Total"), fails};
+}
+function hourOpts(sel){ const v = []; for (let m = 5*60; m <= 23*60; m += 15) v.push(`${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`); if (!v.includes(sel)) v.push(sel); return v.sort().map(x => `<option${x === sel ? " selected" : ""}>${x}</option>`).join(""); }
+const stCell = (ok, txt) => `<span class="${ok === true ? "st-ok" : ok === false ? "st-al" : "st-na"}">${ok === false ? "⚠ " : ""}${esc(txt)}</span>`;
+const short = k => String(k || "").split("@")[0];
+function renderConex(){
+  const lines = [...new Set(AGLINE.values())].sort();
+  const DL = ["D","L","M","X","J","V","S"];
+  $("sched").innerHTML = lines.map(ln => { const sc = schedOf(ln), ags = [...AGLINE].filter(([, l]) => l === ln).map(([a]) => short(a));
+    return `<div class="sched-row" data-ln="${esc(ln)}"><div class="ln">${esc(ln)}<small>Agentes: ${esc(ags.join(", "))}</small></div>
+      <div class="f"><label>Apertura</label><select data-k="a">${hourOpts(sc.a)}</select></div>
+      <div class="f"><label>Cierre</label><select data-k="c">${hourOpts(sc.c)}</select></div>
+      <div class="f"><span class="lb">Días</span><div class="days">${[1,2,3,4,5,6,0].map(w => `<label title="${DOWL[w]}"><input type="checkbox" data-w="${w}"${sc.d.includes(w) ? " checked" : ""}>${DL[w]}</label>`).join("")}</div></div></div>`; }).join("");
+  $("sched").querySelectorAll(".sched-row").forEach(row => row.querySelectorAll("select,input").forEach(el => el.onchange = () => {
+    const ln = row.dataset.ln, sc = {...schedOf(ln)};
+    sc.a = row.querySelector('[data-k="a"]').value; sc.c = row.querySelector('[data-k="c"]').value;
+    sc.d = [...row.querySelectorAll("[data-w]")].filter(x => x.checked).map(x => +x.dataset.w);
+    SCHED[ln] = sc; saveSched(); renderConex(); renderInforme();
+  }));
+  $("tzNote").innerHTML = `<b>Las horas son las del archivo exportado.</b> En octubre, Johan entra a las 7:00 y Paula sale a las 17:00 según el archivo, lo que parece hora de Costa Rica (1 hora menos que Colombia). Escriba el horario en esa misma hora. Tolerancia: se acepta abrir hasta ${TOL} min tarde y cerrar hasta ${TOL} min antes. Abrir antes o cerrar después no cuenta en contra.`;
+
+  const L = lineData(), C = conexData(), T = L.T;
+  const pillA = p => p == null ? "" : p >= 0.9999 ? `<span class="pill ok">Meta 100% cumplida</span>` : p >= 0.9 ? `<span class="pill warn">Bajo la meta</span>` : `<span class="pill bad">Lejos de la meta</span>`;
+  $("kpisLn").innerHTML = `
+    <div class="kpi hero"><div class="lab">Apego al horario de líneas</div><div class="val">${fmtP(T.pApego)}</div>${pillA(T.pApego)}<div class="note">${fmtN(T.ok)} de ${fmtN(T.evalT)} días-línea abrieron y cerraron a tiempo</div></div>
+    <div class="kpi ${T.pA != null && T.pA < 1 ? "warnk" : ""}"><div class="lab">Apertura a tiempo</div><div class="val">${fmtP(T.pA)}</div><div class="note">${fmtN(T.okA)} de ${fmtN(T.evalA)} aperturas</div></div>
+    <div class="kpi ${T.pC != null && T.pC < 1 ? "warnk" : ""}"><div class="lab">Cierre a tiempo</div><div class="val">${fmtP(T.pC)}</div><div class="note">${fmtN(T.okC)} de ${fmtN(T.evalC)} cierres${T.cut ? ` · ${T.cut} ${T.cut === 1 ? "día" : "días"} al corte del archivo sin evaluar` : ""}</div></div>
+    <div class="kpi"><div class="lab">Cobertura del horario</div><div class="val">${fmtP(T.cov)}</div><div class="note">promedio del tiempo con un agente conectado</div></div>
+    <div class="kpi"><div class="lab">Horario sin agente conectado</div><div class="val">${fmtT(T.unc / 1000)}</div><div class="note">suma del periodo (h:mm:ss)</div></div>
+    <div class="kpi"><div class="lab">Tiempo conectado</div><div class="val">${fmtT(C.agents.reduce((a, g) => a + g.conn, 0) / 1000)}</div><div class="note">${C.agents.length} agentes · ${fmtN(C.agents.reduce((a, g) => a + g.reco, 0))} reconexiones</div></div>`;
+  $("tApego").innerHTML = `<thead><tr><th><span>Línea</span></th><th><span>Horario</span></th><th><span>Días<br>evaluados</span></th><th><span>Aperturas<br>a tiempo</span></th><th><span>% apertura</span></th><th><span>Cierres<br>a tiempo</span></th><th><span>% cierre</span></th><th><span>% apego</span></th><th><span>Cobertura<br>promedio</span></th><th><span>Sin agente<br>conectado</span></th></tr></thead><tbody>${
+    L.lines.map(x => `<tr><td class="ag">${esc(x.k)}</td><td class="pct">${esc(schedOf(x.k).a)}–${esc(schedOf(x.k).c)}</td><td>${fmtN(x.evalA)}</td><td>${fmtN(x.okA)}</td><td class="pct">${fmtP(x.pA)}</td><td>${fmtN(x.okC)} de ${fmtN(x.evalC)}</td><td class="pct">${fmtP(x.pC)}</td><td class="pct"><b class="${x.pApego != null && x.pApego < 1 ? "st-al" : "st-ok"}">${fmtP(x.pApego)}</b></td><td class="pct">${fmtP(x.cov)}</td><td class="pct">${fmtT(x.unc / 1000)}</td></tr>`).join("")
+    || `<tr><td colspan="10" style="text-align:left;color:var(--muted)">Sin líneas en este filtro</td></tr>`
+  }</tbody><tfoot><tr><td>Total</td><td></td><td>${fmtN(T.evalA)}</td><td>${fmtN(T.okA)}</td><td class="pct">${fmtP(T.pA)}</td><td>${fmtN(T.okC)} de ${fmtN(T.evalC)}</td><td class="pct">${fmtP(T.pC)}</td><td class="pct">${fmtP(T.pApego)}</td><td class="pct">${fmtP(T.cov)}</td><td class="pct">${fmtT(T.unc / 1000)}</td></tr></tfoot>`;
+  const LR = $("onlyFail").checked ? L.rows.filter(o => o.aOk === false || o.cOk === false) : L.rows;
+  $("lnHint").textContent = `${fmtN(LR.length)} días-línea. Cobertura = parte del horario en que al menos un agente de la línea estaba conectado.`;
+  $("tLn").innerHTML = `<thead><tr><th><span>Línea</span></th><th><span>Fecha</span></th><th><span>Horario</span></th><th><span>Abrió</span></th><th style="text-align:left"><span>Apertura</span></th><th><span>Cerró</span></th><th style="text-align:left"><span>Cierre</span></th><th><span>Cobertura</span></th><th><span>Sin agente<br>conectado</span></th></tr></thead><tbody>${
+    [...LR].sort((a,b) => b.day.localeCompare(a.day) || a.line.localeCompare(b.line)).map(o => `<tr class="${o.aOk === false || o.cOk === false ? "top" : ""}"><td class="ag">${esc(o.line)}</td><td>${fmtDL(o.day)}</td><td class="pct">${esc(o.sched)}</td>
+      <td class="pct">${clockS(o.open)}<span class="sub">${esc(short(o.opener))}</span></td><td class="st">${stCell(o.aOk, o.aTxt)}</td>
+      <td class="pct">${clockS(o.close)}<span class="sub">${esc(short(o.closer))}</span></td><td class="st">${stCell(o.cOk, o.cTxt)}</td>
+      <td class="pct">${fmtP(o.cov)}</td><td class="pct">${o.uncovered ? fmtT(o.uncovered / 1000) : "0:00"}</td></tr>`).join("")
+    || `<tr><td colspan="9" style="text-align:left;color:var(--muted)">${$("onlyFail").checked ? "Sin incumplimientos en este filtro" : "Sin días hábiles en este filtro"}</td></tr>`}</tbody>`;
+  renderSimpleTable("tLogAg", C.agents, [
+    ["k","Agente", d => `<b>${esc(d.k)}</b><span class="sub">${esc(d.line)}</span>`], ["nDays","Días conectado", d => fmtN(d.nDays)],
+    ["avgIn","Primer login prom.", d => `<span class="pct">${clockS(d.avgIn)}</span>`], ["maxIn","Login más tarde", d => `<span class="pct">${clockS(d.maxIn)}</span>`],
+    ["avgOut","Último logout prom.", d => `<span class="pct">${clockS(d.avgOut)}</span>`], ["conn","Tiempo conectado", d => `<span class="pct">${fmtT(d.conn / 1000)}</span>`],
+    ["connDay","Conectado por día", d => `<span class="pct">${fmtT(d.connDay / 1000)}</span>`], ["reco","Reconexiones", d => fmtN(d.reco)],
+    ["gap","Desconectado entre sesiones", d => `<span class="pct">${fmtT(d.gap / 1000)}</span>`], ["noOut","Días sin logout", d => d.noOut ? `<span class="st-al">${fmtN(d.noOut)}</span>` : "0"],
+    ["talk","Tiempo hablado", d => `<span class="pct">${fmtT(d.talk / 1000)}</span>`], ["ocup","Ocupación", d => `<span class="pct">${fmtP(d.ocup)}</span>`]
+  ], {key:"conn", dir:-1});
+  const LD = C.days;
+  $("tLog").innerHTML = `<thead><tr><th><span>Agente</span></th><th><span>Fecha</span></th><th><span>Primer login</span></th><th><span>Último logout</span></th><th><span>Sesiones</span></th><th><span>Tiempo<br>conectado</span></th><th><span>Desconectado<br>entre sesiones</span></th><th><span>Pausas</span></th><th><span>Tiempo<br>hablado</span></th><th><span>Ocupación</span></th></tr></thead><tbody>${
+    LD.map(d => `<tr><td class="ag">${esc(d.ag)}</td><td>${fmtDL(d.day)}</td><td class="pct">${clockS(d.first)}</td>
+      <td class="pct">${d.last != null ? clockS(d.last) : d.cut ? `<span class="st-na">Conectado al corte</span>` : `<span class="st-al">⚠ Sin logout</span><span class="sub">última actividad ${clockHM(d.lastAct)}</span>`}</td>
+      <td>${fmtN(d.nSes)}</td><td class="pct">${fmtT(d.conn / 1000)}</td><td class="pct">${d.gap ? fmtT(d.gap / 1000) : "0:00"}</td><td class="pct">${fmtT(d.pz / 1000)}</td><td class="pct">${fmtT(d.talk / 1000)}</td><td class="pct">${fmtP(d.ocup)}</td></tr>`).join("")
+    || `<tr><td colspan="10" style="text-align:left;color:var(--muted)">Sin login ni logout en este filtro</td></tr>`}</tbody>`;
+}
+function apegoAoa(){ const L = lineData();
+  return [["Línea","Horario","Días evaluados","Aperturas a tiempo","% apertura a tiempo","Cierres a tiempo","% cierre a tiempo","Días con apego total","% apego","Cobertura promedio","Sin agente conectado (h:mm:ss)"],
+    ...L.lines.map(x => [x.k, `${schedOf(x.k).a}-${schedOf(x.k).c}`, x.evalA, x.okA, r4(x.pA), x.okC, r4(x.pC), x.ok, r4(x.pApego), r4(x.cov), fmtT(x.unc / 1000)]),
+    ["Total", "", L.T.evalA, L.T.okA, r4(L.T.pA), L.T.okC, r4(L.T.pC), L.T.ok, r4(L.T.pApego), r4(L.T.cov), fmtT(L.T.unc / 1000)], [], [`Tolerancia: ${TOL} min. Horas en la hora del archivo.`]]; }
+function lineAoa(){ const L = lineData();
+  return [["Línea","Fecha","Horario","Hora apertura","Abrió (agente)","Hora cierre","Cerró (agente)","Estado apertura","Estado cierre","Apertura a tiempo","Cierre a tiempo","Cobertura","Sin agente conectado (h:mm:ss)"],
+    ...L.rows.map(o => [o.line, o.day, o.sched, o.open == null ? "" : clockS(o.open), o.opener, o.close == null ? "" : clockS(o.close), o.closer, o.aTxt, o.cTxt, o.aOk ? "Sí" : "No", o.cOk == null ? "No evaluable" : o.cOk ? "Sí" : "No", r4(o.cov), fmtT((o.uncovered || 0) / 1000)])]; }
+function loginAoa(){ return [["Agente","Fecha","Línea","Primer login","Último logout","Sesiones","Tiempo conectado","Desconectado entre sesiones","Pausas","Tiempo hablado","Ocupación","Observación"],
+  ...conexData().days.map(d => [d.ag, d.day, d.line, clockS(d.first), d.last != null ? clockS(d.last) : "", d.nSes, fmtT(d.conn / 1000), fmtT(d.gap / 1000), fmtT(d.pz / 1000), fmtT(d.talk / 1000), r4(d.ocup), d.noOut ? `Sin logout (última actividad ${clockHM(d.lastAct)})` : d.cut ? "Conectado al corte del archivo" : ""])]; }
+function loginResAoa(){ return [["Agente","Línea","Días conectado","Primer login promedio","Login más tarde","Último logout promedio","Tiempo conectado","Conectado por día","Reconexiones","Desconectado entre sesiones","Días sin logout"],
+  ...conexData().agents.map(g => [g.k, g.line, g.nDays, clockS(g.avgIn), clockS(g.maxIn), clockS(g.avgOut), fmtT(g.conn / 1000), fmtT(g.connDay / 1000), g.reco, fmtT(g.gap / 1000), g.noOut])]; }
+
+/* ---------- informe narrativo ---------- */
+function filteredNoAgent(){
+  const d1 = $("fDesde").value, d2 = $("fHasta").value, ca = $("fCamp").value;
+  return ROWS.filter(r => { const d = dayOf(r); return !(d1 && d < d1) && !(d2 && d > d2) && !(ca && r.camp !== ca) && dirOk(r); });
+}
+const firstName = ag => { if (!ag || ag === SIN_AG) return "Equipo"; const n = ag.split("@")[0].split(/[._-]/)[0]; return n.charAt(0).toUpperCase() + n.slice(1); };
+function explainRazon(r, yo){
+  const z = (r.razon || "").toLowerCase();
+  if (z.includes("ultimo timbrado")) return yo ? "el paciente colgó mientras la llamada te estaba timbrando" : "el paciente colgó mientras la llamada le timbraba al agente";
+  if (z.includes("cliente abandono")) return r.ag ? "el paciente colgó antes de ser atendido" : "el paciente colgó esperando en cola, antes de que se asignara un agente";
+  return r.razon ? `razón registrada: «${r.razon}»` : "sin razón registrada";
+}
+const plural = (n, a, b) => `${fmtN(n)} ${n === 1 ? a : b}`;
+const trendWord = (mine, team) => mine == null || team == null ? "" : Math.abs(mine - team) < 0.0005 ? "igual al" : mine < team ? "mejor que el" : "por encima del";
+function informe(){
+  const {T, byDay, byHour, rows} = S, ag = $("fAg").value;
+  const who = ag ? firstName(ag) : "Equipo", tu = ag ? "tu" : "el", tuvo = ag ? "tuviste" : "tuvo", est = ag ? "estabas" : "estaba el agente";
+  const ds = S.allDays, per = ds.length ? `del ${fmtD(ds[0])} al ${fmtD(ds[ds.length-1])}` : "";
+  const P = []; // [titulo, html, tono]
+  const meta = T.pAb == null ? "" : T.pAb < 0.05 ? "dentro de la meta (menos de 5%)" : T.pAb < 0.10 ? "en zona de atención (entre 5% y 10%)" : "en zona crítica (10% o más)";
+  P.push(["Cierre", `<b>${esc(who)}</b>, ${tu} cierre ${per} fue de <b>${fmtP(T.pAb)} de abandono</b> y <b>${fmtP(T.pComp)} de contestadas</b>, con <b>${fmtN(T.inf)} llamadas gestionadas</b>. En la fórmula entran ${plural(T.comp, "contestada", "contestadas")} y ${plural(T.ab, "abandonada", "abandonadas")}${MODE === "all" ? "" : ` (solo las ${modeLabel()})`}. ${meta ? `El resultado está ${meta}.` : ""}`, T.pAb == null ? "" : T.pAb < 0.05 ? "ok" : "al"]);
+  if (ag) {
+    const team = finish(filteredNoAgent().reduce((a, r) => (add(a, r), a), emptyAcc()));
+    const tw = trendWord(T.pAb, team.pAb);
+    P.push(["Comparación con el equipo", `El equipo completo cerró con ${fmtP(team.pAb)} de abandono y ${fmtN(team.inf)} gestiones. Tu tasa está <b>${tw} equipo</b>, y ${ag ? "tus gestionadas representan" : "las gestionadas representan"} el <b>${fmtP(team.inf ? T.inf / team.inf : null)}</b> del total.`, tw.startsWith("por encima") ? "al" : "ok"]);
+  }
+  const ex = extremes(byDay, "inf"), hx = extremes(byHour, "inf");
+  if (ex.max) {
+    const dmax = byDay.find(d => d.k === ex.max.ks[0]);
+    P.push(["Días con más y menos gestionadas", `El día con más gestionadas fue el <b>${joinY(ex.max.ks.map(fmtDL))}</b> con ${plural(ex.max.v, "gestión", "gestiones")} (${plural(dmax.comp, "contestada", "contestadas")} y ${plural(dmax.abAll, "abandonada", "abandonadas")}). ${ex.min && ex.min.v !== ex.max.v ? `El de menos fue el ${joinY(ex.min.ks.map(fmtDL))} con ${plural(ex.min.v, "gestión", "gestiones")}.` : ""} ${hx.max ? `La hora más cargada fue la de las <b>${joinY(hx.max.ks.map(fmtH))}</b>.` : ""}`, ""]);
+  }
+  // abandonos explicados
+  const abs = rows.filter(r => r.res === "Abandonada").sort((a, b) => a.fecha.localeCompare(b.fecha));
+  if (!abs.length) P.push(["Abandono", `No ${ag ? "tuviste" : "hubo"} llamadas abandonadas en este periodo.`, "ok"]);
+  else {
+    const items = abs.slice(0, 6).map(r => {
+      const a = availability(r);
+      const disp = !a ? "" : a.noAg ? (a.busy ? " Los agentes estaban ocupados en otras llamadas." : " <b class=\"st-al\">⚠ Ningún agente estaba en llamada.</b>")
+        : a.busy ? ` En ese momento ${est} en otra llamada (${esc(a.call.tipo.toLowerCase())} ${esc(a.call.num)}).` : ` <b class="st-al">⚠ En ese momento no ${est} en otra llamada${a.pausa ? ` (estaba en pausa: ${esc(a.pausa)})` : ""}.</b>`;
+      return `<li><b>${fmtDL(dayOf(r))} ${r.fecha.slice(11,16)}</b>: ${explainRazon(r, !!ag)} después de esperar <b>${fmtT(r.esp || 0)}</b>${isGe(r) ? "" : " (menos de 10 seg)"}.${!ag && r.ag ? ` Agente: ${esc(r.ag)}.` : ""}${disp}</li>`;
+    }).join("");
+    const free = abs.filter(r => { const a = availability(r); return a && !a.busy; }).length;
+    P.push(["Por qué se abandonó", `${ag ? "Presentaste" : "Hubo"} ${plural(abs.length, "llamada abandonada", "llamadas abandonadas")}${!ag ? ` (${fmtN(abs.filter(r => abTipo(r) === "Q").length)} en cola / IVR y ${fmtN(abs.filter(r => abTipo(r) === "T").length)} al timbrar al agente)` : ""}: ${plural(T.abGe, "mayor", "mayores")} a 10 seg y ${plural(T.abLt, "menor", "menores")} a 10 seg. En total los pacientes esperaron <b>${fmtT(T.abEsp)}</b> antes de colgar (promedio ${fmtT(T.abEspProm)}).${free ? ` En <b>${plural(free, "caso", "casos")}</b> no ${est} en otra llamada.` : ""}<ul class="inf-list">${items}</ul>${abs.length > 6 ? `<span class="sub">…y ${abs.length - 6} más en la pestaña «Detalle por agente».</span>` : ""}`, free ? "al" : ""]);
+  }
+  if (T.evad) {
+    const ev = rows.filter(r => r.tipo === TIMB), evFree = ev.filter(r => { const a = availability(r); return a && !a.busy; }).length;
+    P.push(["Timbrados no contestados", `${ag ? "Te" : "Les"} timbraron ${plural(T.evad, "vez", "veces")} y no se contestó (Evadida). ${evFree ? `<b class="st-al">⚠ En ${plural(evFree, "caso", "casos")} no ${est} en otra llamada</b>, así que podía${ag ? "s" : ""} contestar.` : "En todos los casos había otra llamada en curso."}`, evFree ? "al" : ""]);
+  }
+  // cómo terminaron las contestadas
+  const ans = rows.filter(ANS), byAgent = ans.filter(r => /agente colg/i.test(r.razon)).length, byExt = ans.filter(r => /externo colg/i.test(r.razon)).length;
+  if (ans.length) P.push(["Cómo terminaron las contestadas", `De ${plural(ans.length, "llamada contestada", "llamadas contestadas")}, <b>${fmtP(byAgent / ans.length)}</b> las cerró el agente y <b>${fmtP(byExt / ans.length)}</b> las colgó el paciente. Duración promedio (TMO): <b>${fmtT(T.tmo)}</b>. Los pacientes que sí fueron atendidos esperaron en promedio ${fmtT(T.espProm)}.`, ""]);
+  // salientes
+  if (T.sal) P.push(["Llamadas salientes", `${ag ? "Hiciste" : "Se hicieron"} ${plural(T.sal, "llamada saliente", "llamadas salientes")}: ${fmtN(T.salC)} contestadas, ${fmtN(rows.filter(r => r.tipo === OUT && r.res === "Cancelada").length)} canceladas y ${fmtN(rows.filter(r => r.tipo === OUT && r.res === "Sin respuesta").length)} sin respuesta. Contactabilidad: <b>${fmtP(T.pCont)}</b>.`, ""]);
+  // tiempo
+  const sess = rows.filter(r => r.tipo === "Evento" && /logout/i.test(r.razon)).reduce((s, r) => s + (r.dur || 0), 0);
+  const talk = T.talk;
+  const pzTop = Object.entries(T.pz).sort((a, b) => b[1] - a[1])[0];
+  if (T.pausa || sess) P.push(["Uso del tiempo", `${sess ? `Tiempo conectado según los login/logout del archivo: <b>${fmtT(sess)}</b>. ` : ""}Tiempo hablando en llamadas contestadas: <b>${fmtT(talk)}</b>${sess ? ` (${fmtP(talk / sess)} del tiempo conectado)` : ""}. Tiempo en pausa: <b>${fmtT(T.pausa)}</b>${pzTop ? `, sobre todo «${esc(pzTop[0])}» (${fmtT(pzTop[1])})` : ""}.`, ""]);
+  // login y líneas
+  const C = conexData();
+  if (ag && C.agents.length) { const g = C.agents[0];
+    P.push(["Login y logout", `Te conectaste ${plural(g.nDays, "día", "días")}. Primer login promedio: <b>${clockS(g.avgIn)}</b>; último logout promedio: <b>${g.avgOut == null ? "—" : clockS(g.avgOut)}</b>. Tiempo conectado: <b>${fmtT(g.conn / 1000)}</b> (promedio ${fmtT(g.conn / 1000 / g.nDays)} por día), con ${plural(g.reco, "reconexión", "reconexiones")}${g.noOut ? ` y <b class="st-al">${plural(g.noOut, "día", "días")} sin logout</b>` : ""}.`, g.noOut ? "al" : ""]); }
+  if (!ag) { const L = lineData();
+    if (L.lines.length) P.push(["Apertura y cierre de líneas", `Apego al horario: <b>${fmtP(L.T.pApego)}</b> (${fmtN(L.T.ok)} de ${fmtN(L.T.evalT)} días-línea abrieron y cerraron a tiempo). ${L.fails.length ? `Incumplimientos: ${L.fails.slice(0, 5).map(f => `${esc(f.line)} ${fmtDL(f.day)} (${esc(f.why)})`).join("; ")}${L.fails.length > 5 ? ` y ${L.fails.length - 5} más` : ""}.` : "Todas las líneas abrieron y cerraron a tiempo."}`, L.fails.length ? "al" : "ok"]); }
+  // países
+  const pa = S.byPais.filter(p => p.k !== SIN_PAIS);
+  if (pa.length) P.push(["Países", `El país con más gestionadas fue <b>${esc(pa[0].k)}</b> con ${plural(pa[0].inf, "gestión", "gestiones")}${pa[1] ? `, seguido de ${esc(pa[1].k)} (${fmtN(pa[1].inf)})` : ""}${pa[2] ? ` y ${esc(pa[2].k)} (${fmtN(pa[2].inf)})` : ""}. ${(() => { const w = [...pa].filter(p => p.tot > 0).sort((a, b) => (b.pAb ?? 0) - (a.pAb ?? 0))[0]; return w && w.pAb > 0 ? `El país con más abandono fue ${esc(w.k)} (${fmtP(w.pAb)}).` : "Ningún país tuvo abandono."; })()}`, ""]);
+  return {who, P};
+}
+function renderInforme(){
+  const {who, P} = informe(), ag = $("fAg").value;
+  $("infTitle").textContent = ag ? `Informe de ${who}` : "Informe del equipo";
+  $("infHint").textContent = ag ? ag : "Elija un agente arriba para ver su informe personal.";
+  $("infBody").innerHTML = P.map(([t, h, tone]) => `<div class="inf-item ${tone}"><h3>${esc(t)}</h3><p>${h}</p></div>`).join("");
+}
+function informeText(){
+  const {who, P} = informe(), tmp = document.createElement("div");
+  return [`Informe · ${who} · ${$("fDesde").value} a ${$("fHasta").value}`, ""].concat(P.map(([t, h]) => { tmp.innerHTML = h.replace(/<li>/g, "\n  • "); return `${t.toUpperCase()}\n${tmp.textContent.trim()}\n`; })).join("\n");
+}
+
+/* ---------- gráficos ---------- */
+function mk(id, cfg){ if (charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
+function drawCharts(){
+  if (!window.Chart) return;
+  const fg = css("--muted"), line = css("--line"), red = css("--red"), deep = css("--red-deep"), rose = css("--rose"), warn = css("--warn"), slate = css("--slate"), surf = css("--surface");
+  Chart.defaults.font.family = css("--body") || "system-ui"; Chart.defaults.color = fg;
+  try { Object.assign(Chart.defaults.plugins.tooltip, {backgroundColor: css("--fg"), titleColor: css("--bg"), bodyColor: css("--bg"), footerColor: css("--bg"), padding: 10, cornerRadius: 10, boxPadding: 4, usePointStyle: true});
+    Chart.defaults.plugins.legend.labels.usePointStyle = true; Chart.defaults.elements.bar.borderSkipped = false; } catch(e) {}
+  const legend = {position:"bottom", labels:{boxWidth:10, boxHeight:10}};
+  const yGrid = {beginAtZero:true, grid:{color:line}, ticks:{precision:0}};
+  const v = VIEW, {byDay, byHour, T} = S;
+  if (v === "resumen") {
+    // Todos los días hábiles del rango elegido (y los fines de semana con llamadas), aunque no tengan datos
+    const d = byDay.filter(x => x.tot > 0 || ![0,6].includes(dowOf(x.k)));
+    const lastData = ROWS.reduce((m, r) => dayOf(r) > m ? dayOf(r) : m, ""), hasta = $("fHasta").value;
+    $("dayHint").innerHTML = "Contestadas y abandonadas por día, con el % de abandono" + (hasta && lastData && hasta > lastData ? ` · <b class="st-al">Los datos cargados llegan hasta el ${fmtD(lastData)}.</b> Cargue un export más reciente para ver los días siguientes.` : "");
+    mk("chDay", {data:{labels: d.map(x => fmtD(x.k)), datasets:[
+      {type:"bar", label:"Contestadas", data:d.map(x => x.comp), backgroundColor:deep, borderRadius:4, stack:"s", yAxisID:"y", order:2},
+      {type:"bar", label:`Abandonadas (${MODE==="ge"?"> 10 s":MODE==="lt"?"< 10 s":"todas"})`, data:d.map(x => x.ab), backgroundColor:rose, borderRadius:4, stack:"s", yAxisID:"y", order:2},
+      {type:"line", label:"% abandono", data:d.map(x => x.pAb == null ? null : +(x.pAb*100).toFixed(2)), borderColor:red, backgroundColor:red, pointRadius:3, tension:.3, yAxisID:"y2", order:1, spanGaps:true}]},
+      options:{maintainAspectRatio:false, interaction:{mode:"index", intersect:false}, plugins:{legend, tooltip:{callbacks:{label: c => c.dataset.yAxisID==="y2" ? ` % abandono: ${n2.format(c.raw ?? 0)}%` : ` ${c.dataset.label}: ${c.raw}`}}},
+        scales:{x:{stacked:true, grid:{display:false}}, y:{...yGrid, stacked:true}, y2:{position:"right", beginAtZero:true, grid:{display:false}, ticks:{callback: x => x + "%"}}}}});
+  }
+  if (v === "inflow") {
+    const ex = extremes(byDay, "inf");
+    const lbl = byDay.map(x => `${DOW[dowOf(x.k)]} ${fmtD(x.k)}`);
+    const RC = resColors(deep, red, rose, slate, warn, fg);
+    mk("chInDay", {type:"bar", data:{labels:lbl, datasets: S.resList.map(x => ({label:x, data:byDay.map(d => d.rc[x] || 0), backgroundColor:RC(x), stack:"s", borderRadius:2}))},
+      options:{maintainAspectRatio:false, interaction:{mode:"index", intersect:false}, plugins:{legend, tooltip:{callbacks:{footer: it => "Gestionadas: " + fmtN(byDay[it[0].dataIndex].inf)}}},
+        scales:{x:{stacked:true, grid:{display:false}, ticks:{autoSkip:true, maxRotation:60, minRotation:0}}, y:{...yGrid, stacked:true, title:{display:true, text:"Registros"}}}}});
+    const HC = byHour.filter(h => h.inf > 0 || h.tot > 0);
+    mk("chCAHour", {data:{labels:HC.map(h => fmtH(h.k)), datasets:[
+      {type:"bar", label:"Contestadas entrantes", data:HC.map(h => h.compIn), backgroundColor:deep, stack:"s", borderRadius:3, yAxisID:"y", order:2},
+      {type:"bar", label:"Contestadas salientes", data:HC.map(h => h.compOut), backgroundColor:slate, stack:"s", borderRadius:3, yAxisID:"y", order:2},
+      {type:"bar", label:`Abandonadas (${MODE==="ge"?"> 10 s":MODE==="lt"?"< 10 s":"todas"})`, data:HC.map(h => h.ab), backgroundColor:rose, stack:"s", borderRadius:3, yAxisID:"y", order:2},
+      {type:"line", label:"% abandono", data:HC.map(h => h.pAb == null ? null : +(h.pAb*100).toFixed(2)), borderColor:red, backgroundColor:red, pointRadius:3, tension:.3, yAxisID:"y2", order:1, spanGaps:true}]},
+      options:{maintainAspectRatio:false, interaction:{mode:"index", intersect:false}, plugins:{legend, tooltip:{callbacks:{label: c => c.dataset.yAxisID==="y2" ? ` % abandono: ${n2.format(c.raw ?? 0)}%` : ` ${c.dataset.label}: ${c.raw}`}}},
+        scales:{x:{stacked:true, grid:{display:false}}, y:{...yGrid, stacked:true}, y2:{position:"right", beginAtZero:true, grid:{display:false}, ticks:{callback: x => x + "%"}}}}});
+    const hx = extremes(byHour, "inf");
+    mk("chInHour", {type:"bar", data:{labels:byHour.map(x => fmtH(x.k)), datasets:[{label:"Gestionadas", data:byHour.map(x => x.inf), backgroundColor:byHour.map(x => hx.max && hx.max.ks.includes(x.k) ? red : deep), borderRadius:4}]},
+      options:{maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}}, y:yGrid}}});
+    mk("chInDow", {data:{labels:S.byDow.map(x => DOWL[x.k][0].toUpperCase() + DOWL[x.k].slice(1,3)), datasets:[
+      {type:"bar", label:"Total gestionadas", data:S.byDow.map(x => x.inf), backgroundColor:deep, borderRadius:4, yAxisID:"y"},
+      {type:"line", label:"Promedio por día", data:S.byDow.map(x => +x.avg.toFixed(1)), borderColor:red, backgroundColor:red, pointRadius:4, yAxisID:"y2"}]},
+      options:{maintainAspectRatio:false, plugins:{legend}, scales:{x:{grid:{display:false}}, y:yGrid, y2:{position:"right", beginAtZero:true, grid:{display:false}}}}});
+    const P = S.byPais.filter(p => p.k !== SIN_PAIS).slice(0, 10);
+    mk("chInPais", {type:"bar", data:{labels:P.map(x => x.k), datasets:[
+      {label:"Contestadas", data:P.map(x => x.comp), backgroundColor:deep, stack:"s", borderRadius:3},
+      {label:"Otros resultados", data:P.map(x => x.inf - x.comp), backgroundColor:rose, stack:"s", borderRadius:3}]},
+      options:{indexAxis:"y", maintainAspectRatio:false, plugins:{legend}, scales:{x:{...yGrid, stacked:true}, y:{stacked:true, grid:{display:false}}}}});
+  }
+  if (v === "agentes") {
+    const A = S.byAg.filter(a => a.k !== SIN_AG && a.inf > 0);
+    const short = k => k.split("@")[0];
+    const RC = resColors(deep, red, rose, slate, warn, fg);
+    mk("chAgG", {type:"bar", data:{labels:A.map(a => short(a.k)), datasets: S.resList.map(x => ({label:x, data:A.map(a => a.rc[x] || 0), backgroundColor:RC(x), stack:"s", borderRadius:2}))},
+      options:{indexAxis:"y", maintainAspectRatio:false, plugins:{legend}, scales:{x:{...yGrid, stacked:true}, y:{stacked:true, grid:{display:false}}}}});
+    const AT = A.filter(a => a.talk > 0);
+    mk("chAgTalk", {type:"bar", data:{labels:AT.map(a => short(a.k)), datasets:[
+      {label:"Entrantes", data:AT.map(a => +(a.talkIn/3600).toFixed(2)), backgroundColor:deep, stack:"s", borderRadius:3},
+      {label:"Salientes", data:AT.map(a => +(a.talkOut/3600).toFixed(2)), backgroundColor:rose, stack:"s", borderRadius:3}]},
+      options:{indexAxis:"y", maintainAspectRatio:false, plugins:{legend, tooltip:{callbacks:{label: c => ` ${c.dataset.label}: ${fmtT(c.raw*3600)}`}}}, scales:{x:{beginAtZero:true, stacked:true, grid:{color:line}, title:{display:true, text:"Horas habladas"}}, y:{stacked:true, grid:{display:false}}}}});
+    const pal = [deep, red, rose, slate, warn, fg];
+    mk("chAgP", {type:"bar", data:{labels:A.map(a => short(a.k)), datasets:S.pauseTypes.map((p, i) => ({label:p, data:A.map(a => +((a.pz[p]||0)/3600).toFixed(2)), backgroundColor:pal[i % pal.length], stack:"s", borderRadius:3}))},
+      options:{indexAxis:"y", maintainAspectRatio:false, plugins:{legend, tooltip:{callbacks:{label: c => ` ${c.dataset.label}: ${fmtT(c.raw*3600)}`}}}, scales:{x:{beginAtZero:true, stacked:true, grid:{color:line}, title:{display:true, text:"Horas"}}, y:{stacked:true, grid:{display:false}}}}});
+  }
+  if (v === "campanas") {
+    const RC = resColors(deep, red, rose, slate, warn, fg);
+    const parts = S.resList.map(x => [x, T.rc[x] || 0, RC(x)]).filter(p => p[1] > 0);
+    mk("chOut", doughnut(parts, fg, surf));
+  }
+  if (v === "abandonos") {
+    const B = [["0–4 s",0,5],["5–9 s",5,10],["10–29 s",10,30],["30–59 s",30,60],["1–3 min",60,180],["3+ min",180,1e9]];
+    const counts = B.map(b => S.abList.filter(r => (r.esp??0) >= b[1] && (r.esp??0) < b[2]).length);
+    const sep = {id:"sep", afterDraw(ch){ const x = ch.scales.x; const px = (x.getPixelForValue(1) + x.getPixelForValue(2)) / 2; const c = ch.ctx; c.save(); c.setLineDash([4,4]); c.strokeStyle = fg; c.beginPath(); c.moveTo(px, ch.chartArea.top); c.lineTo(px, ch.chartArea.bottom); c.stroke(); c.fillStyle = fg; c.font = "11px " + (css("--body")||"sans-serif"); c.fillText("10 seg", px + 4, ch.chartArea.top + 10); c.restore(); }};
+    mk("chAbWait", {type:"bar", data:{labels:B.map(b => b[0]), datasets:[{label:"Abandonos", data:counts, backgroundColor:B.map(b => b[1] >= THR ? red : rose), borderRadius:4}]},
+      options:{maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}}, y:yGrid}}, plugins:[sep]});
+    const hrs = S.hours;
+    mk("chAbHour", {type:"bar", data:{labels:hrs.map(fmtH), datasets:[
+      {label:"Mayor a 10 seg", data:hrs.map(h => S.abList.filter(r => hourOf(r) === h && isGe(r)).length), backgroundColor:red, stack:"s", borderRadius:3},
+      {label:"Menor a 10 seg", data:hrs.map(h => S.abList.filter(r => hourOf(r) === h && !isGe(r)).length), backgroundColor:rose, stack:"s", borderRadius:3}]},
+      options:{maintainAspectRatio:false, plugins:{legend}, scales:{x:{stacked:true, grid:{display:false}}, y:{...yGrid, stacked:true}}}});
+    const parts = [["Contestadas", T.comp, deep], ["Abandonadas > 10 s", T.abGe, red], ["Abandonadas < 10 s", T.abLt, rose]];
+    mk("chIn", doughnut(parts, fg, surf));
+  }
+}
+function resColors(deep, red, rose, slate, warn, fg){
+  const M = {"Contestada":deep, "Completada":deep, "Abandonada":red, "Evadida":rose, "Cancelada":slate, "Sin respuesta":warn};
+  M[VACIO] = css("--heat0") || "#eee";
+  const extra = [fg, css("--line")]; let i = 0;
+  return x => M[x] || (M[x] = extra[i++ % extra.length]);
+}
+function doughnut(parts, fg, surf){
+  return {type:"doughnut", data:{labels:parts.map(p => p[0]), datasets:[{data:parts.map(p => p[1]), backgroundColor:parts.map(p => p[2]), borderColor:surf, borderWidth:2}]},
+    options:{maintainAspectRatio:false, cutout:"62%", plugins:{legend:{position:"right", labels:{boxWidth:10, boxHeight:10, generateLabels: ch => ch.data.labels.map((l,i) => ({text:`${l}  ${ch.data.datasets[0].data[i]}`, fillStyle:parts[i][2], strokeStyle:parts[i][2], fontColor:fg, index:i}))}}}}};
+}
+
+/* ---------- pestañas, filtros ---------- */
+function showView(v){
+  VIEW = v;
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.v === v ? "true" : "false"));
+  document.querySelectorAll(".view").forEach(s => s.hidden = s.id !== "v-" + v);
+  try { localStorage.setItem("adium-tab", v); } catch(e) {}
+  drawCharts();
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => showView(t.dataset.v));
+document.querySelectorAll("#segMode button").forEach(b => b.onclick = () => {
+  MODE = b.dataset.m; document.querySelectorAll("#segMode button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); render();
+});
+document.querySelectorAll("#segDir button").forEach(b => b.onclick = () => {
+  DIR = b.dataset.d; document.querySelectorAll("#segDir button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); render();
+});
+function fillFilters(){
+  const camps = [...new Set(ROWS.map(r => r.camp).filter(Boolean))].sort();
+  const ags = [...new Set(ROWS.map(r => r.ag || SIN_AG))].sort((a,b) => a===SIN_AG ? 1 : b===SIN_AG ? -1 : a.localeCompare(b));
+  $("fCamp").innerHTML = `<option value="">Todas (${camps.length})</option>` + camps.map(c => `<option>${esc(c)}</option>`).join("");
+  $("fAg").innerHTML = `<option value="">Todos (${ags.length})</option>` + ags.map(c => `<option>${esc(c)}</option>`).join("");
+  const d = ROWS.map(dayOf).filter(Boolean).sort();
+  $("fDesde").value = d[0] || ""; $("fHasta").value = d[d.length-1] || "";
+}
+["fDesde","fHasta","fCamp","fAg"].forEach(id => $(id).addEventListener("input", render));
+$("hView").addEventListener("input", renderHeat);
+["onlyLost","onlyAlert"].forEach(id => $(id).addEventListener("input", renderDetalle));
+$("onlyFail").addEventListener("input", renderConex);
+["abSearch","abNoCb"].forEach(id => $(id).addEventListener("input", renderAbDet));
+$("tol").addEventListener("input", () => { saveSched(); renderConex(); if (/^cx/.test($("hView").value)) renderHeat(); });
+
+/* ---------- último archivo cargado: guardado en el tablero (y en el navegador de respaldo) ---------- */
+// En el tablero: el archivo se sube como dato del tablero (assets) y la base (db) guarda cuál es el último.
+// Solo quien puede editar el tablero guarda; quien lo abre con su cuenta lo ve. En el navegador: respaldo local.
+const STORE_KEY = "adium-ultimo-archivo", SHARED_DOC = "config/ultimo";
+let DB = null, ASSETS = null, USER = null, CAP_READY = null;
+function caps(){ return CAP_READY || (CAP_READY = (async () => {
+  try { [DB, ASSETS, USER] = await Promise.all(["db","assets","user"].map(n => window.claude?.use?.(n) ?? null)); } catch(e) {}
+})()); }
+function idb(){ return new Promise((ok, ko) => { try { const r = indexedDB.open("adium-con-voz", 1); r.onupgradeneeded = () => r.result.createObjectStore("kv"); r.onsuccess = () => ok(r.result); r.onerror = () => ko(r.error); } catch(e) { ko(e); } }); }
+async function idbSet(k, v){ try { const db = await idb(); await new Promise((ok, ko) => { const tx = db.transaction("kv", "readwrite"); tx.objectStore("kv").put(v, k); tx.oncomplete = ok; tx.onerror = () => ko(tx.error); }); return true; } catch(e) { return false; } }
+async function idbGet(k){ try { const db = await idb(); return await new Promise((ok) => { const r = db.transaction("kv").objectStore("kv").get(k); r.onsuccess = () => ok(r.result); r.onerror = () => ok(null); }); } catch(e) { return null; } }
+async function idbDel(k){ try { const db = await idb(); await new Promise((ok) => { const tx = db.transaction("kv", "readwrite"); tx.objectStore("kv").delete(k); tx.oncomplete = ok; tx.onerror = ok; }); } catch(e) {} }
+const toArr = r => [r.fecha, r.tipo, r.desc, r.res, r.razon, r.dur, r.esp, r.ag, r.camp, r.pais, r.didO, r.didD, r.tot];
+function useRows(rows, source){ ROWS = rows; prep(); buildIndex(); RES_OFF.clear(); SOURCE = source; fillFilters(); render(); dataWarn(); }
+function dataWarn(){
+  if (!ROWS.length) { const w = $("dataWarn"); w.hidden = false; w.innerHTML = `<b>Todavía no hay datos.</b> Haga clic en <b>Cargar Excel</b> (arriba a la derecha) y elija el export de llamadas, la hoja «Consulta». El tablero se arma solo y el archivo queda guardado en este navegador.`; return; }
+  const w = $("dataWarn"), hasIn = ROWS.some(r => r.tipo === IN), noAgent = ROWS.some(r => r.res && !r.ag);
+  w.hidden = !(hasIn && !noAgent);
+  if (!w.hidden) w.innerHTML = `<b>Este archivo no trae llamadas sin agente.</b> Parece un export por agente: las llamadas que el paciente abandona en cola / IVR nunca llegan a un agente y no vienen aquí, así que la tasa de abandono puede verse más baja que la real de la cuenta. Para la tasa de la cuenta, cargue el export por campaña.`;
+}
+async function saveShared(arr, source){
+  await caps();
+  if (!DB || !ASSETS) return false;
+  try {
+    const prev = await DB.doc(SHARED_DOC).get().catch(() => null);
+    const up = await ASSETS.upload(new Blob([JSON.stringify(arr)], {type:"application/json"}), {type:"application/json"});
+    await DB.doc(SHARED_DOC).set({asset: up.id, source, rows: arr.length, at: new Date().toISOString()});
+    const old = prev && prev.exists ? prev.data().asset : null;
+    if (old && old !== up.id) ASSETS.delete(old).catch(() => {});   // el archivo anterior ya no lo usa nadie
+    return true;
+  } catch(e) { return false; }
+}
+async function loadShared(){
+  await caps();
+  if (!DB) return null;
+  try {
+    const d = await DB.doc(SHARED_DOC).get(); if (!d.exists) return null;
+    const x = d.data(), res = await fetch("/_blob/" + x.asset); if (!res.ok) return null;
+    return {rows: await res.json(), source: x.source, at: x.at, shared: true};
+  } catch(e) { return null; }
+}
+async function restoreSaved(){
+  const [sh, lo] = await Promise.all([loadShared(), idbGet(STORE_KEY)]);
+  const local = lo && Array.isArray(lo.rows) && lo.rows.length ? {rows: lo.rows.map(r => Array.isArray(r) ? r : toArr(r)), source: lo.source, at: lo.at || ""} : null;
+  const pick = sh && (!local || (sh.at || "") >= local.at) ? sh : local;
+  if (!pick) return;
+  useRows(fromSample(pick.rows), pick.source); $("btnReset").hidden = !(pick.shared ? ((await USER?.canEdit?.()) ?? false) : true);
+  toast(`Se abrió el último archivo cargado: ${fmtN(pick.rows.length)} registros`);
+}
+$("btnReset").onclick = async () => {
+  await idbDel(STORE_KEY);
+  await caps();
+  if (DB && ((await USER?.canEdit?.()) ?? false)) { try { const d = await DB.doc(SHARED_DOC).get(); if (d.exists) { const id = d.data().asset; await DB.doc(SHARED_DOC).delete(); if (id && ASSETS) ASSETS.delete(id).catch(() => {}); } } catch(e) {} }
+  $("btnReset").hidden = true; useRows(fromSample(SAMPLE), "sin datos: cargue el export"); toast("Volvió a los datos precargados");
+};
+
+/* ---------- carga de archivo ---------- */
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
+async function loadFile(f){
+  if (!f) return;
+  try {
+    if (!window.XLSX) throw new Error("No se pudo cargar el lector de Excel. Revise la conexión y recargue la página.");
+    const wb = XLSX.read(await f.arrayBuffer(), {type:"array", cellDates:false});
+    const {name, rows} = pickSheet(wb);
+    useRows(rows, `${f.name} · hoja «${name}» · cargado ${new Date().toLocaleString("es-CO")}`);
+    toast(`Tablero actualizado: ${fmtN(rows.length)} registros de «${name}». Guardando…`);
+    const arr = rows.map(toArr), at = new Date().toISOString();
+    const local = await idbSet(STORE_KEY, {rows: arr, source: SOURCE, at});
+    const shared = await saveShared(arr, SOURCE);
+    $("btnReset").hidden = !(shared || local);
+    toast(shared ? "Archivo guardado en el tablero: al abrir el enlace se verá este archivo" : local ? "Archivo guardado en este navegador" : "No se pudo guardar el archivo; al recargar habrá que cargarlo de nuevo");
+  } catch(e) { toast(e.message || "No se pudo leer el archivo."); }
+}
+$("btnLoad").onclick = () => $("file").click();
+$("file").onchange = e => { loadFile(e.target.files[0]); e.target.value = ""; };
+let dragN = 0;
+addEventListener("dragenter", e => { if ([...(e.dataTransfer?.types||[])].includes("Files")) { dragN++; $("dz").hidden = false; } });
+addEventListener("dragleave", () => { if (--dragN <= 0) { dragN = 0; $("dz").hidden = true; } });
+addEventListener("dragover", e => e.preventDefault());
+addEventListener("drop", e => { e.preventDefault(); dragN = 0; $("dz").hidden = true; loadFile(e.dataTransfer.files[0]); });
+
+/* ---------- descargas ---------- */
+let downloads = null;
+const r4 = v => v == null ? "" : Math.round(v * 10000) / 10000;
+const sec = v => v == null ? "" : Math.round(v);
+const EXP = [["gLl","Gestiones de llamada (entrantes contestadas + salientes)"],["inf","Gestionadas (filas con resultado)"],["reg","Registros totales"],["comp","Contestadas"],["abAll","Abandonadas (todas)"],["tot","Contestadas + abandonadas (según botón)"],["pComp","% Contestadas",r4],["pAb","% Tasa abandono",r4],
+  ["abQ","Abandono en cola / IVR"],["pAbQ","Tasa abandono cola / IVR",r4],["abT","Abandono al timbrar al agente"],["pAbT","Tasa abandono al timbrar",r4],["abGe","Abandonadas mayor a 10 seg"],["pAbGe","% abandono mayor a 10 seg",r4],["abLt","Abandonadas menor a 10 seg"],["pAbLt","% abandono menor a 10 seg",r4],
+  ["evad","Evadidas"],["canc","Canceladas"],["sinR","Sin respuesta"],["sinRes","Sin resultado (pausas, eventos…)"],["abEsp","Espera total al abandonar (seg)",sec],["abEspProm","Espera prom. al abandonar (seg)",sec],["nDays","Días activos"],["tmo","TMO contestadas (seg)",sec],["talk","Tiempo hablado (seg)",sec],["talkIn","Tiempo hablado entrantes (seg)",sec],["talkOut","Tiempo hablado salientes (seg)",sec],["pzCnt","Cantidad de pausas"],["pausa","Tiempo pausa (seg)",sec]];
+const PCT_IDX = EXP.map((e, i) => e[1].startsWith("%") ? i + 1 : -1).filter(i => i > 0);
+function aoaOf(list, label, withTotal = true, keyFmt = k => k){
+  const row = a => EXP.map(([k, , f]) => f ? f(a[k]) : a[k]);
+  return [[label, ...EXP.map(e => e[1])], ...list.map(a => [keyFmt(a.k), ...row(a)]), ...(withTotal ? [["TOTAL", ...row(S.T)]] : [])];
+}
+function hourAoa(){ return [["Hora","Gestionadas","Contestadas","Abandonadas","Abandonadas mayor a 10 seg","Abandonadas menor a 10 seg","Evadidas","Sin resultado"], ...S.byHour.map(h => [fmtH(h.k), h.inf, h.comp, h.abAll, h.abGe, h.abLt, h.evad, h.sinRes])]; }
+function tiposAoa(){ const T = S.T;
+  return [["Tipo de abandono","Cantidad","% del abandono","Tasa (sobre contestadas + abandonadas)","Espera prom. (seg)"],
+    ["Abandono en cola / IVR (Cliente abandono, sin agente)", T.abQ, r4(T.ab ? T.abQ / T.ab : null), r4(T.pAbQ), sec(T.abQespProm)],
+    ["Abandono al timbrar al agente (Cliente abandono (ultimo timbrado))", T.abT, r4(T.ab ? T.abT / T.ab : null), r4(T.pAbT), sec(T.abTespProm)],
+    ["Total abandono", T.ab, T.ab ? 1 : "", r4(T.pAb), ""], [],
+    ["No son abandono","Cantidad"], ["Timbrado evadido", T.evad], ["Saliente cancelada", S.rows.filter(r => r.tipo === OUT && r.res === "Cancelada").length], ["Saliente sin respuesta", S.rows.filter(r => r.tipo === OUT && r.res === "Sin respuesta").length], [],
+    ["Por cuenta","Contestadas","Aband. cola / IVR","Tasa cola / IVR","Aband. al timbrar","Tasa al timbrar","Total abandono","Tasa total","Timbrados evadidos","Salientes canceladas","Salientes sin respuesta"],
+    ...S.byCa.filter(c => c.inf > 0).map(c => [c.k, c.comp, c.abQ, r4(c.pAbQ), c.abT, r4(c.pAbT), c.ab, r4(c.pAb), c.evad, c.canc, c.sinR])]; }
+function espAoa(){ const T = S.T, f = x => x == null ? "" : fmtT(x);
+  return [["Grupo","Llamadas","Espera total (h:mm:ss)","Espera total (seg)","Espera promedio (h:mm:ss)","Espera más larga","Espera más corta"],
+    ["Todas las abandonadas", T.abEspN, f(T.abEspN ? T.abEsp : null), T.abEsp, f(T.abEspProm), f(T.abEspMax), f(T.abEspMin)],
+    ["Abandonadas mayor a 10 seg", T.abGe, f(T.abGe ? T.abEspGe : null), T.abEspGe, f(T.abEspPromGe), "", ""],
+    ["Abandonadas menor a 10 seg", T.abLt, f(T.abLt ? T.abEspLt : null), T.abEspLt, f(T.abEspPromLt), "", ""],
+    [], ["Espera promedio de entrantes contestadas", T.espN, "", "", f(T.espProm), "", ""],
+    [], ["Por agente"], ["Agente","Abandonadas","Espera total (h:mm:ss)","Espera total (seg)","Espera promedio (h:mm:ss)"],
+    ...S.byAg.filter(a => a.abEspN).map(a => [a.k, a.abEspN, fmtT(a.abEsp), a.abEsp, f(a.abEspProm)])]; }
+function resAoa(){ return [["Resultado","Cantidad","% de gestionadas"], ...S.resList.map(x => [x, S.T.rc[x] || 0, r4(S.T.inf ? (S.T.rc[x] || 0) / S.T.inf : null)]), ["Total gestionadas", S.T.inf, 1], [], ["No cuenta como gestionada: sin resultado (pausas, eventos, mute, hold)", S.T.sinRes, ""]]; }
+function agResAoa(){ return [["Agente", ...S.resList, "Gestionadas", "Sin resultado (no cuenta como gestionada)"], ...S.byAg.map(a => [a.k, ...S.resList.map(x => a.rc[x] || 0), a.inf, a.sinRes]), ["Total", ...S.resList.map(x => S.T.rc[x] || 0), S.T.inf, S.T.sinRes]]; }
+function formulaAoa(){ const T = S.T; return [["Concepto","Valor"],["Gestionadas (filas con resultado)", T.inf],["contestadas", T.comp],[`abandonadas (${modeLabel()})`, T.ab],["suma contestadas + abandonadas", T.tot],["%contestadas", r4(T.pComp)],["%tasa abandono", r4(T.pAb)],[],["abandonadas mayor a 10 seg", T.abGe, r4(T.pAbGe)],["abandonadas menor a 10 seg", T.abLt, r4(T.pAbLt)]]; }
+function paisAoa(){ return [["País","Gestionadas","% de gestionadas","Entrantes","Salientes","Contestadas","Abandonadas","% abandono","Espera prom. al abandonar (seg)","TMO contestadas (seg)"], ...S.byPais.map(p => [p.k, p.inf, r4(S.T.inf ? p.inf / S.T.inf : null), p.inE, p.sal, p.comp, p.abAll, r4(p.pAb), sec(p.abEspProm), sec(p.tmo)])]; }
+function dowAoa(){ return [["Día de semana","Total gestionadas","Días en el periodo","Promedio por día"], ...S.byDow.map(d => [DOWL[d.k], d.inf, d.n, Math.round(d.avg*10)/10])]; }
+function abAoa(){ return [["Fecha/Hora","Agente","Campaña","Espera (seg)","Razón","Grupo"], ...S.abList.map(r => [r.fecha.replace("T"," "), r.ag || SIN_AG, r.camp, r.esp ?? 0, r.razon, isGe(r) ? "Mayor a 10 seg" : "Menor a 10 seg"])]; }
+function heatAoa(H){ return [[H.title, ...H.cols, "Total"], ...H.rows.map((rn, i) => [rn, ...H.m[i], H.m[i].reduce((a,b)=>a+b,0)])]; }
+function pauseAoa(){ const A = S.byAg.filter(a => a.pzCnt > 0), PT = S.pauseTypes;
+  return [["Agente", ...PT.flatMap(p => [p + " (cantidad)", p + " (h:mm:ss)", p + " (min)"]), "Total (cantidad)", "Total (h:mm:ss)", "Total (min)"],
+    ...A.map(a => [a.k, ...PT.flatMap(p => [a.pzN[p] || 0, fmtT(a.pz[p] || 0), Math.round((a.pz[p]||0)/60)]), a.pzCnt, fmtT(a.pausa), Math.round(a.pausa/60)]),
+    ["Total", ...PT.flatMap(p => [S.T.pzN[p] || 0, fmtT(S.T.pz[p] || 0), Math.round((S.T.pz[p]||0)/60)]), S.T.pzCnt, fmtT(S.T.pausa), Math.round(S.T.pausa/60)]]; }
+function caHourAoa(){ return [["Hora","Contestadas entrantes","Contestadas salientes","Contestadas total",`Abandonadas (${modeLabel()})`,"Contestadas + abandonadas","% contestadas","% abandono"],
+  ...S.byHour.filter(h => h.inf > 0 || h.tot > 0).map(h => [fmtH(h.k), h.compIn, h.compOut, h.comp, h.ab, h.tot, r4(h.pComp), r4(h.pAb)]),
+  ["Total", S.T.compIn, S.T.compOut, S.T.comp, S.T.ab, S.T.tot, r4(S.T.pComp), r4(S.T.pAb)]]; }
+function talkAoa(){ return [["Agente","Contestadas","Tiempo hablado (h:mm:ss)","Tiempo hablado (seg)","Entrantes contestadas","Hablado entrantes (h:mm:ss)","Salientes contestadas","Hablado salientes (h:mm:ss)","Promedio por llamada (h:mm:ss)"],
+  ...S.byAg.filter(a => a.k !== SIN_AG && a.compIn + a.compOut > 0).sort((a,b) => b.talk - a.talk).map(a => [a.k, a.compIn + a.compOut, fmtT(a.talk), a.talk, a.compIn, fmtT(a.talkIn), a.compOut, fmtT(a.talkOut), a.talkProm == null ? "" : fmtT(a.talkProm)]),
+  ["Total", S.T.compIn + S.T.compOut, fmtT(S.T.talk), S.T.talk, S.T.compIn, fmtT(S.T.talkIn), S.T.compOut, fmtT(S.T.talkOut), S.T.talkProm == null ? "" : fmtT(S.T.talkProm)]]; }
+const toCSV = aoa => "\ufeff" + aoa.map(r => r.map(v => { const s = String(v ?? ""); return /[;"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }).join(";")).join("\r\n");
+const IN_VIEWER = (() => { try { return window.self !== window.top; } catch(e) { return true; } })();
+function plainSave(filename, data){
+  const type = /\.xlsx$/.test(filename) ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : /\.csv$/.test(filename) ? "text/csv;charset=utf-8" : "text/plain;charset=utf-8";
+  const url = URL.createObjectURL(new Blob([data], {type})), a = document.createElement("a");
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast("Archivo listo: " + filename);
+}
+async function save(filename, data){
+  if (!downloads && !IN_VIEWER) return plainSave(filename, data);
+  if (!downloads) { toast("Las descargas no están disponibles en esta vista. Use «Copiar» y pegue en Excel."); return; }
+  try { await downloads.save({filename, data}); toast("Archivo listo: " + filename); }
+  catch(e) { if (e?.code !== "declined") toast(e?.code === "rate_limited" ? "Espere un momento e intente de nuevo." : "No se pudo descargar el archivo."); }
+}
+const stamp = () => `${$("fDesde").value || "inicio"}_a_${$("fHasta").value || "fin"}`;
+function sheet(aoa, widths, pctCols = []){
+  const w = XLSX.utils.aoa_to_sheet(aoa); w["!cols"] = widths;
+  for (let r = 1; r < aoa.length; r++) pctCols.forEach(c => { const a = XLSX.utils.encode_cell({r, c}); if (w[a] && typeof w[a].v === "number") w[a].z = "0.00%"; });
+  return w;
+}
+async function doDownload(kind){
+  const st = stamp();
+  if (kind === "agente") return save(`ADIUM_ConVoz_por_agente_${st}.csv`, toCSV(aoaOf(S.byAg, "Agente")));
+  if (kind === "campana") return save(`ADIUM_ConVoz_por_campana_${st}.csv`, toCSV(aoaOf(S.byCa, "Campaña")));
+  if (kind === "dia") return save(`ADIUM_ConVoz_gestionadas_por_fecha_${st}.csv`, toCSV(aoaOf(S.byDay, "Fecha", false)));
+  if (kind === "hora") return save(`ADIUM_ConVoz_gestionadas_por_hora_${st}.csv`, toCSV(hourAoa()));
+  if (kind === "informe") return save(`ADIUM_ConVoz_informe_${firstName($("fAg").value)}_${st}.txt`, informeText());
+  if (kind === "tipos") return save(`ADIUM_ConVoz_tipos_de_abandono_${st}.csv`, toCSV(tiposAoa()));
+  if (kind === "espera") return save(`ADIUM_ConVoz_espera_antes_de_abandonar_${st}.csv`, toCSV(espAoa()));
+  if (kind === "formula") return save(`ADIUM_ConVoz_formula_${st}.csv`, toCSV(formulaAoa()));
+  if (kind === "resultados") return save(`ADIUM_ConVoz_gestionadas_por_resultado_${st}.csv`, toCSV(resAoa()));
+  if (kind === "agres") return save(`ADIUM_ConVoz_resultados_por_agente_${st}.csv`, toCSV(agResAoa()));
+  if (kind === "dow") return save(`ADIUM_ConVoz_dia_semana_${st}.csv`, toCSV(dowAoa()));
+  if (kind === "pais") return save(`ADIUM_ConVoz_por_pais_${st}.csv`, toCSV(paisAoa()));
+  if (kind === "pivot") return save(`ADIUM_ConVoz_tipo_x_resultado_${st}.csv`, toCSV(pivotAoa()));
+  if (kind === "disp") return save(`ADIUM_ConVoz_disponibilidad_agente_${st}.csv`, toCSV(dispAoa()));
+  if (kind === "detalle") return save(`ADIUM_ConVoz_detalle_llamadas_${st}.csv`, toCSV(detAoa(false)));
+  if (kind === "aband") return save(`ADIUM_ConVoz_abandonos_${st}.csv`, toCSV(abAoa()));
+  if (kind === "abdet") return save(`ADIUM_ConVoz_abandonadas_numero_y_devolucion_${st}.csv`, toCSV(abDetAoa()));
+  if (kind === "horaca") return save(`ADIUM_ConVoz_contestadas_abandonadas_por_hora_${st}.csv`, toCSV(caHourAoa()));
+  if (kind === "hablado") return save(`ADIUM_ConVoz_tiempo_hablado_${st}.csv`, toCSV(talkAoa()));
+  if (kind === "pausas") return save(`ADIUM_ConVoz_pausas_por_tipo_${st}.csv`, toCSV(pauseAoa()));
+  if (kind === "apego") return save(`ADIUM_ConVoz_apego_lineas_${st}.csv`, toCSV(apegoAoa()));
+  if (kind === "lineas") return save(`ADIUM_ConVoz_apertura_cierre_lineas_${st}.csv`, toCSV(lineAoa()));
+  if (kind === "login") return save(`ADIUM_ConVoz_login_logout_por_dia_${st}.csv`, toCSV(loginAoa()));
+  if (kind === "loginres") return save(`ADIUM_ConVoz_login_logout_resumen_${st}.csv`, toCSV(loginResAoa()));
+  if (kind === "heat") return save(`ADIUM_ConVoz_mapa_${$("hView").value}_${st}.csv`, toCSV(heatAoa(HEAT)));
+  if (kind === "xlsx") {
+    if (!window.XLSX) return toast("No se pudo cargar el generador de Excel.");
+    const T = S.T, wb = XLSX.utils.book_new();
+    const ex = extremes(S.byDay, "inf"), hx = extremes(S.byHour, "inf"), top = S.byAg.find(a => a.k !== SIN_AG);
+    const LN = lineData();
+    const res = [["ADIUM · Programa Con Voz"],["Filtro", `${$("fDesde").value} a ${$("fHasta").value}`, `Campaña: ${$("fCamp").value || "Todas"}`, `Agente: ${$("fAg").value || "Todos"}`, `Tipo de llamada: ${dirLabel() || "todas"}`],[],
+      ["Gestionadas (filas con resultado)", T.inf],["Registros totales del archivo", T.reg],["contestadas", T.comp],[`abandonadas (${modeLabel()})`, T.ab],["suma contestadas + abandonadas", T.tot],["%contestadas = contestadas/(contestadas+abandonadas)", r4(T.pComp)],["%tasa abandono = 100%-%contestadas", r4(T.pAb)],[],
+      ["abandonadas mayor a 10 seg · tasa", T.abGe, r4(T.pAbGe)],["abandonadas menor a 10 seg · tasa", T.abLt, r4(T.pAbLt)],[],
+      ["Día con más gestionadas", ex.max ? joinY(ex.max.ks) : "", ex.max ? ex.max.v : ""],["Día con menos gestionadas", ex.min ? joinY(ex.min.ks) : "", ex.min ? ex.min.v : ""],["Hora pico del periodo (total de gestiones)", hx.max ? joinY(hx.max.ks.map(fmtH)) : "", hx.max ? hx.max.v : ""],["Hora más cargada de un solo día", peakDH() || "", ""],["Agente con más gestiones de llamada (entrantes contestadas + salientes)", top ? top.k : "", top ? top.gLl : ""],[],["Tiempo hablado total", fmtT(T.talk), T.talk],["Apego al horario de líneas", r4(LN.T.pApego)],["Fuente", SOURCE]];
+    const ws0 = XLSX.utils.aoa_to_sheet(res); ws0["!cols"] = [{wch:52},{wch:26},{wch:22},{wch:40}];
+    ["B8","B9","C11","C12"].forEach(a => { if (ws0[a]) ws0[a].z = "0.00%"; });
+    XLSX.utils.book_append_sheet(wb, ws0, "Resumen");
+    XLSX.utils.book_append_sheet(wb, sheet(informeText().split("\n").map(l => [l]), [{wch:140}]), "Informe");
+    XLSX.utils.book_append_sheet(wb, sheet(paisAoa(), [{wch:28}, ...Array(9).fill({wch:14})], [2,7]), "Por país");
+    XLSX.utils.book_append_sheet(wb, sheet(tiposAoa(), [{wch:60},{wch:12},{wch:16},{wch:22},{wch:16},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14},{wch:14}]), "Tipos de abandono");
+    XLSX.utils.book_append_sheet(wb, sheet(espAoa(), [{wch:40},{wch:12},{wch:20},{wch:16},{wch:22},{wch:16},{wch:16}]), "Espera al abandonar");
+    XLSX.utils.book_append_sheet(wb, sheet(resAoa(), [{wch:30},{wch:12},{wch:14}], [2]), "Gestionadas por resultado");
+    XLSX.utils.book_append_sheet(wb, sheet(agResAoa(), [{wch:36}, ...S.resList.map(() => ({wch:14})), {wch:10}]), "Resultados por agente");
+    const wide = [{wch:36}, ...EXP.map(() => ({wch:14}))];
+    XLSX.utils.book_append_sheet(wb, sheet(aoaOf(S.byAg, "Agente"), wide, PCT_IDX), "Por agente");
+    XLSX.utils.book_append_sheet(wb, sheet(aoaOf(S.byCa, "Campaña"), wide, PCT_IDX), "Por campaña");
+    XLSX.utils.book_append_sheet(wb, sheet(aoaOf(S.byDay, "Fecha", false), wide, PCT_IDX), "Gestionadas por fecha");
+    XLSX.utils.book_append_sheet(wb, sheet(hourAoa(), [{wch:10}, ...Array(7).fill({wch:14})]), "Gestionadas por hora");
+    XLSX.utils.book_append_sheet(wb, sheet(dowAoa(), [{wch:16},{wch:12},{wch:16},{wch:16}]), "Día de semana");
+    [["in-dow","Calor día×hora"],["in-date","Calor fecha×hora"],["co-date","Contestadas fecha×hora"],["ag-date","Calor agente×fecha"],["ag-hour","Calor agente×hora"],["ta-date","Hablado agente×fecha (min)"],
+     ["pa-date","Pausas agente×fecha"],["pzn-ag","Pausas agente×tipo (cant)"],["pzt-ag","Pausas agente×tipo (min)"],["pzn-date","Pausas tipo×fecha (cant)"],["pzt-date","Pausas tipo×fecha (min)"],["cx-date","Conectado agente×fecha (min)"]].forEach(([k, name]) => {
+      const H = heatData(k);
+      XLSX.utils.book_append_sheet(wb, sheet(heatAoa(H), [{wch:30}, ...H.cols.map(() => ({wch:9})), {wch:9}]), name);
+    });
+    XLSX.utils.book_append_sheet(wb, sheet(pauseAoa(), [{wch:36}, ...S.pauseTypes.flatMap(() => [{wch:14},{wch:14},{wch:10}]), {wch:14},{wch:14},{wch:10}]), "Pausas por tipo");
+    XLSX.utils.book_append_sheet(wb, sheet(abDetAoa(), [{wch:12},{wch:10},{wch:11},{wch:18},{wch:18},{wch:14},{wch:20},{wch:20},{wch:10},{wch:34},{wch:24},{wch:44},{wch:12}]), "Abandonadas y devolución");
+    XLSX.utils.book_append_sheet(wb, sheet(caHourAoa(), [{wch:10}, ...Array(7).fill({wch:16})], [6,7]), "Contest y aband por hora");
+    XLSX.utils.book_append_sheet(wb, sheet(talkAoa(), [{wch:36}, ...Array(8).fill({wch:18})]), "Tiempo hablado");
+    XLSX.utils.book_append_sheet(wb, sheet(apegoAoa(), [{wch:24}, ...Array(10).fill({wch:16})], [4,6,8,9]), "Apego líneas");
+    XLSX.utils.book_append_sheet(wb, sheet(lineAoa(), [{wch:22},{wch:12},{wch:14},{wch:12},{wch:30},{wch:12},{wch:30},{wch:24},{wch:24},{wch:12},{wch:16},{wch:12}], [11]), "Apertura y cierre líneas");
+    XLSX.utils.book_append_sheet(wb, sheet(loginResAoa(), [{wch:36}, ...Array(10).fill({wch:16})]), "Login logout resumen");
+    XLSX.utils.book_append_sheet(wb, sheet(loginAoa(), [{wch:36},{wch:12},{wch:20},{wch:12},{wch:12},{wch:10},{wch:16},{wch:16},{wch:16},{wch:16},{wch:12},{wch:16}], [10]), "Login logout por día");
+    XLSX.utils.book_append_sheet(wb, sheet(abAoa(), [{wch:20},{wch:36},{wch:20},{wch:12},{wch:18},{wch:18}]), "Abandonos");
+    XLSX.utils.book_append_sheet(wb, sheet(pivotAoa(), [{wch:22}, ...Array(10).fill({wch:13})]), "Tipo x Resultado");
+    XLSX.utils.book_append_sheet(wb, sheet(dispAoa(), [{wch:36}, ...Array(8).fill({wch:16})]), "Disponibilidad agente");
+    XLSX.utils.book_append_sheet(wb, sheet(detAoa(true), [{wch:12},{wch:10},{wch:34},{wch:18},{wch:14},{wch:26},{wch:10},{wch:26},{wch:30},{wch:22},{wch:16},{wch:16}]), "Detalle perdidas");
+    return save(`ADIUM_ConVoz_reporte_${st}.xlsx`, new Uint8Array(XLSX.write(wb, {bookType:"xlsx", type:"array"})));
+  }
+}
+document.querySelectorAll(".dl").forEach(b => { b.disabled = true; b.style.opacity = .55; b.onclick = () => doDownload(b.dataset.dl); });
+(async () => {
+  try { downloads = await window.claude?.use?.("downloads"); } catch(e) { downloads = null; }
+  const ok = !!downloads || !IN_VIEWER;
+  document.querySelectorAll(".dl,.tdl").forEach(b => { b.disabled = !ok; b.style.opacity = ok ? 1 : .55; b.title = ok ? "" : "Descargas no disponibles en esta vista; use Copiar"; });
+})();
+
+/* ---------- herramientas por tabla: buscar, Excel, copiar ---------- */
+const TQ = {};
+const tableTitle = t => (t.closest(".card")?.querySelector("h2")?.textContent || t.id).trim();
+function cellText(c){ const x = c.cloneNode(true); x.querySelectorAll(".sub,.tdesc").forEach(e => e.prepend(" · ")); return x.textContent.replace(/\s+/g, " ").replace(/ [↓↑]$/, "").trim(); }
+function tableAoa(t, onlyVisible = true){
+  const rows = [];
+  t.querySelectorAll("thead tr, tbody tr, tfoot tr").forEach(tr => { if (onlyVisible && tr.hidden) return; const cells = [...tr.children].map(cellText); if (cells.length > 1 || cells[0]) rows.push(cells); });
+  return rows;
+}
+function applyTQ(t){
+  const q = (TQ[t.id] || "").toLowerCase().trim(), body = [...t.querySelectorAll("tbody tr")];
+  let n = 0; body.forEach(tr => { const show = !q || tr.textContent.toLowerCase().includes(q); tr.hidden = !show; if (show) n++; });
+  const c = document.getElementById("cnt-" + t.id); if (c) c.textContent = q ? `${n} de ${body.length} filas` : `${body.length} filas`;
+}
+function initTableTools(){
+  document.querySelectorAll("table.data").forEach(t => {
+    const wrap = t.closest(".tbl-wrap"); if (!wrap || wrap.previousElementSibling?.classList.contains("ttools")) return;
+    const bar = document.createElement("div"); bar.className = "ttools";
+    bar.innerHTML = `${t.id === "tAbDet" ? "" : `<input type="search" id="q-${t.id}" placeholder="Buscar en la tabla" aria-label="Buscar en ${esc(tableTitle(t))}">`}<span class="cnt" id="cnt-${t.id}"></span><span class="sp"></span>
+      <button class="btn-sm tdl" type="button" data-t="${t.id}" data-k="xlsx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>Excel</button>
+      <button class="btn-sm" type="button" data-t="${t.id}" data-k="copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Copiar</button>`;
+    wrap.before(bar);
+    const inp = bar.querySelector("input");
+    if (inp) inp.addEventListener("input", () => { TQ[t.id] = inp.value; applyTQ(t); });
+    bar.querySelectorAll("button").forEach(b => b.onclick = async () => {
+      const aoa = tableAoa(t), name = tableTitle(t);
+      if (b.dataset.k === "copy") {
+        const tsv = aoa.map(r => r.join("\t")).join("\n");
+        try { await navigator.clipboard.writeText(tsv); toast(`Tabla copiada (${aoa.length - 1} filas). Péguela en Excel.`); }
+        catch(e) { const ta = document.createElement("textarea"); ta.value = tsv; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast("Tabla copiada. Péguela en Excel."); } catch(_) { toast("No se pudo copiar."); } ta.remove(); }
+        return;
+      }
+      if (!window.XLSX?.utils?.aoa_to_sheet) return toast("No se pudo cargar el generador de Excel.");
+      const wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws["!cols"] = (aoa[0] || []).map((_, j) => ({wch: Math.min(48, Math.max(10, ...aoa.map(r => String(r[j] ?? "").length)))}));
+      XLSX.utils.book_append_sheet(wb, ws, name.replace(/[\\\/?*\[\]:]/g, " ").slice(0, 31));
+      save(`ADIUM_ConVoz_${name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "")}_${stamp()}.xlsx`, new Uint8Array(XLSX.write(wb, {bookType:"xlsx", type:"array"})));
+    });
+    new MutationObserver(() => applyTQ(t)).observe(t, {childList:true});
+    applyTQ(t);
+  });
+}
+initTableTools();
+
+/* ---------- onda de voz ---------- */
+(function wave(){
+  const c = $("wave"), x = c.getContext("2d");
+  const draw = () => {
+    const w = c.width = c.offsetWidth * devicePixelRatio, h = c.height = c.offsetHeight * devicePixelRatio;
+    x.fillStyle = "#fff"; const bw = 4 * devicePixelRatio, gap = 5 * devicePixelRatio;
+    for (let i = 0, px = 0; px < w; i++, px += bw + gap) {
+      const t = px / w;
+      const amp = (0.25 + 0.75 * Math.abs(Math.sin(i * 0.37) * Math.cos(i * 0.11))) * (0.35 + 0.65 * Math.sin(Math.PI * Math.min(1, t * 1.15)));
+      const bh = Math.max(2 * devicePixelRatio, amp * h * 0.62);
+      x.beginPath(); x.roundRect ? x.roundRect(px, (h - bh) / 2 + h*0.12, bw, bh, bw/2) : x.rect(px, (h - bh) / 2 + h*0.12, bw, bh); x.fill();
+    }
+  };
+  draw(); addEventListener("resize", draw);
+})();
+
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawCharts(); renderHeat(); });
+new MutationObserver(() => { drawCharts(); renderHeat(); }).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+
+ROWS = fromSample(SAMPLE);
+loadSched(); prep(); buildIndex(); fillFilters(); render();
+let startTab = "resumen"; try { startTab = localStorage.getItem("adium-tab") || "resumen"; } catch(e) {}
+showView(document.getElementById("v-" + startTab) ? startTab : "resumen");
+if (!window.Chart) addEventListener("load", drawCharts);
+dataWarn(); restoreSaved();
+</script>
+
+</body></html></body></html>
