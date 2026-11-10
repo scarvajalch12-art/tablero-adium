@@ -186,7 +186,7 @@ table.data td.wrap{white-space:normal;text-align:left;min-width:150px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:13px;z-index:20;max-width:calc(100% - 32px)}
 .dropzone{position:fixed;inset:0;background:rgba(122,0,25,.82);color:#fff;display:flex;align-items:center;justify-content:center;font:700 24px var(--display);z-index:30;text-align:center;padding:20px}
 .sched{display:grid;gap:10px}
-.sched-row{display:grid;grid-template-columns:minmax(140px,1.4fr) repeat(2,minmax(96px,1fr)) minmax(150px,1.6fr);gap:10px;align-items:end;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sched-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,max-content));column-gap:16px;gap:10px;align-items:end;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .sched-row .ln{font:700 14px var(--display);align-self:center;overflow-wrap:anywhere}
 .sched-row .ln small{display:block;font:400 11.5px var(--body);color:var(--muted)}
 .days{display:flex;gap:4px;flex-wrap:wrap}
@@ -194,8 +194,64 @@ table.data td.wrap{white-space:normal;text-align:left;min-width:150px}
 .days input{position:absolute;opacity:0;pointer-events:none}
 .days label:has(input:checked){background:var(--red);border-color:var(--red);color:#fff}
 .days label:has(input:focus-visible){outline:3px solid var(--rose)}
-@media (max-width:640px){.sched-row{grid-template-columns:repeat(2,minmax(0,1fr))}.sched-row .ln,.sched-row .days{grid-column:1/-1}}
+.sched-row .ln{grid-column:1/-1}
+@media (max-width:640px){.sched-row{grid-template-columns:repeat(2,minmax(0,1fr))}.sched-row .days{grid-column:1/-1}}
 .st-wa{color:var(--warn);font-weight:600}
+.sem{display:inline-flex;align-items:center;gap:7px;font:700 12px/1 var(--body);padding:6px 10px 6px 7px;border-radius:999px;white-space:nowrap}
+.sem i{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:800 10px/1 var(--body);font-style:normal;color:#fff;flex:none}
+.sem.g{background:var(--ok-soft);color:var(--ok)} .sem.g i{background:var(--ok)}
+.sem.y{background:var(--warn-soft);color:var(--warn)} .sem.y i{background:#e0a100}
+.sem.r{background:var(--red-soft);color:var(--red)} .sem.r i{background:var(--red)}
+.sem.n{background:var(--surface-2);color:var(--muted)} .sem.n i{background:var(--slate)}
+.mcell{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end}
+.mcell .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.g{background:var(--ok)} .dot.y{background:#e0a100} .dot.r{background:var(--red)} .dot.n{background:var(--line)}
+table.data th.mh{background:color-mix(in srgb,var(--red-soft) 55%,var(--surface-2));color:var(--red)}
+table.data td.sep,table.data th.sep{border-left:2px solid var(--line)}
+table.data tr.dimrow td{color:var(--muted);font-style:italic}
+.lost-hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.lost-hero > div{border-radius:14px;padding:14px 16px;background:var(--red-soft);display:grid;gap:4px;min-width:0}
+.lost-hero > div:first-child{background:linear-gradient(150deg,#a3122c,#7a0019);color:#fff}
+.lost-hero b{font:800 30px/1.05 var(--display);font-variant-numeric:tabular-nums}
+.lost-hero span{font-size:12.5px;color:var(--muted)}
+.lost-hero > div:first-child span{color:#ffcdd5}
+.lost-hero small{font:600 10.5px/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.lost-hero > div:first-child small{color:#ffd5dc}
+.cause-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px}
+@media (max-width:900px){.cause-grid{grid-template-columns:minmax(0,1fr)}}
+.cause-h{font:700 14px/1.3 var(--display);margin:0 0 10px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.cause-h b{font:800 22px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--red)}
+.cause-list{display:grid;gap:10px}
+.cause{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+.cause .nm{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px;min-width:0}
+.cause .nm i{width:10px;height:10px;border-radius:3px;flex:none}
+.cause .n{font:700 14px var(--mono);text-align:right;white-space:nowrap}
+.cause .n small{font:500 12px var(--mono);color:var(--muted);margin-left:6px}
+.cause .bar2{grid-column:1/-1;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.cause .bar2 span{display:block;height:100%;border-radius:4px}
+.cause .fix{grid-column:1/-1;font-size:12px;color:var(--muted)}
+.cause .fix b{color:var(--fg);font-weight:600}
+.qline{margin:0;font:700 clamp(17px,2.2vw,20px)/1.3 var(--display);color:var(--fg);text-wrap:balance}
+.qline span{display:block;font:400 13px/1.5 var(--body);color:var(--muted);margin-top:4px}
+.viewby{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.viewby .lb{font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.subview{display:grid;gap:22px}
+.sec-h{font:800 20px/1.2 var(--display);margin:14px 0 0;padding-top:18px;border-top:1px solid var(--line)}
+.info{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid currentColor;font:700 9.5px/1 var(--body);margin-left:6px;opacity:.65;cursor:help;vertical-align:1px;text-transform:none;letter-spacing:0}
+.kpi.hero .val.sm{font-size:22px;overflow-wrap:anywhere;word-break:normal}
+.cause .nm i{box-shadow:inset 0 0 0 1px var(--muted)}
+#tLog tr.wkrow{cursor:pointer}
+#tLog tr.wkrow td{background:color-mix(in srgb,var(--surface-2) 70%,transparent);border-top:2px solid var(--line)}
+#tLog tr.wkrow:hover td{background:var(--red-soft)}
+#tLog tr.wkrow:focus-visible{outline:3px solid var(--rose);outline-offset:-3px}
+#tLog .chev{display:inline-block;width:16px;color:var(--red);transition:transform .15s}
+#tLog tr.wkrow.open .chev{transform:rotate(90deg)}
+#tLog tr.dayrow td{font-size:12.5px}
+#tLog tr.dayrow td:nth-child(2){padding-left:22px}
+#tLog tr.dayrow.coll{display:none}
+.hl-table td.ag{max-width:none;white-space:normal}
+.hl-table{min-width:0}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:12.5px;color:var(--muted)}
 .callout{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--muted);margin-top:12px}
 .callout b{color:var(--fg)}
 /* ---- acabado ---- */
@@ -270,13 +326,11 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
   <div class="wrap">
     <nav class="tabs" role="tablist" aria-label="Vistas del tablero">
       <button class="tab" role="tab" data-v="resumen" id="tab-resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13h4v7H4zM10 8h4v12h-4zM16 4h4v16h-4z"/></svg>Resumen</button>
-      <button class="tab" role="tab" data-v="inflow" id="tab-inflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/><path d="m17 15 3 3-3 3"/></svg>Gestionadas</button>
+      <button class="tab" role="tab" data-v="consol" id="tab-consol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>Consolidado</button>
+      <button class="tab" role="tab" data-v="inflow" id="tab-inflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/><path d="m17 15 3 3-3 3"/></svg>Demanda</button>
+      <button class="tab" role="tab" data-v="abandonos" id="tab-abandonos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/><path d="m16 3 5 5M21 3l-5 5"/></svg>Abandono</button>
+      <button class="tab" role="tab" data-v="agentes" id="tab-agentes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Agentes y cuentas</button>
       <button class="tab" role="tab" data-v="calor" id="tab-calor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Mapa de calor</button>
-      <button class="tab" role="tab" data-v="agentes" id="tab-agentes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Agentes</button>
-      <button class="tab" role="tab" data-v="detalle" id="tab-detalle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Detalle por agente</button>
-      <button class="tab" role="tab" data-v="campanas" id="tab-campanas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Campañas</button>
-      <button class="tab" role="tab" data-v="abandonos" id="tab-abandonos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/><path d="m16 3 5 5M21 3l-5 5"/></svg>Abandonos</button>
-      <button class="tab" role="tab" data-v="conex" id="tab-conex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>Login y líneas</button>
     </nav>
     <div class="filters">
       <div class="f"><label for="fDesde">Desde</label><input type="date" id="fDesde"></div>
@@ -361,6 +415,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
 
   <!-- INFLOW -->
   <section class="view" id="v-inflow" role="tabpanel" aria-labelledby="tab-inflow" hidden>
+    <p class="qline">¿Cuándo y de dónde entran las llamadas? <span>Gestionadas = llamadas con resultado (entrantes, salientes y timbrados).</span></p>
     <div class="kpis" id="kpisIn"></div>
     <div class="card">
       <div class="card-head">
@@ -369,27 +424,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       </div>
       <div class="chart-box tall"><canvas id="chInDay" role="img" aria-label="Gestionadas por fecha"></canvas></div>
     </div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Contestadas y abandonadas por hora</h2><p class="hint" id="caHint">Total del periodo en cada franja. La línea es el % de abandono de esa hora (misma fórmula).</p></div>
-        <button class="btn-sm dl" data-dl="horaca" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por hora</button>
-      </div>
-      <div class="chart-box tall"><canvas id="chCAHour" role="img" aria-label="Contestadas y abandonadas por hora"></canvas></div>
-      <div class="tbl-wrap" style="margin-top:14px"><table class="data narrow" id="tCAHour"></table></div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Abandonadas: día, hora y número</h2><p class="hint" id="abdHint">Cada llamada abandonada con el número que llamó y la línea a la que entró. «Devolución» busca si después hubo una saliente a ese número o el paciente volvió a llamar y fue atendido.</p></div>
-        <div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap">
-          <div class="f"><label for="abSearch">Buscar número o agente</label><input type="search" id="abSearch" placeholder="Ej. 5025 8595" style="width:190px"></div>
-          <label class="check"><input type="checkbox" id="abNoCb"> Solo sin devolución</label>
-          <button class="btn-sm dl" data-dl="abdet" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
-        </div>
-      </div>
-      <div class="kpis" id="kpisAbd" style="margin-bottom:14px"></div>
-      <div class="tbl-wrap" style="max-height:520px;overflow-y:auto"><table class="data" id="tAbDet" style="min-width:1080px"></table></div>
-    </div>
-    <div class="grid2 even">
+        <div class="grid2 even">
       <div class="card">
         <div class="card-head">
           <div><h2>Gestionadas por hora</h2><p class="hint">Total del periodo en cada franja horaria</p></div>
@@ -424,26 +459,37 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
   </section>
   <!-- MAPA DE CALOR -->
   <section class="view" id="v-calor" role="tabpanel" aria-labelledby="tab-calor" hidden>
+    <p class="qline">Cruza cualquier dato por día, hora, agente o tipo de pausa.</p>
     <div class="card">
       <div class="card-head">
         <div><h2 id="hTitle">Mapa de calor</h2><p class="hint" id="hHint"></p></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">
           <div class="f"><label for="hView">Ver</label>
             <select id="hView">
-              <option value="in-dow">Gestionadas · día de semana × hora</option>
-              <option value="in-date">Gestionadas · fecha × hora</option>
-              <option value="ag-date">Gestión por agente · agente × fecha</option>
-              <option value="ag-hour">Gestión por agente · agente × hora</option>
-              <option value="ab-date">Abandonos · fecha × hora</option>
-              <option value="pais-date">Gestionadas por país · país × fecha</option>
-              <option value="co-date">Contestadas · fecha × hora</option>
-              <option value="ta-date">Tiempo hablado por agente (minutos) · agente × fecha</option>
-              <option value="pa-date">Pausas por agente (minutos) · agente × fecha</option>
-              <option value="pzn-ag">Pausas por tipo (cantidad) · agente × tipo de pausa</option>
-              <option value="pzt-ag">Pausas por tipo (minutos) · agente × tipo de pausa</option>
-              <option value="pzn-date">Pausas por tipo (cantidad) · tipo × fecha</option>
-              <option value="pzt-date">Pausas por tipo (minutos) · tipo × fecha</option>
-              <option value="cx-date">Tiempo conectado por agente (minutos) · agente × fecha</option>
+              <optgroup label="Volumen">
+                <option value="in-dow">Gestionadas · día de semana × hora</option>
+                <option value="in-date">Gestionadas · fecha × hora</option>
+                <option value="co-date">Contestadas · fecha × hora</option>
+                <option value="pais-date">Gestionadas por país · país × fecha</option>
+              </optgroup>
+              <optgroup label="Abandono">
+                <option value="ab-date">Abandonos · fecha × hora</option>
+              </optgroup>
+              <optgroup label="Agentes">
+                <option value="ag-date">Gestión por agente · agente × fecha</option>
+                <option value="ag-hour">Gestión por agente · agente × hora</option>
+                <option value="ta-date">Tiempo hablado por agente (minutos) · agente × fecha</option>
+              </optgroup>
+              <optgroup label="Pausas">
+                <option value="pa-date">Pausas por agente (minutos) · agente × fecha</option>
+                <option value="pzn-ag">Pausas por tipo (cantidad) · agente × tipo de pausa</option>
+                <option value="pzt-ag">Pausas por tipo (minutos) · agente × tipo de pausa</option>
+                <option value="pzn-date">Pausas por tipo (cantidad) · tipo × fecha</option>
+                <option value="pzt-date">Pausas por tipo (minutos) · tipo × fecha</option>
+              </optgroup>
+              <optgroup label="Conexiones">
+                <option value="cx-date">Tiempo conectado por agente (minutos) · agente × fecha</option>
+              </optgroup>
             </select>
           </div>
           <button class="btn-sm dl" data-dl="heat" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV del mapa</button>
@@ -457,6 +503,9 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
 
   <!-- AGENTES -->
   <section class="view" id="v-agentes" role="tabpanel" aria-labelledby="tab-agentes" hidden>
+    <p class="qline">¿Cómo trabaja cada agente o cada cuenta? <span>Gestiones, tiempo hablado, pausas y, abajo, el detalle llamada por llamada.</span></p>
+    <div class="viewby"><span class="lb" id="lbBy">Ver por</span><div class="seg" role="group" aria-labelledby="lbBy" id="segBy"><button type="button" data-b="ag" aria-pressed="true">Agente</button><button type="button" data-b="ca" aria-pressed="false">Cuenta</button></div></div>
+    <div class="subview" id="byAg">
     <div class="kpis" id="kpisAg"></div>
     <div class="grid2 even">
       <div class="card">
@@ -502,10 +551,23 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       </div>
       <div class="tbl-wrap"><table class="data" id="tAg"></table></div>
     </div>
-  </section>
-
-  <!-- DETALLE POR AGENTE -->
-  <section class="view" id="v-detalle" role="tabpanel" aria-labelledby="tab-detalle" hidden>
+  </div>
+    <div class="subview" id="byCa" hidden>
+    <div class="kpis" id="kpisCa"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Métricas por campaña</h2></div>
+        <button class="btn-sm dl" data-dl="campana" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por campaña</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tCa"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h2>Gestionadas por resultado</h2><p class="hint">Todas las campañas del filtro</p></div></div>
+      <div class="chart-box sm"><canvas id="chOut" role="img" aria-label="Resultado de llamadas salientes"></canvas></div>
+    </div>
+  </div>
+    <h2 class="sec-h">Detalle llamada por llamada</h2>
+    <div class="subview">
     <div class="card">
       <div class="card-head">
         <div><h2>Tipo de llamada × Resultado</h2><p class="hint" id="pvHint">Igual que una tabla dinámica: cuenta todas las filas del archivo. Elija un agente arriba para ver solo el suyo.</p></div>
@@ -533,26 +595,16 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       </div>
       <div class="tbl-wrap" style="max-height:560px;overflow-y:auto"><table class="data" id="tDet" style="min-width:1100px"></table></div>
     </div>
+  </div>
   </section>
 
-  <!-- CAMPAÑAS -->
-  <section class="view" id="v-campanas" role="tabpanel" aria-labelledby="tab-campanas" hidden>
-    <div class="kpis" id="kpisCa"></div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Métricas por campaña</h2></div>
-        <button class="btn-sm dl" data-dl="campana" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por campaña</button>
-      </div>
-      <div class="tbl-wrap"><table class="data" id="tCa"></table></div>
-    </div>
-    <div class="card">
-      <div class="card-head"><div><h2>Gestionadas por resultado</h2><p class="hint">Todas las campañas del filtro</p></div></div>
-      <div class="chart-box sm"><canvas id="chOut" role="img" aria-label="Resultado de llamadas salientes"></canvas></div>
-    </div>
-  </section>
+  
+
+  
 
   <!-- ABANDONOS -->
   <section class="view" id="v-abandonos" role="tabpanel" aria-labelledby="tab-abandonos" hidden>
+    <p class="qline">¿Cuándo y cómo cuelgan los pacientes, y los recuperamos? <span>Abandono = el paciente colgó antes de ser atendido · % abandono = abandonadas ÷ (contestadas + abandonadas).</span></p>
     <div class="kpis" id="kpisAb"></div>
     <div class="grid2 even">
       <div class="card">
@@ -560,28 +612,88 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
         <div class="chart-box"><canvas id="chAbWait" role="img" aria-label="Abandonos por tiempo de espera"></canvas></div>
       </div>
       <div class="card">
-        <div class="card-head"><div><h2>Abandonos por hora</h2><p class="hint">Mayor y menor a 10 seg</p></div></div>
-        <div class="chart-box"><canvas id="chAbHour" role="img" aria-label="Abandonos por hora"></canvas></div>
-      </div>
-    </div>
-    <div class="grid2 even">
-      <div class="card">
         <h2>Contestadas y abandonadas</h2>
         <p class="hint" style="margin-bottom:12px">Las dos partes de la fórmula</p>
         <div class="chart-box sm"><canvas id="chIn" role="img" aria-label="Contestadas y abandonadas"></canvas></div>
       </div>
-      <div class="card">
-        <div class="card-head">
-          <div><h2>Detalle de abandonos</h2><p class="hint">Cada llamada abandonada y su grupo</p></div>
-          <button class="btn-sm dl" data-dl="aband" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV abandonos</button>
-        </div>
-        <div class="tbl-wrap" style="max-height:290px;overflow-y:auto"><table class="data narrow" id="tAb"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Contestadas y abandonadas por hora</h2><p class="hint" id="caHint">Total del periodo en cada franja. La línea es el % de abandono de esa hora (misma fórmula).</p></div>
+        <button class="btn-sm dl" data-dl="horaca" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por hora</button>
       </div>
+      <div class="chart-box tall"><canvas id="chCAHour" role="img" aria-label="Contestadas y abandonadas por hora"></canvas></div>
+      <div class="tbl-wrap" style="margin-top:14px"><table class="data narrow" id="tCAHour"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Abandonadas: día, hora y número</h2><p class="hint" id="abdHint">Cada llamada abandonada con el número que llamó y la línea a la que entró. «Devolución» busca si después hubo una saliente a ese número o el paciente volvió a llamar y fue atendido.</p></div>
+        <div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap">
+          <div class="f"><label for="abSearch">Buscar número o agente</label><input type="search" id="abSearch" placeholder="Ej. 5025 8595" style="width:190px"></div>
+          <label class="check"><input type="checkbox" id="abNoCb"> Solo sin devolución</label>
+          <button class="btn-sm dl" data-dl="abdet" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+        </div>
+      </div>
+      <div class="kpis" id="kpisAbd" style="margin-bottom:14px"></div>
+      <div class="tbl-wrap" style="max-height:520px;overflow-y:auto"><table class="data" id="tAbDet" style="min-width:1080px"></table></div>
+    </div>
+  </section>
+
+  <!-- CONSOLIDADO -->
+  <section class="view" id="v-consol" role="tabpanel" aria-labelledby="tab-consol" hidden>
+    <p class="qline">¿Quién y qué cuenta está en rojo, y por qué se pierden las llamadas?</p>
+    <div class="card" id="causeCard">
+      <div class="card-head">
+        <div><h2>¿Por qué se pierden las llamadas?</h2><p class="hint" id="causeHint">Cada llamada perdida se asigna a una sola causa, según lo que pasaba en ese momento con los agentes de la cuenta.</p></div>
+        <button class="btn-sm dl" data-dl="causas" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="cause-grid">
+        <div><h3 class="cause-h">Pacientes que colgaron <b id="causeNab"></b></h3><div class="cause-list" id="causeAb"></div></div>
+        <div><h3 class="cause-h">Timbres que el agente no contestó y pasaron a otro <b id="causeNev"></b></h3><div class="cause-list" id="causeEv"></div>
+          <div class="callout" style="margin-top:12px">Estas no suben el % de abandono, porque el paciente siguió en la línea, pero muestran cuántas veces un agente dejó timbrar sin contestar.</div></div>
+      </div>
+      <h3 class="sub-h">Por hora</h3>
+      <div class="chart-box tall"><canvas id="chCause" role="img" aria-label="Causas de llamadas perdidas por hora"></canvas></div>
+      <h3 class="sub-h">Por cuenta</h3>
+      <div class="tbl-wrap"><table class="data" id="tCauseCa"></table></div>
+    </div>
+    <div class="kpis" id="kpisCons"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Semáforo de abandono</h2><p class="hint" id="consHint"></p></div>
+        <div class="leg"><span class="sem g"><i>✓</i>Sin abandono · 0%</span><span class="sem y"><i>!</i>En observación · hasta 1%</span><span class="sem r"><i>✕</i>Crítico · más de 1%</span></div>
+      </div>
+      <div class="callout" style="margin-top:0">El semáforo de esta pestaña usa la tasa de abandono con la fórmula del tablero y respeta todos los filtros de arriba: fechas, campaña, agente, tipo de llamada y abandono mayor o menor a 10 seg. <b>Le timbraron</b> = entrantes que llegaron al agente (contestadas, abandonadas al timbrar y timbrados evadidos). <b>No pudo atender</b> = llamadas que se le perdieron mientras estaba en otra llamada.</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Consolidado por agente y mes</h2><p class="hint">Cada mes muestra el % de abandono y, entre paréntesis, las abandonadas. Las abandonadas en cola no tienen agente y van en su propia fila.</p></div>
+        <button class="btn-sm dl" data-dl="consag" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tConsAg"></table></div>
+    </div>
+    <div class="card" id="lostCard">
+      <div class="card-head">
+        <div><h2>Llamadas que se perdieron con el agente disponible</h2><p class="hint">El sistema le timbró al agente, no estaba en otra llamada, no estaba en pausa y estaba conectado, y no contestó.</p></div>
+        <button class="btn-sm dl" data-dl="perdidas" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="lost-hero" id="lostHero"></div>
+      <div class="chart-box tall" style="margin-top:16px"><canvas id="chLost" role="img" aria-label="Llamadas perdidas por agente"></canvas></div>
+      <div class="leg" style="margin:14px 0 10px"><span class="sem g"><i>✓</i>Sin pérdidas · 0%</span><span class="sem y"><i>!</i>Atención · hasta 5% de lo que le timbró</span><span class="sem r"><i>✕</i>Grave · más de 5%</span></div>
+      <div class="tbl-wrap"><table class="data" id="tLost" style="min-width:1250px"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Consolidado por cuenta y mes</h2><p class="hint">Misma lectura por cuenta (campaña). Aquí sí entran las abandonadas en cola.</p></div>
+        <button class="btn-sm dl" data-dl="consca" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tConsCa"></table></div>
     </div>
   </section>
 
   <!-- LOGIN Y LÍNEAS -->
-  <section class="view" id="v-conex" role="tabpanel" aria-labelledby="tab-conex" hidden>
+  <section class="retired" id="v-conex-retirada" hidden aria-hidden="true">
+    <p class="qline">¿Las líneas abren y cierran a tiempo? ¿Quién estaba conectado? <span>Apego = días que abrió y cerró a tiempo ÷ días evaluados.</span></p>
     <div class="kpis" id="kpisLn"></div>
     <div class="card">
       <div class="card-head">
@@ -589,6 +701,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
         <div class="f"><label for="tol">Tolerancia (min)</label><input type="number" id="tol" min="0" max="60" step="1" value="5" style="width:90px"></div>
       </div>
       <div class="sched" id="sched"></div>
+      <div class="f" style="margin-top:12px"><span class="lb">Agentes de apoyo: se muestran sus horas, pero no se mide su puntualidad (cubren otras cuentas por ratos)</span><div class="chips" id="apoyoChips" style="margin-top:6px"></div></div>
       <div class="callout" id="tzNote"></div>
     </div>
     <div class="card">
@@ -610,14 +723,17 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
     </div>
     <div class="card">
       <div class="card-head">
-        <div><h2>Login y logout por agente: resumen</h2><p class="hint">Promedios de los días con conexión</p></div>
+        <div><h2>Puntualidad por agente: resumen del periodo</h2><p class="hint">Misma regla: primer login contra el inicio de su turno y último logout contra el fin. Tiempo off = minutos tarde + minutos que se fue antes.</p></div>
         <button class="btn-sm dl" data-dl="loginres" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
       </div>
       <div class="tbl-wrap"><table class="data" id="tLogAg" style="min-width:1000px"></table></div>
     </div>
     <div class="card">
       <div class="card-head">
-        <div><h2>Login y logout por agente y día</h2><p class="hint">Desconectado entre sesiones = tiempo entre un logout y el siguiente login del mismo día. Ocupación = tiempo hablado ÷ tiempo conectado.</p></div>
+        <div><h2>Login y logout por agente</h2><p class="hint">Solo cuenta el primer login y el último logout de cada día (los de en medio no, porque hay agentes que apoyan otras cuentas). El turno sale del primer login: si entra a las 8 y algo es turno de 8, si entra a las 9 y algo es turno de 9; llegar hasta 15 min antes cuenta como ese turno. Salir después de la hora no es error. Haga clic en una fila para ver los días.</p><p class="hint" hidden>Desconectado entre sesiones = tiempo entre un logout y el siguiente login del mismo día. Ocupación = tiempo hablado ÷ tiempo conectado.</p></div>
+        <div class="seg" role="group" aria-label="Agrupar por" id="segGrp"><button type="button" data-g="sem" aria-pressed="true">Por semana</button><button type="button" data-g="mes" aria-pressed="false">Por mes</button></div>
+        <button class="btn-sm" type="button" id="wkAll">Desplegar todo</button>
+        <button class="btn-sm dl" data-dl="loginsem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por semana</button>
         <button class="btn-sm dl" data-dl="login" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
       </div>
       <div class="tbl-wrap" style="max-height:560px;overflow-y:auto"><table class="data" id="tLog" style="min-width:1150px"></table></div>
@@ -625,16 +741,22 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
   </section>
 
   <section class="foot">
-    <h2 class="sub-h" style="margin:0">Cómo se calcula</h2>
+    <h2 class="sub-h" style="margin:0">Glosario: cómo se calcula cada cifra</h2>
     <div class="foot-grid">
-      <div><b>Gestionadas</b>Filas con Resultado, es decir, actividad de llamada (entrantes, salientes e intentos de timbrado). No cuenta pausas, eventos, mute ni hold.</div>
-      <div><b>Fórmula</b>%contestadas = contestadas ÷ (contestadas + abandonadas); %tasa abandono = 100% − %contestadas. Contestadas = Resultado «Contestada»; abandonadas = Resultado «Abandonada» (todas, o solo las mayores o menores a 10 seg con los botones de arriba).</div>
-      <div><b>Tipos de abandono</b>1) en cola / IVR = Razón «Cliente abandono» sin agente; 2) al timbrar al agente = Razón «Cliente abandono (ultimo timbrado)». Las salientes canceladas o sin respuesta no son abandono: son intentos sin contacto.</div>
-      <div><b>Disponibilidad</b>La hora del export es el final de cada llamada. Si mientras el cliente esperaba el agente no tenía otra llamada, se marca alerta ⚠.</div>
-      <div><b>Agente con más gestiones de llamada</b>Entrantes que contestó + salientes que hizo (cualquier resultado). No cuenta intentos de timbrado ni abandonos.</div>
-      <div><b>Tiempo hablado</b>Suma de la Duración de las llamadas contestadas (entrantes y salientes).</div>
-      <div><b>Filtro Tipo de llamada</b>Entrantes deja las llamadas entrantes y los intentos de timbrado; Salientes deja las salientes. Las pausas y los login/logout se mantienen siempre.</div>
-      <div><b>Login y líneas</b>La línea abre con el primer login de un agente de esa cuenta y cierra con el último logout. Cada agente se asigna a la cuenta donde tiene más llamadas.</div>
+      <div><b>Gestionadas</b>Llamadas con resultado: entrantes, salientes e intentos de timbrado. No cuenta pausas, eventos, mute ni hold.</div>
+      <div><b>Contestadas</b>Resultado «Contestada», entrantes y salientes.</div>
+      <div><b>% cumplimiento</b>Contestadas ÷ (contestadas + abandonadas). En el Resumen se llama % contestadas.</div>
+      <div><b>% abandono</b>100% − % cumplimiento = abandonadas ÷ (contestadas + abandonadas). Puede tomar todas las abandonadas o solo las mayores o menores a 10 seg.</div>
+      <div><b>Abandono en cola</b>Razón «Cliente abandono» sin agente: el paciente colgó antes de que le timbrara a un agente.</div>
+      <div><b>Abandono al timbrar</b>Razón «Cliente abandono (ultimo timbrado)»: le timbraba a un agente y el paciente colgó.</div>
+      <div><b>Evadida</b>Intento de timbrado sin respuesta: le timbró al agente, no contestó y la llamada pasó a otro. No suma al abandono.</div>
+      <div><b>Perdida</b>Abandono al timbrar + evadida de un agente.</div>
+      <div><b>Perdida estando libre</b>Perdida cuando el agente no estaba en otra llamada ni en pausa y estaba conectado.</div>
+      <div><b>Capacidad a tope</b>Abandono en cola con todos los agentes conectados de la cuenta en otra llamada.</div>
+      <div><b>Agente con más gestiones</b>Entrantes contestadas + salientes hechas. No cuenta timbrados ni abandonos.</div>
+      <div><b>Tiempo hablado</b>Suma de la Duración de las llamadas contestadas.</div>
+      <div><b>Ocupación</b>Tiempo hablado ÷ tiempo conectado.</div>
+      <div><b>Filtro Tipo de llamada</b>Entrantes = entrantes + intentos de timbrado; Salientes = salientes. Pausas y login/logout se mantienen siempre.</div>
     </div>
     <div class="sign"><span>Diseño y análisis: <strong>Soraya Carvajal</strong> · Conexus Group · Cuenta ADIUM Con Voz</span><span id="src"></span></div>
   </section>
@@ -870,7 +992,7 @@ function render(){
   $("meta").textContent = periodText(ds);
   $("src").textContent = "Fuente: " + SOURCE;
   renderPulse();
-  renderResumen(); renderTipos(); renderInforme(); renderInflow(); renderHeat(); renderAgentes(); renderCampanas(); renderAbandonos(); renderDetalle(); renderConex();
+  renderResumen(); renderTipos(); renderInforme(); renderInflow(); renderHeat(); renderAgentes(); renderCampanas(); kpiTable("kpisAg", "Lo más destacado por agente", "Agente / cifra"); kpiTable("kpisCa", "Lo más destacado por cuenta", "Cuenta / cifra"); renderAbandonos(); renderDetalle(); renderConsol();
   drawCharts();
 }
 
@@ -884,12 +1006,12 @@ function periodText(ds){
   return `${a.x} de ${MESES[a.m-1]} de ${a.y} al ${b.x} de ${MESES[b.m-1]} de ${b.y}`;
 }
 function renderPulse(){
-  const {T} = S, L = lineData(), top = S.byAg.find(a => a.k !== SIN_AG);
+  const {T} = S, top = S.byAg.find(a => a.k !== SIN_AG), LF = lostDetail().reduce((x, g) => ({free: x.free + g.free, rec: x.rec + g.rec}), {free: 0, rec: 0});
   const last = ROWS.length ? ROWS.reduce((m, r) => r.fecha > m ? r.fecha : m, "") : "";
   $("pulse").innerHTML = `
     <div><div class="pl">Llamadas gestionadas</div><div class="pv">${fmtN(T.inf)}</div><div class="ps"><b>${fmtN(T.comp)}</b> contestadas${DIR !== "all" ? " · " + dirLabel() : ""}</div></div>
     <div><div class="pl">Tasa de abandono</div><div class="pv">${fmtP(T.pAb)}</div><div class="ps">${fmtN(T.ab)} abandonadas · meta &lt; 5%</div></div>
-    <div><div class="pl">Apego de líneas</div><div class="pv">${fmtP(L.T.pApego)}</div><div class="ps">${fmtN(L.T.ok)} de ${fmtN(L.T.evalT)} días a tiempo · meta 100%</div></div>
+    <div><div class="pl">Perdidas con agente libre</div><div class="pv">${fmtN(LF.free)}</div><div class="ps">${fmtP(LF.rec ? LF.free / LF.rec : null)} de las veces que les timbró · meta 0</div></div>
     <div><div class="pl">Tiempo hablado</div><div class="pv">${fmtT(T.talk)}</div><div class="ps">${top && top.gLl ? `Líder: <b>${esc(short(top.k))}</b>` : ""}</div></div>`;
   // (la línea bajo el título muestra solo el periodo)
 }
@@ -999,7 +1121,7 @@ function renderInflow(){
   const H = byHour.filter(h => h.inf > 0 || h.tot > 0);
   $("caHint").textContent = `Total del periodo en cada franja. Abandonadas: ${modeLabel()}. La línea es el % de abandono de esa hora (misma fórmula).`;
   const hca = extremes(H, "ab");
-  $("tCAHour").innerHTML = `<thead><tr><th><span>Hora</span></th><th><span>Contestadas<br>entrantes</span></th><th><span>Contestadas<br>salientes</span></th><th><span>Contestadas<br>total</span></th><th><span>Abandonadas</span></th><th><span>Contestadas +<br>abandonadas</span></th><th><span>% Contestadas</span></th><th><span>% Abandono</span></th></tr></thead><tbody>${
+  $("tCAHour").innerHTML = `<thead><tr><th><span>Hora</span></th><th><span>Contestadas<br>entrantes</span></th><th><span>Contestadas<br>salientes</span></th><th><span>Contestadas<br>total</span></th><th><span>Abandonadas</span></th><th><span>Contestadas +<br>abandonadas</span></th><th><span>% cumplimiento</span></th><th><span>% Abandono</span></th></tr></thead><tbody>${
     H.map(h => `<tr class="${hca.max && hca.max.ks.includes(h.k) ? "top" : ""}"><td>${fmtH(h.k)}</td><td>${fmtN(h.compIn)}</td><td>${fmtN(h.compOut)}</td><td><b>${fmtN(h.comp)}</b></td><td>${h.ab ? `<span class="st-al">${fmtN(h.ab)}</span>` : "0"}</td><td>${fmtN(h.tot)}</td><td class="pct">${fmtP(h.pComp)}</td><td class="pct">${fmtP(h.pAb)}</td></tr>`).join("")
     || `<tr><td colspan="8" style="text-align:left;color:var(--muted)">Sin llamadas en este filtro</td></tr>`
   }</tbody><tfoot><tr><td>Total</td><td>${fmtN(T.compIn)}</td><td>${fmtN(T.compOut)}</td><td>${fmtN(T.comp)}</td><td>${fmtN(T.ab)}</td><td>${fmtN(T.tot)}</td><td class="pct">${fmtP(T.pComp)}</td><td class="pct">${fmtP(T.pAb)}</td></tr></tfoot>`;
@@ -1101,7 +1223,7 @@ function renderHeat(){
 
 /* ---------- agentes / campañas ---------- */
 const COLS = [
-  ["k","Agente","txt"],["gLl","Gestiones de llamada (entr. contest. + salientes)","n"],["inf","Gestionadas","n"],["comp","Contestadas","n"],["abAll","Abandonadas","n"],["tot","Cont. + aband.","n"],["pComp","% Contestadas","p"],["pAb","% Abandono","pa"],
+  ["k","Agente","txt"],["gLl","Gestiones de llamada (entr. contest. + salientes)","n"],["inf","Gestionadas","n"],["comp","Contestadas","n"],["abAll","Abandonadas","n"],["tot","Cont. + aband.","n"],["pComp","% cumplimiento","p"],["pAb","% Abandono","pa"],
   ["abQ","Aband. cola / IVR","n"],["pAbQ","Tasa cola / IVR","p"],["abT","Aband. al timbrar","n"],["pAbT","Tasa al timbrar","p"],["abGe","Aband. > 10 s","n"],["pAbGe","% > 10 s","p"],["abLt","Aband. < 10 s","n"],["pAbLt","% < 10 s","p"],
   ["evad","Evadidas","n"],["canc","Canceladas","n"],["sinR","Sin respuesta","n"],["sinRes","Sin resultado","n"],["abEsp","Espera total al abandonar","t"],["abEspProm","Espera prom. al abandonar","t"],["nDays","Días activos","n"],["tmo","TMO contestadas","t"],["talk","Tiempo hablado","t"],["talkIn","Hablado entrantes","t"],["talkOut","Hablado salientes","t"],["pzCnt","Cantidad de pausas","n"],["pausa","Tiempo pausa","t"]
 ];
@@ -1157,6 +1279,15 @@ function renderTalkPz(){
     || `<tr><td colspan="${PT.length * 2 + 3}" style="text-align:left;color:var(--muted)">Sin pausas en este filtro</td></tr>`
   }</tbody><tfoot><tr><td>Total</td>${PT.map(p => `<td>${fmtN(S.T.pzN[p] || 0)}</td><td class="pct">${fmtT(S.T.pz[p] || 0)}</td>`).join("")}<td>${fmtN(S.T.pzCnt)}</td><td class="pct">${fmtT(S.T.pausa)}</td></tr></tfoot>`;
 }
+function kpiTable(id, title, who){
+  const el = $(id); if (!el) return;
+  const items = [...el.querySelectorAll(":scope > .kpi")].map(k => ({lab: k.querySelector(".lab")?.textContent.replace(/\s*i$/, "").trim() || "", val: k.querySelector(".val")?.textContent.trim() || "", note: k.querySelector(".note")?.textContent.trim() || "", hot: k.classList.contains("hero") || k.classList.contains("warnk")}));
+  if (!items.length) return;
+  el.classList.remove("kpis"); el.classList.add("hl-card");
+  el.innerHTML = `<div class="card"><div class="card-head" style="margin-bottom:10px"><div><h2>${title}</h2><p class="hint">Resumen del filtro actual</p></div></div>
+    <div class="tbl-wrap"><table class="data narrow hl-table"><thead><tr><th><span>Indicador</span></th><th style="text-align:left"><span>${who}</span></th><th style="text-align:left"><span>Detalle</span></th></tr></thead><tbody>${
+      items.map(i => `<tr class="${i.hot ? "top" : ""}"><td class="ag">${esc(i.lab)}</td><td style="text-align:left"><b>${esc(i.val)}</b></td><td class="wrap" style="color:var(--muted)">${esc(i.note)}</td></tr>`).join("")}</tbody></table></div></div>`;
+}
 function renderCampanas(){
   const {T} = S;
   $("kpisCa").innerHTML = `
@@ -1176,7 +1307,7 @@ function renderAbandonos(){
     <div class="kpi alt"><div class="lab">Menor a 10 seg</div><div class="val">${fmtN(T.abLt)}</div><div class="note">Tasa ${fmtP(T.pAbLt)}</div></div>
     <div class="kpi"><div class="lab">Espera antes de colgar</div><div class="val">${T.abEspN ? fmtT(T.abEsp) : "—"}</div><div class="note">total · promedio ${T.abEspProm == null ? "—" : fmtT(T.abEspProm)} por llamada</div></div>
     <div class="kpi"><div class="lab">Timbrados evadidos</div><div class="val">${fmtN(T.evad)}</div><div class="note">le timbró al agente y no contestó</div></div>`;
-  $("tAb").innerHTML = `<thead><tr><th><span>Fecha / hora</span></th><th style="text-align:left"><span>Agente</span></th><th><span>Espera</span></th><th><span>Grupo</span></th></tr></thead><tbody>${
+  if ($("tAb")) $("tAb").innerHTML = `<thead><tr><th><span>Fecha / hora</span></th><th style="text-align:left"><span>Agente</span></th><th><span>Espera</span></th><th><span>Grupo</span></th></tr></thead><tbody>${
     abList.map(r => `<tr><td>${esc(r.fecha.replace("T"," "))}</td><td class="${r.ag?"":"dim"}" style="text-align:left">${esc(r.ag || SIN_AG)}</td><td class="pct">${fmtT(r.esp ?? 0)}</td><td>${isGe(r) ? '<span class="tag v">Mayor a 10 seg</span>' : '<span class="tag x">Menor a 10 seg</span>'}</td></tr>`).join("")
     || `<tr><td colspan="4" style="text-align:left;color:var(--muted)">Sin abandonos en este filtro</td></tr>`}</tbody>`;
 }
@@ -1318,6 +1449,213 @@ function renderDetalle(){
     || `<tr><td colspan="9" style="text-align:left;color:var(--muted)">Sin filas para este filtro</td></tr>`}</tbody>`;
 }
 
+/* ---------- consolidado por agente / cuenta y mes ---------- */
+const monthOf = r => (dayOf(r) || "").slice(0, 7);
+const monthLabel = k => { const [y, m] = k.split("-").map(Number); return `${MESES[m-1].charAt(0).toUpperCase() + MESES[m-1].slice(1)} ${y}`; };
+function semOf(p){
+  if (p == null) return {c:"n", ico:"–", t:"Sin llamadas"};
+  if (p === 0) return {c:"g", ico:"✓", t:"Sin abandono"};
+  if (p <= 0.01 + 1e-12) return {c:"y", ico:"!", t:"En observación"};
+  return {c:"r", ico:"✕", t:"Crítico · seguimiento"};
+}
+const semHtml = p => { const x = semOf(p); return `<span class="sem ${x.c}"><i>${x.ico}</i>${x.t}</span>`; };
+const mCell = a => { if (!a || a.tot === 0) return `<span class="st-na">—</span>`; const x = semOf(a.pAb); return `<span class="mcell"><span class="pct">${fmtP(a.pAb)}</span><span class="sub" style="display:inline">(${fmtN(a.ab)})</span><span class="dot ${x.c}"></span></span>`; };
+// Llamadas que llegaron al agente y no se atendieron: ¿estaba en otra llamada?
+function agentLost(rows){
+  const m = new Map(), get = k => { if (!m.has(k)) m.set(k, {rec:0, lost:0, busy:0, free:0}); return m.get(k); };
+  for (const r of rows) {
+    if (!r.ag) continue;
+    const ring = r.tipo === TIMB || (r.tipo === IN && (ANS(r) || r.res === "Abandonada"));
+    if (!ring) continue;
+    const g = get(r.ag); g.rec++;
+    const lost = r.tipo === TIMB || (r.res === "Abandonada" && inMode(r));
+    if (!lost) continue;
+    g.lost++; const a = availability(r); if (a && a.busy) g.busy++; else g.free++;
+  }
+  return m;
+}
+// Por cuenta: entrantes recibidas y abandonadas; «no pudo atender» = el agente que timbró estaba en otra llamada,
+// o (en cola) todos los agentes conectados de la cuenta estaban en otra llamada.
+function lineBusy(r){
+  const t = TS(r); if (t == null) return false;
+  const w = {s: t - (r.esp || 0) * 1000, e: t}, hit = iv => iv.s < w.e && iv.e > w.s;
+  if (r.ag) { const a = availability(r); return !!(a && a.busy); }
+  const ags = [...AGLINE].filter(([, l]) => l === r.camp).map(([a]) => a);
+  const conn = ags.filter(a => SESS.some(x => x.ag === a && x.s < w.e && x.e > w.s));
+  return conn.length > 0 && conn.every(a => (IDX.busy.get(a) || []).some(hit));
+}
+function consolData(){
+  const rows = S.rows, months = [...new Set(rows.filter(r => r.res).map(monthOf))].filter(Boolean).sort();
+  const byAgM = new Map(group(rows, r => (r.ag || SIN_AG) + "|" + monthOf(r)).map(a => [a.k, a]));
+  const AL = agentLost(rows);
+  const ags = S.byAg.filter(a => a.inf > 0 || a.tot > 0).map(a => ({...a, m: months.map(mo => byAgM.get(a.k + "|" + mo)), lo: AL.get(a.k) || {rec:0, lost:0, busy:0, free:0}}))
+    .sort((a, b) => (a.k === SIN_AG) - (b.k === SIN_AG) || (b.pAb ?? -1) - (a.pAb ?? -1) || b.tot - a.tot);
+  const byCaM = new Map(group(rows, r => (r.camp || "(sin campaña)") + "|" + monthOf(r)).map(a => [a.k, a]));
+  const cas = S.byCa.filter(a => a.inf > 0 || a.tot > 0).map(a => {
+    const R = rows.filter(r => (r.camp || "(sin campaña)") === a.k && r.tipo === IN);
+    const rec = R.filter(r => ANS(r) || r.res === "Abandonada").length, lostR = R.filter(r => r.res === "Abandonada" && inMode(r)), busy = lostR.filter(lineBusy).length;
+    return {...a, m: months.map(mo => byCaM.get(a.k + "|" + mo)), lo: {rec, lost: lostR.length, busy, free: lostR.length - busy}};
+  }).sort((a, b) => (b.pAb ?? -1) - (a.pAb ?? -1) || b.tot - a.tot);
+  return {months, ags, cas};
+}
+function consTable(id, list, first, isAg, months){
+  const real = isAg ? list.filter(a => a.k !== SIN_AG) : list;
+  const sum = (l, f) => l.reduce((x, a) => x + (f(a) || 0), 0), avg = (l, f) => { const v = l.map(f).filter(x => x != null); return v.length ? v.reduce((x, y) => x + y, 0) / v.length : null; };
+  const head = `<thead><tr><th><span>${first}</span></th><th style="text-align:left"><span>Semáforo</span></th>${months.map((mo, i) => `<th class="mh${i === 0 ? " sep" : ""}"><span>${monthLabel(mo)}<br>% abandono</span></th>`).join("")}
+    <th class="sep"><span>Contestadas</span></th><th><span>Abandonadas</span></th><th><span>% abandono</span></th><th><span>% cumplimiento</span></th>
+    <th class="sep"><span>${isAg ? "Le timbraron" : "Entrantes<br>recibidas"}</span></th><th><span>No pudo atender<br>${isAg ? "(en otra llamada)" : "(agentes ocupados)"}</span></th><th><span>% no pudo<br>atender</span></th><th><span>${isAg ? "Perdidas<br>estando libre" : "Perdidas con<br>agente libre"}</span></th></tr></thead>`;
+  const tr = a => { const dim = isAg && a.k === SIN_AG, lo = a.lo, rec = lo.rec;
+    return `<tr class="${dim ? "dimrow" : ""}"><td class="ag" title="${esc(a.k)}">${esc(isAg && !dim ? short(a.k) : a.k)}</td><td style="text-align:left">${semHtml(a.pAb)}</td>${a.m.map((x, i) => `<td class="${i === 0 ? "sep" : ""}">${mCell(x)}</td>`).join("")}
+      <td class="sep">${fmtN(a.comp)}</td><td>${a.ab ? `<b class="st-al">${fmtN(a.ab)}</b>` : "0"}</td><td class="pct"><b>${fmtP(a.pAb)}</b></td><td class="pct">${fmtP(a.pComp)}</td>
+      <td class="sep">${dim ? "—" : fmtN(rec)}</td><td>${dim ? "—" : fmtN(lo.busy)}</td><td class="pct">${dim || !rec ? "—" : fmtP(lo.busy / rec)}</td><td>${dim ? "—" : lo.free ? `<span class="st-al">${fmtN(lo.free)}</span>` : "0"}</td></tr>`; };
+  const T = S.T, recT = sum(real, a => a.lo.rec), busyT = sum(real, a => a.lo.busy), freeT = sum(real, a => a.lo.free);
+  const tAll = {comp: T.comp, ab: T.ab, tot: T.tot, pAb: T.pAb};
+  const mTot = months.map(mo => { const l = list.map(a => a.m[months.indexOf(mo)]).filter(Boolean), c = sum(l, x => x.comp), ab = sum(l, x => x.ab); return {comp:c, ab, tot:c+ab, pAb: c+ab ? ab/(c+ab) : null}; });
+  const foot = `<tfoot><tr><td>Total</td><td style="text-align:left">${semHtml(tAll.pAb)}</td>${mTot.map((x, i) => `<td class="${i === 0 ? "sep" : ""}">${mCell(x)}</td>`).join("")}
+      <td class="sep">${fmtN(tAll.comp)}</td><td>${fmtN(tAll.ab)}</td><td class="pct">${fmtP(tAll.pAb)}</td><td class="pct">${fmtP(T.pComp)}</td>
+      <td class="sep">${fmtN(recT)}</td><td>${fmtN(busyT)}</td><td class="pct">${recT ? fmtP(busyT / recT) : "—"}</td><td>${fmtN(freeT)}</td></tr>
+    <tr><td>Promedio por ${isAg ? "agente" : "cuenta"}</td><td style="text-align:left">${semHtml(avg(real, a => a.tot ? a.pAb : null))}</td>${months.map((mo, i) => { const v = avg(real, a => { const x = a.m[i]; return x && x.tot ? x.pAb : null; }); return `<td class="${i === 0 ? "sep" : ""}"><span class="pct">${fmtP(v)}</span></td>`; }).join("")}
+      <td class="sep">${n1.format(real.length ? sum(real, a => a.comp) / real.length : 0)}</td><td>${n1.format(real.length ? sum(real, a => a.ab) / real.length : 0)}</td><td class="pct">${fmtP(avg(real, a => a.tot ? a.pAb : null))}</td><td class="pct">${fmtP(avg(real, a => a.tot ? a.pComp : null))}</td>
+      <td class="sep">${n1.format(real.length ? recT / real.length : 0)}</td><td>${n1.format(real.length ? busyT / real.length : 0)}</td><td class="pct">${fmtP(avg(real, a => a.lo.rec ? a.lo.busy / a.lo.rec : null))}</td><td>${n1.format(real.length ? freeT / real.length : 0)}</td></tr></tfoot>`;
+  $(id).innerHTML = head + `<tbody>${list.map(tr).join("") || `<tr><td colspan="${months.length + 10}" style="text-align:left;color:var(--muted)">Sin llamadas en este filtro</td></tr>`}</tbody>` + foot;
+  $(id).style.minWidth = (760 + months.length * 120) + "px";
+}
+// Detalle de llamadas perdidas por agente (para mostrarle el impacto)
+function lostDetail(){
+  const m = new Map(), get = k => { if (!m.has(k)) m.set(k, {k, rec:0, lost:0, busy:0, free:0, abF:0, evF:0, nearP:0, espF:0, noCb:0}); return m.get(k); };
+  for (const r of S.rows) {
+    if (!r.ag) continue;
+    const ring = r.tipo === TIMB || (r.tipo === IN && (ANS(r) || r.res === "Abandonada"));
+    if (!ring) continue;
+    const g = get(r.ag); g.rec++;
+    const isAb = r.tipo === IN && r.res === "Abandonada" && inMode(r), lost = r.tipo === TIMB || isAb;
+    if (!lost) continue;
+    g.lost++;
+    const a = availability(r);
+    if (a && a.busy) { g.busy++; continue; }
+    g.free++;
+    if (isAb) { g.abF++; g.espF += r.esp || 0; if (callback(r).st === "no") g.noCb++; } else g.evF++;
+    const w = a ? a.w : null;
+    if (w && (IDX.pausa.get(r.ag) || []).some(x => x.s <= w.e + 60000 && x.e >= w.s - 60000)) g.nearP++;
+  }
+  return [...m.values()].map(g => ({...g, pFree: g.rec ? g.free / g.rec : null})).sort((a, b) => b.free - a.free || (b.pFree ?? 0) - (a.pFree ?? 0));
+}
+const fmtHum = sec => { sec = Math.round(sec || 0); if (sec < 60) return `${sec} s`; const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), x = sec % 60; return h ? `${h} h ${m} min` : `${m} min${x ? ` ${x} s` : ""}`; };
+function semLost(p){
+  if (p == null) return {c:"n", ico:"–", t:"Sin timbres"};
+  if (p === 0) return {c:"g", ico:"✓", t:"Sin pérdidas"};
+  if (p <= 0.05 + 1e-12) return {c:"y", ico:"!", t:"Atención"};
+  return {c:"r", ico:"✕", t:"Grave"};
+}
+function renderLost(){
+  const L = lostDetail(), sum = f => L.reduce((x, g) => x + (f(g) || 0), 0);
+  const free = sum(g => g.free), abF = sum(g => g.abF), evF = sum(g => g.evF), espF = sum(g => g.espF), noCb = sum(g => g.noCb), rec = sum(g => g.rec), nearP = sum(g => g.nearP);
+  const days = Math.max(1, S.byDay.filter(d => d.inf > 0).length);
+  $("lostHero").innerHTML = `
+    <div><small>Perdidas estando disponible</small><b>${fmtN(free)}</b><span>${fmtP(rec ? free / rec : null)} de las ${fmtN(rec)} veces que les timbró · ${n1.format(free / days)} por día</span></div>
+    <div><small>Pacientes que colgaron</small><b>${fmtN(abF)}</b><span>colgaron mientras le timbraba al agente libre</span></div>
+    <div><small>Tiempo que esperaron</small><b>${fmtHum(espF)}</b><span>suma de la espera de esos pacientes antes de colgar${abF ? ` · ${fmtHum(espF / abF)} cada uno en promedio` : ""}</span></div>
+    <div><small>Nadie les devolvió la llamada</small><b>${fmtN(noCb)}</b><span>de los ${fmtN(abF)} pacientes que colgaron</span></div>
+    <div><small>Pasaron a otro agente</small><b>${fmtN(evF)}</b><span>no contestó y la llamada siguió en cola · ${fmtN(nearP)} justo antes o después de una pausa</span></div>`;
+  const tr = g => { const x = semLost(g.pFree);
+    return `<tr><td class="ag" title="${esc(g.k)}">${esc(short(g.k))}</td><td style="text-align:left"><span class="sem ${x.c}"><i>${x.ico}</i>${x.t}</span></td>
+      <td class="sep">${fmtN(g.rec)}</td><td>${fmtN(g.lost)}</td><td>${fmtN(g.busy)}</td>
+      <td class="sep"><b class="${g.free ? "st-al" : ""}">${fmtN(g.free)}</b></td><td class="pct"><b>${fmtP(g.pFree)}</b></td>
+      <td class="sep">${fmtN(g.abF)}</td><td>${g.abF ? fmtHum(g.espF) : "—"}</td><td>${g.abF ? fmtHum(g.espF / g.abF) : "—"}</td><td>${g.noCb ? `<span class="st-al">${fmtN(g.noCb)}</span>` : "0"}</td>
+      <td class="sep">${fmtN(g.evF)}</td><td>${fmtN(g.nearP)}</td></tr>`; };
+  $("tLost").innerHTML = `<thead><tr><th><span>Agente</span></th><th style="text-align:left"><span>Gravedad</span></th>
+      <th class="sep"><span>Le timbraron</span></th><th><span>Perdidas<br>en total</span></th><th><span>En otra<br>llamada</span></th>
+      <th class="sep mh"><span>Perdidas<br>estando libre</span></th><th class="mh"><span>% de lo que<br>le timbró</span></th>
+      <th class="sep"><span>Pacientes<br>que colgaron</span></th><th><span>Tiempo que<br>esperaron</span></th><th><span>Espera prom.<br>antes de colgar</span></th><th><span>Sin<br>devolución</span></th>
+      <th class="sep"><span>Pasaron a<br>otro agente</span></th><th><span>Cerca de<br>una pausa</span></th></tr></thead>
+    <tbody>${L.map(tr).join("") || `<tr><td colspan="13" style="text-align:left;color:var(--muted)">Sin llamadas que les timbraran a los agentes en este filtro</td></tr>`}</tbody>
+    <tfoot><tr><td>Total</td><td style="text-align:left">${(() => { const x = semLost(rec ? free / rec : null); return `<span class="sem ${x.c}"><i>${x.ico}</i>${x.t}</span>`; })()}</td>
+      <td class="sep">${fmtN(rec)}</td><td>${fmtN(sum(g => g.lost))}</td><td>${fmtN(sum(g => g.busy))}</td><td class="sep">${fmtN(free)}</td><td class="pct">${fmtP(rec ? free / rec : null)}</td>
+      <td class="sep">${fmtN(abF)}</td><td>${fmtHum(espF)}</td><td>${abF ? fmtHum(espF / abF) : "—"}</td><td>${fmtN(noCb)}</td><td class="sep">${fmtN(evF)}</td><td>${fmtN(nearP)}</td></tr></tfoot>`;
+  return L;
+}
+function lostAoa(){ return [["Agente","Gravedad","Le timbraron","Perdidas en total","En otra llamada","Perdidas estando libre","% de lo que le timbró","Pacientes que colgaron","Tiempo que esperaron (h:mm:ss)","Espera promedio antes de colgar","Sin devolución","Pasaron a otro agente","Cerca de una pausa"],
+  ...lostDetail().map(g => [g.k, semLost(g.pFree).t, g.rec, g.lost, g.busy, g.free, r4(g.pFree), g.abF, fmtT(g.espF), g.abF ? fmtT(g.espF / g.abF) : "", g.noCb, g.evF, g.nearP])]; }
+// Causa de cada llamada perdida (una sola por llamada)
+const CAUSES = [
+  {k:"cap",  grp:"ab", t:"En cola · capacidad a tope",            d:"Todos los agentes conectados de la cuenta estaban en otra llamada.", fix:"Más agentes en las horas pico o desborde a otra cola", col:"--slate"},
+  {k:"pau",  grp:"ab", t:"En cola · agentes en pausa",             d:"Había agentes conectados, pero ninguno libre: estaban en pausa (o en pausa y en llamada).", fix:"Escalonar pausas: que nunca estén todos en break a la vez", col:"--warn"},
+  {k:"sin",  grp:"ab", t:"En cola · sin agentes conectados",       d:"No había ningún agente de la cuenta conectado.", fix:"Cobertura: horarios, apertura, cierre y almuerzos", col:"--red-deep"},
+  {k:"lib",  grp:"ab", t:"En cola · agente conectado sin llamada ni pausa", d:"Según el export, un agente de la cuenta estaba conectado, sin llamada y sin pausa, y aun así la llamada no le timbró. Puede estar en un estado que el export no registra (por ejemplo, tipificando o en otra cola).", fix:"Validar en la plataforma el estado real del agente y a qué colas está asignado", col:"--rose"},
+  {k:"tlib", grp:"ab", t:"Le timbró a un agente libre y no contestó", d:"El agente estaba disponible y el paciente colgó mientras le timbraba.", fix:"Disciplina de contestar · marcar la pausa antes de levantarse", col:"--red"},
+  {k:"tocu", grp:"ab", t:"Le timbró a un agente en otra llamada",  d:"El agente que recibió el timbre estaba ocupado.", fix:"Capacidad en esa franja", col:"--muted"},
+  {k:"rap",  grp:"ab", t:"Cuelgue rápido (menos de 10 seg)",       d:"El paciente colgó casi de inmediato. Suele ser una llamada equivocada.", fix:"Normalmente no es gestionable; se separa para no castigar a nadie", col:"--line"},
+  {k:"elib", grp:"ev", t:"No contestó estando libre",              d:"El agente estaba disponible, no contestó y la llamada pasó a otro.", fix:"Disciplina de contestar", col:"--red"},
+  {k:"eocu", grp:"ev", t:"No contestó estando en otra llamada",    d:"El agente estaba ocupado cuando le timbró.", fix:"Capacidad en esa franja", col:"--muted"}];
+function causeOf(r){
+  const t = TS(r); if (t == null) return null;
+  const isEv = r.tipo === TIMB;
+  if (!isEv && !(r.res === "Abandonada" && r.tipo !== OUT && inMode(r))) return null;
+  if (!isEv && (r.esp || 0) < 10) return "rap";
+  const esp = isEv ? (IDX.abEsp.get(r.ag + "|" + r.fecha) ?? 0) : (r.esp || 0);
+  const w = {s: t - esp * 1000, e: t}, hit = iv => (iv.s < w.e && iv.e > w.s) || (iv.s <= w.s && iv.e >= w.e);
+  if (r.ag) { const busy = (IDX.busy.get(r.ag) || []).some(hit); return isEv ? (busy ? "eocu" : "elib") : (busy ? "tocu" : "tlib"); }
+  const ags = [...AGLINE].filter(([, l]) => l === r.camp).map(([a]) => a);
+  const conn = ags.filter(a => SESS.some(x => x.ag === a && x.s < w.e && x.e > w.s));
+  if (!conn.length) return "sin";
+  const st = conn.map(a => (IDX.busy.get(a) || []).some(hit) ? "b" : (IDX.pausa.get(a) || []).some(hit) ? "p" : "f");
+  if (st.includes("f")) return "lib";
+  if (st.includes("p")) return "pau";
+  return "cap";
+}
+function causeData(){
+  const rows = S.rows.map(r => ({r, c: causeOf(r)})).filter(x => x.c);
+  const cnt = k => rows.filter(x => x.c === k).length;
+  const byCa = new Map(), byH = new Map();
+  for (const {r, c} of rows) {
+    const ca = r.camp || "(sin campaña)"; if (!byCa.has(ca)) byCa.set(ca, {}); byCa.get(ca)[c] = (byCa.get(ca)[c] || 0) + 1;
+    const h = hourOf(r); if (!byH.has(h)) byH.set(h, {}); byH.get(h)[c] = (byH.get(h)[c] || 0) + 1;
+  }
+  return {rows, cnt, byCa, byH};
+}
+function renderCauses(){
+  const D = causeData(), ab = CAUSES.filter(c => c.grp === "ab"), ev = CAUSES.filter(c => c.grp === "ev");
+  const nAb = ab.reduce((x, c) => x + D.cnt(c.k), 0), nEv = ev.reduce((x, c) => x + D.cnt(c.k), 0);
+  $("causeNab").textContent = fmtN(nAb); $("causeNev").textContent = fmtN(nEv);
+  $("causeHint").textContent = `Cada llamada perdida se asigna a una sola causa, según lo que pasaba en ese momento con los agentes de la cuenta. Abandono: ${modeLabel()}${DIR !== "all" ? " · " + dirLabel() : ""}.`;
+  const list = (L, tot) => L.map(c => ({c, n: D.cnt(c.k)})).sort((a, b) => b.n - a.n).map(({c, n}) => `<div class="cause" title="${esc(c.d)}">
+      <div class="nm"><i style="background:var(${c.col})"></i>${esc(c.t)}</div><div class="n">${fmtN(n)}<small>${fmtP(tot ? n / tot : null)}</small></div>
+      <div class="bar2"><span style="width:${tot ? (n / tot * 100).toFixed(1) : 0}%;background:var(${c.col})"></span></div>
+      <div class="fix">${esc(c.d)} <b>Cómo se ataca:</b> ${esc(c.fix)}.</div></div>`).join("") || `<p class="hint">Sin llamadas perdidas en este filtro.</p>`;
+  $("causeAb").innerHTML = list(ab, nAb); $("causeEv").innerHTML = list(ev, nEv);
+  const cas = [...D.byCa.keys()].sort();
+  $("tCauseCa").innerHTML = `<thead><tr><th><span>Cuenta</span></th>${CAUSES.map(c => `<th${c.k === "elib" ? ' class="sep"' : ""}><span>${esc(c.t)}</span></th>`).join("")}<th class="sep"><span>Pacientes<br>que colgaron</span></th><th><span>Timbres no<br>contestados</span></th></tr></thead><tbody>${
+    cas.map(ca => { const m = D.byCa.get(ca), a = ab.reduce((x, c) => x + (m[c.k] || 0), 0), e = ev.reduce((x, c) => x + (m[c.k] || 0), 0);
+      return `<tr><td class="ag">${esc(ca)}</td>${CAUSES.map(c => `<td class="${c.k === "elib" ? "sep" : ""}">${m[c.k] ? fmtN(m[c.k]) : `<span class="st-na">0</span>`}</td>`).join("")}<td class="sep"><b>${fmtN(a)}</b></td><td><b>${fmtN(e)}</b></td></tr>`; }).join("")
+    || `<tr><td colspan="${CAUSES.length + 3}" style="text-align:left;color:var(--muted)">Sin llamadas perdidas en este filtro</td></tr>`}</tbody>
+    <tfoot><tr><td>Total</td>${CAUSES.map(c => `<td class="${c.k === "elib" ? "sep" : ""}">${fmtN(D.cnt(c.k))}</td>`).join("")}<td class="sep">${fmtN(nAb)}</td><td>${fmtN(nEv)}</td></tr></tfoot>`;
+  $("tCauseCa").style.minWidth = "1300px";
+}
+function causesAoa(){ const D = causeData(), cas = [...D.byCa.keys()].sort();
+  return [["Cuenta", ...CAUSES.map(c => (c.grp === "ab" ? "Colgó · " : "No contestado · ") + c.t), "Pacientes que colgaron", "Timbres no contestados"],
+    ...cas.map(ca => { const m = D.byCa.get(ca); return [ca, ...CAUSES.map(c => m[c.k] || 0), CAUSES.filter(c => c.grp === "ab").reduce((x, c) => x + (m[c.k] || 0), 0), CAUSES.filter(c => c.grp === "ev").reduce((x, c) => x + (m[c.k] || 0), 0)]; }),
+    ["Total", ...CAUSES.map(c => D.cnt(c.k)), CAUSES.filter(c => c.grp === "ab").reduce((x, c) => x + D.cnt(c.k), 0), CAUSES.filter(c => c.grp === "ev").reduce((x, c) => x + D.cnt(c.k), 0)]]; }
+function renderConsol(){
+  renderCauses();
+  const C = consolData(), cnt = (l, c) => l.filter(a => semOf(a.pAb).c === c).length, agR = C.ags.filter(a => a.k !== SIN_AG);
+  $("consHint").textContent = `${C.months.length ? C.months.map(monthLabel).join(", ") : "Sin meses"} · abandono: ${modeLabel()}${DIR !== "all" ? " · " + dirLabel() : ""}.`;
+  const k = (lab, val, note, cls = "") => `<div class="kpi ${cls}"><div class="lab">${lab}</div><div class="val">${val}</div><div class="note">${note}</div></div>`;
+  $("kpisCons").innerHTML = k("Agentes en rojo", fmtN(cnt(agR, "r")), "más de 1% de abandono", cnt(agR, "r") ? "warnk" : "")
+    + k("Agentes en amarillo", fmtN(cnt(agR, "y")), "hasta 1% de abandono") + k("Agentes en verde", fmtN(cnt(agR, "g")), "sin abandono")
+    + k("Cuentas en rojo", fmtN(cnt(C.cas, "r")), `de ${fmtN(C.cas.length)} cuentas`, cnt(C.cas, "r") ? "warnk" : "")
+    + k("No pudo atender", fmtN(agR.reduce((x, a) => x + a.lo.busy, 0)), "llamadas perdidas porque el agente estaba en otra llamada");
+  consTable("tConsAg", C.ags, "Agente", true, C.months);
+  renderLost();
+  consTable("tConsCa", C.cas, "Cuenta", false, C.months);
+}
+function consAoa(isAg){
+  const C = consolData(), L = isAg ? C.ags : C.cas;
+  return [[isAg ? "Agente" : "Cuenta", "Semáforo", ...C.months.flatMap(mo => [`${monthLabel(mo)} % abandono`, `${monthLabel(mo)} abandonadas`]), "Contestadas", "Abandonadas", "% abandono", "% cumplimiento",
+      isAg ? "Le timbraron" : "Entrantes recibidas", isAg ? "No pudo atender (en otra llamada)" : "No pudo atender (agentes ocupados)", "% no pudo atender", isAg ? "Perdidas estando libre" : "Perdidas con agente libre"],
+    ...L.map(a => { const dim = isAg && a.k === SIN_AG;
+      return [a.k, semOf(a.pAb).t, ...a.m.flatMap(x => x && x.tot ? [r4(x.pAb), x.ab] : ["", ""]), a.comp, a.ab, r4(a.pAb), r4(a.pComp), dim ? "" : a.lo.rec, dim ? "" : a.lo.busy, dim || !a.lo.rec ? "" : r4(a.lo.busy / a.lo.rec), dim ? "" : a.lo.free]; })];
+}
+
 /* ---------- abandonadas: número y devolución ---------- */
 const num8 = v => { const d = String(v || "").replace(/\D/g, ""); return d.length >= 7 ? d.slice(-8) : ""; };
 let NUMIDX = new Map();
@@ -1377,17 +1715,32 @@ function abDetAoa(){ return [["Fecha","Hora","Día","Número del paciente (orige
 /* ---------- login / logout y apertura / cierre de líneas ---------- */
 let AGLINE = new Map(), SESS = [], LASTDAY = "", FILEEND = 0, LASTACT = new Map();
 let SCHED = {}, TOL = 5;
-// Horario por defecto en la hora del archivo (según los login/logout de octubre)
-const SCHED_DEF = {"Asofarma_Oncologia":{a:"07:00", c:"17:00", d:[1,2,3,4,5]}, "AboxPlan":{a:"08:00", c:"17:00", d:[1,2,3,4,5]}};
-const schedOf = ln => SCHED[ln] || SCHED_DEF[ln] || {a:"08:00", c:"17:00", d:[1,2,3,4,5]};
+// El export viene en hora de Costa Rica (1 hora menos que Colombia). Cada línea guarda su horario en su propia zona.
+const ZONES = {COL: {off: 1, t: "Hora Colombia"}, CR: {off: 0, t: "Hora Costa Rica (la del archivo)"}};
+// t = horas de inicio de los turnos de los agentes · h = horas de cada turno
+const SCHED_DEF = {"Asofarma_Oncologia":{a:"08:00", c:"18:00", d:[1,2,3,4,5], z:"COL", t:"08:00, 09:00", h:9}, "AboxPlan":{a:"09:00", c:"18:00", d:[1,2,3,4,5], z:"COL", t:"09:00", h:9},
+  "Haleon":{a:"08:00", c:"17:00", d:[1,2,3,4,5], z:"CR"}, "Asofarma-TeCuida":{a:"08:00", c:"17:00", d:[1,2,3,4,5], z:"CR"}};
+const schedOf = ln => { const x = SCHED[ln] || SCHED_DEF[ln] || {a:"08:00", c:"17:00", d:[1,2,3,4,5], z:"COL"}; return {...x, z: x.z || "CR"}; };
+const GRACE = 15 * 60000; // llegar hasta 15 min antes de un inicio de turno cuenta como ese turno
+function shiftsOf(ln){ const sc = schedOf(ln), st = String(sc.t || sc.a).split(/[,;\s]+/).filter(x => /^\d{1,2}:\d{2}$/.test(x)).map(hm2ms).sort((a, b) => a - b);
+  const h = +sc.h > 0 ? +sc.h * 3600000 : Math.max(3600000, hm2ms(sc.c) - hm2ms(sc.a)); return {st: st.length ? st : [hm2ms(sc.a)], h}; }
+// Turno del día según el primer login: el inicio más cercano hacia atrás, o el siguiente si llegó hasta 15 min antes
+function shiftFor(ln, first){ const {st, h} = shiftsOf(ln);
+  let S = st.find(x => first >= x - GRACE && first <= x); if (S == null) S = [...st].reverse().find(x => x <= first); if (S == null) S = st[0];
+  return {S, E: S + h}; }
+const zOff = ln => (ZONES[schedOf(ln).z] || ZONES.CR).off * 3600000;   // ms que se suman a la hora del archivo para verla en la zona de la línea
+const zTag = ln => schedOf(ln).z === "COL" ? "COL" : "CR";
 const dkey = ms => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
 const dayStart = d => { const [y,m,x] = d.split("-").map(Number); return new Date(y, m-1, x).getTime(); };
 const hm2ms = t => { const [h, m] = String(t).split(":").map(Number); return ((h||0)*60 + (m||0)) * 60000; };
 const clockS = x => x == null ? "—" : fmtClock(dayStart("2026-01-01") + x);
 const clockHM = x => x == null ? "—" : clockS(x).slice(0,5);
 const avgOf = l => l.length ? l.reduce((a,b) => a+b, 0) / l.length : null;
-function loadSched(){ try { const x = JSON.parse(localStorage.getItem("adium-sched") || "null"); if (x) { SCHED = x.s || {}; TOL = x.tol ?? 5; } } catch(e) {} $("tol").value = TOL; }
-function saveSched(){ TOL = Math.max(0, Math.min(60, +$("tol").value || 0)); try { localStorage.setItem("adium-sched", JSON.stringify({s:SCHED, tol:TOL})); } catch(e) {} }
+// Agentes de apoyo: cubren otras cuentas por ratos; se muestran sus horas pero no se mide su puntualidad
+let APOYO = null; const APOYO_DEF = ag => /kristel/i.test(ag);
+const isApoyo = ag => APOYO ? APOYO.includes(ag) : APOYO_DEF(ag);
+function loadSched(){ try { const x = JSON.parse(localStorage.getItem("adium-sched") || "null"); if (x) { SCHED = x.s || {}; TOL = x.tol ?? 5; APOYO = Array.isArray(x.apoyo) ? x.apoyo : null; } } catch(e) {} $("tol").value = TOL; }
+function saveSched(){ TOL = Math.max(0, Math.min(60, +$("tol").value || 0)); try { localStorage.setItem("adium-sched", JSON.stringify({s:SCHED, tol:TOL, apoyo:APOYO})); } catch(e) {} }
 function prep(){
   // Cada agente queda en la cuenta (línea) donde tiene más llamadas. Pausas y eventos sin campaña toman esa cuenta.
   const cnt = new Map();
@@ -1417,7 +1770,7 @@ function conexData(){
   for (const x of ss) { const k = x.ag + "|" + x.day; if (!g.has(k)) g.set(k, []); g.get(k).push(x); }
   const days = [...g].map(([k, l]) => {
     l.sort((a,b) => a.s - b.s);
-    const [ag, day] = k.split("|"), base = dayStart(day);
+    const [ag, day] = k.split("|"), base = dayStart(day) - zOff(AGLINE.get(ag) || "");
     const closed = l.filter(x => !x.open), lastC = closed.length ? Math.max(...closed.map(x => x.e)) : null;
     const opn = l.filter(x => x.open && (lastC == null || x.e > lastC));
     const u = union(l);
@@ -1448,18 +1801,18 @@ function lineData(){
   for (const ln of lines) {
     const sc = schedOf(ln);
     for (const day of daysBetween(d1, d2).filter(d => sc.d.includes(dowOf(d)) && d <= LASTDAY)) {
-      const base = dayStart(day), sA = base + hm2ms(sc.a), sC = base + hm2ms(sc.c), isCut = day === LASTDAY, endW = isCut ? Math.min(sC, FILEEND) : sC;
+      const off = zOff(ln), base = dayStart(day), sA = base + hm2ms(sc.a) - off, sC = base + hm2ms(sc.c) - off, isCut = day === LASTDAY, endW = isCut ? Math.min(sC, FILEEND) : sC;
       const l = SESS.filter(x => x.day === day && AGLINE.get(x.ag) === ln).sort((a,b) => a.s - b.s);
-      const o = {line: ln, day, sched: `${sc.a}–${sc.c}`};
+      const o = {line: ln, day, sched: `${sc.a}–${sc.c} ${zTag(ln)}`};
       if (!l.length) { Object.assign(o, {open:null, opener:"", close:null, closer:"", aOk:false, cOk: isCut ? null : false, aTxt:"No abrió", cTxt: isCut ? "Al corte del archivo" : "No abrió", cov:0, uncovered: Math.max(0, endW - sA)}); out.push(o); continue; }
-      o.open = l[0].s - base; o.opener = l[0].ag; o.aOk = l[0].s <= sA + tol;
+      o.open = l[0].s - base + off; o.opener = l[0].ag; o.aOk = l[0].s <= sA + tol;
       const da = Math.round((l[0].s - sA) / 60000);
       o.aTxt = o.aOk ? (da < 0 ? `A tiempo · ${-da} min antes` : "A tiempo") : `Tarde · ${da} min`;
       const closed = l.filter(x => !x.open), lastC = closed.length ? closed.reduce((a,b) => b.e > a.e ? b : a) : null;
       const opn = l.filter(x => x.open && (!lastC || x.e > lastC.e));
       if (opn.length && isCut) { o.close = null; o.closer = opn[0].ag; o.cOk = null; o.cTxt = "Abierta al corte del archivo"; }
-      else if (opn.length) { o.close = null; o.closer = opn[0].ag; o.cOk = false; o.cTxt = `Sin logout · última actividad ${clockHM(opn[opn.length-1].e - base)}`; }
-      else { o.close = lastC.e - base; o.closer = lastC.ag; const dc = Math.round((sC - lastC.e) / 60000); o.cOk = lastC.e >= sC - tol; o.cTxt = o.cOk ? (dc < 0 ? `A tiempo · ${-dc} min después` : "A tiempo") : `Cerró antes · ${dc} min`; }
+      else if (opn.length) { o.close = null; o.closer = opn[0].ag; o.cOk = false; o.cTxt = `Sin logout · última actividad ${clockHM(opn[opn.length-1].e - base + off)}`; }
+      else { o.close = lastC.e - base + off; o.closer = lastC.ag; const dc = Math.round((sC - lastC.e) / 60000); o.cOk = lastC.e >= sC - tol; o.cTxt = o.cOk ? (dc < 0 ? `A tiempo · ${-dc} min después` : "A tiempo") : `Cerró antes · ${dc} min`; }
       const cv = union(l.map(x => ({s: Math.max(x.s, sA), e: Math.min(x.e, endW)})).filter(x => x.e > x.s)).tot;
       o.cov = endW > sA ? cv / (endW - sA) : null; o.uncovered = Math.max(0, endW - sA - cv);
       out.push(o);
@@ -1478,14 +1831,20 @@ function renderConex(){
     return `<div class="sched-row" data-ln="${esc(ln)}"><div class="ln">${esc(ln)}<small>Agentes: ${esc(ags.join(", "))}</small></div>
       <div class="f"><label>Apertura</label><select data-k="a">${hourOpts(sc.a)}</select></div>
       <div class="f"><label>Cierre</label><select data-k="c">${hourOpts(sc.c)}</select></div>
+      <div class="f"><label>Turnos (inicio)</label><input data-k="t" value="${esc(sc.t || sc.a)}" style="width:120px" title="Horas de inicio de los turnos, separadas por coma. Ej.: 08:00, 09:00"></div>
+      <div class="f"><label>Horas por turno</label><input data-k="h" type="number" min="1" max="14" step="0.5" value="${esc(String(sc.h || ((hm2ms(sc.c) - hm2ms(sc.a)) / 3600000)))}" style="width:80px"></div>
+      <div class="f"><label>Zona</label><select data-k="z">${Object.entries(ZONES).map(([k, z]) => `<option value="${k}"${sc.z === k ? " selected" : ""}>${z.t}</option>`).join("")}</select></div>
       <div class="f"><span class="lb">Días</span><div class="days">${[1,2,3,4,5,6,0].map(w => `<label title="${DOWL[w]}"><input type="checkbox" data-w="${w}"${sc.d.includes(w) ? " checked" : ""}>${DL[w]}</label>`).join("")}</div></div></div>`; }).join("");
+  const allAg = [...AGLINE.keys()].sort();
+  $("apoyoChips").innerHTML = allAg.map(a => `<button type="button" class="chip" data-ag="${esc(a)}" aria-pressed="${isApoyo(a)}">${esc(short(a))}</button>`).join("");
+  $("apoyoChips").querySelectorAll(".chip").forEach(c => c.onclick = () => { const cur = allAg.filter(isApoyo), a = c.dataset.ag; APOYO = cur.includes(a) ? cur.filter(x => x !== a) : [...cur, a]; saveSched(); renderConex(); });
   $("sched").querySelectorAll(".sched-row").forEach(row => row.querySelectorAll("select,input").forEach(el => el.onchange = () => {
     const ln = row.dataset.ln, sc = {...schedOf(ln)};
-    sc.a = row.querySelector('[data-k="a"]').value; sc.c = row.querySelector('[data-k="c"]').value;
+    sc.a = row.querySelector('[data-k="a"]').value; sc.c = row.querySelector('[data-k="c"]').value; sc.z = row.querySelector('[data-k="z"]').value; sc.t = row.querySelector('[data-k="t"]').value; sc.h = +row.querySelector('[data-k="h"]').value || 9;
     sc.d = [...row.querySelectorAll("[data-w]")].filter(x => x.checked).map(x => +x.dataset.w);
     SCHED[ln] = sc; saveSched(); renderConex(); renderInforme();
   }));
-  $("tzNote").innerHTML = `<b>Las horas son las del archivo exportado.</b> En octubre, Johan entra a las 7:00 y Paula sale a las 17:00 según el archivo, lo que parece hora de Costa Rica (1 hora menos que Colombia). Escriba el horario en esa misma hora. Tolerancia: se acepta abrir hasta ${TOL} min tarde y cerrar hasta ${TOL} min antes. Abrir antes o cerrar después no cuenta en contra.`;
+  $("tzNote").innerHTML = `<b>Cada línea se mide en su propia hora.</b> El archivo exportado viene en hora de Costa Rica, una hora menos que Colombia: un login a las 7:00 del archivo son las 8:00 en Colombia. El tablero convierte solo y muestra las horas de cada línea, y de sus agentes, en la zona que usted elija. Tolerancia: se acepta abrir hasta ${TOL} min tarde y cerrar hasta ${TOL} min antes; abrir antes o cerrar después no cuenta en contra.`;
 
   const L = lineData(), C = conexData(), T = L.T;
   const pillA = p => p == null ? "" : p >= 0.9999 ? `<span class="pill ok">Meta 100% cumplida</span>` : p >= 0.9 ? `<span class="pill warn">Bajo la meta</span>` : `<span class="pill bad">Lejos de la meta</span>`;
@@ -1497,7 +1856,7 @@ function renderConex(){
     <div class="kpi"><div class="lab">Horario sin agente conectado</div><div class="val">${fmtT(T.unc / 1000)}</div><div class="note">suma del periodo (h:mm:ss)</div></div>
     <div class="kpi"><div class="lab">Tiempo conectado</div><div class="val">${fmtT(C.agents.reduce((a, g) => a + g.conn, 0) / 1000)}</div><div class="note">${C.agents.length} agentes · ${fmtN(C.agents.reduce((a, g) => a + g.reco, 0))} reconexiones</div></div>`;
   $("tApego").innerHTML = `<thead><tr><th><span>Línea</span></th><th><span>Horario</span></th><th><span>Días<br>evaluados</span></th><th><span>Aperturas<br>a tiempo</span></th><th><span>% apertura</span></th><th><span>Cierres<br>a tiempo</span></th><th><span>% cierre</span></th><th><span>% apego</span></th><th><span>Cobertura<br>promedio</span></th><th><span>Sin agente<br>conectado</span></th></tr></thead><tbody>${
-    L.lines.map(x => `<tr><td class="ag">${esc(x.k)}</td><td class="pct">${esc(schedOf(x.k).a)}–${esc(schedOf(x.k).c)}</td><td>${fmtN(x.evalA)}</td><td>${fmtN(x.okA)}</td><td class="pct">${fmtP(x.pA)}</td><td>${fmtN(x.okC)} de ${fmtN(x.evalC)}</td><td class="pct">${fmtP(x.pC)}</td><td class="pct"><b class="${x.pApego != null && x.pApego < 1 ? "st-al" : "st-ok"}">${fmtP(x.pApego)}</b></td><td class="pct">${fmtP(x.cov)}</td><td class="pct">${fmtT(x.unc / 1000)}</td></tr>`).join("")
+    L.lines.map(x => `<tr><td class="ag">${esc(x.k)}</td><td class="pct">${esc(schedOf(x.k).a)}–${esc(schedOf(x.k).c)} <span class="sub" style="display:inline">${zTag(x.k)}</span></td><td>${fmtN(x.evalA)}</td><td>${fmtN(x.okA)}</td><td class="pct">${fmtP(x.pA)}</td><td>${fmtN(x.okC)} de ${fmtN(x.evalC)}</td><td class="pct">${fmtP(x.pC)}</td><td class="pct"><b class="${x.pApego != null && x.pApego < 1 ? "st-al" : "st-ok"}">${fmtP(x.pApego)}</b></td><td class="pct">${fmtP(x.cov)}</td><td class="pct">${fmtT(x.unc / 1000)}</td></tr>`).join("")
     || `<tr><td colspan="10" style="text-align:left;color:var(--muted)">Sin líneas en este filtro</td></tr>`
   }</tbody><tfoot><tr><td>Total</td><td></td><td>${fmtN(T.evalA)}</td><td>${fmtN(T.okA)}</td><td class="pct">${fmtP(T.pA)}</td><td>${fmtN(T.okC)} de ${fmtN(T.evalC)}</td><td class="pct">${fmtP(T.pC)}</td><td class="pct">${fmtP(T.pApego)}</td><td class="pct">${fmtP(T.cov)}</td><td class="pct">${fmtT(T.unc / 1000)}</td></tr></tfoot>`;
   const LR = $("onlyFail").checked ? L.rows.filter(o => o.aOk === false || o.cOk === false) : L.rows;
@@ -1508,25 +1867,88 @@ function renderConex(){
       <td class="pct">${clockS(o.close)}<span class="sub">${esc(short(o.closer))}</span></td><td class="st">${stCell(o.cOk, o.cTxt)}</td>
       <td class="pct">${fmtP(o.cov)}</td><td class="pct">${o.uncovered ? fmtT(o.uncovered / 1000) : "0:00"}</td></tr>`).join("")
     || `<tr><td colspan="9" style="text-align:left;color:var(--muted)">${$("onlyFail").checked ? "Sin incumplimientos en este filtro" : "Sin días hábiles en este filtro"}</td></tr>`}</tbody>`;
-  renderSimpleTable("tLogAg", C.agents, [
-    ["k","Agente", d => `<b>${esc(d.k)}</b><span class="sub">${esc(d.line)}</span>`], ["nDays","Días conectado", d => fmtN(d.nDays)],
-    ["avgIn","Primer login prom.", d => `<span class="pct">${clockS(d.avgIn)}</span>`], ["maxIn","Login más tarde", d => `<span class="pct">${clockS(d.maxIn)}</span>`],
-    ["avgOut","Último logout prom.", d => `<span class="pct">${clockS(d.avgOut)}</span>`], ["conn","Tiempo conectado", d => `<span class="pct">${fmtT(d.conn / 1000)}</span>`],
-    ["connDay","Conectado por día", d => `<span class="pct">${fmtT(d.connDay / 1000)}</span>`], ["reco","Reconexiones", d => fmtN(d.reco)],
-    ["gap","Desconectado entre sesiones", d => `<span class="pct">${fmtT(d.gap / 1000)}</span>`], ["noOut","Días sin logout", d => d.noOut ? `<span class="st-al">${fmtN(d.noOut)}</span>` : "0"],
-    ["talk","Tiempo hablado", d => `<span class="pct">${fmtT(d.talk / 1000)}</span>`], ["ocup","Ocupación", d => `<span class="pct">${fmtP(d.ocup)}</span>`]
-  ], {key:"conn", dir:-1});
-  const LD = C.days;
-  $("tLog").innerHTML = `<thead><tr><th><span>Agente</span></th><th><span>Fecha</span></th><th><span>Primer login</span></th><th><span>Último logout</span></th><th><span>Sesiones</span></th><th><span>Tiempo<br>conectado</span></th><th><span>Desconectado<br>entre sesiones</span></th><th><span>Pausas</span></th><th><span>Tiempo<br>hablado</span></th><th><span>Ocupación</span></th></tr></thead><tbody>${
-    LD.map(d => `<tr><td class="ag">${esc(d.ag)}</td><td>${fmtDL(d.day)}</td><td class="pct">${clockS(d.first)}</td>
-      <td class="pct">${d.last != null ? clockS(d.last) : d.cut ? `<span class="st-na">Conectado al corte</span>` : `<span class="st-al">⚠ Sin logout</span><span class="sub">última actividad ${clockHM(d.lastAct)}</span>`}</td>
-      <td>${fmtN(d.nSes)}</td><td class="pct">${fmtT(d.conn / 1000)}</td><td class="pct">${d.gap ? fmtT(d.gap / 1000) : "0:00"}</td><td class="pct">${fmtT(d.pz / 1000)}</td><td class="pct">${fmtT(d.talk / 1000)}</td><td class="pct">${fmtP(d.ocup)}</td></tr>`).join("")
-    || `<tr><td colspan="10" style="text-align:left;color:var(--muted)">Sin login ni logout en este filtro</td></tr>`}</tbody>`;
+  const AGS = [...new Map(C.days.map(d => [d.ag, 1])).keys()].map(ag => { const l = C.days.filter(d => d.ag === ag).map(agDay), sum = f => l.reduce((x, d) => x + (f(d) || 0), 0), lo = l.filter(d => d.last != null), conn = sum(d => d.span), prog = sum(d => d.shiftMs);
+    return {k: ag, line: AGLINE.get(ag) || "", nDays: l.length, avgIn: avgOf(l.map(d => d.first)), avgOut: lo.length ? avgOf(lo.map(d => d.last)) : null, lateN: l.filter(d => d.late > 0).length, lateM: sum(d => d.late),
+      earlyN: l.filter(d => d.early > 0).length, earlyM: sum(d => d.early), offM: sum(d => d.late + d.early), conn, pProg: prog ? conn / prog : null, noOut: l.filter(d => d.noOut).length}; });
+  renderSimpleTable("tLogAg", AGS, [
+    ["k","Agente", d => `<b>${esc(short(d.k))}</b><span class="sub">${esc(d.line)} · ${zTag(d.line)}</span>`], ["nDays","Días", d => fmtN(d.nDays)],
+    ["avgIn","Primer login prom.", d => `<span class="pct">${clockHM(d.avgIn)}</span>`], ["lateN","Llegadas tarde", d => d.lateN ? `<b class="st-al">${fmtN(d.lateN)}</b>` : `<span class="st-ok">0</span>`],
+    ["lateM","Tiempo tarde", d => d.lateM ? `<b class="st-al">${minTxt(d.lateM)}</b><span class="sub">${minTxt(Math.round(d.lateM / d.nDays))} por día</span>` : "—"],
+    ["avgOut","Último logout prom.", d => `<span class="pct">${clockHM(d.avgOut)}</span>`], ["earlyN","Se fue antes", d => d.earlyN ? `<b class="st-al">${fmtN(d.earlyN)}</b><span class="sub">${minTxt(d.earlyM)}</span>` : `<span class="st-ok">0</span>`],
+    ["offM","Tiempo off", d => d.offM ? `<b class="st-al">${minTxt(d.offM)}</b>` : `<span class="st-ok">0</span>`], ["conn","Horas conectado", d => `<span class="pct">${hHM(d.conn)}</span>`],
+    ["pProg","% del turno", d => `<span class="pct">${fmtP(d.pProg)}</span>`], ["noOut","Días sin logout", d => d.noOut ? `<span class="st-al">${fmtN(d.noOut)}</span>` : "0"]
+  ], {key:"offM", dir:-1});
+  renderLogWeeks(C);
 }
+// Cada día: turno deducido, llegada tarde, salida antes / después. Solo primer login y último logout.
+function agDay(d){
+  const ln = AGLINE.get(d.ag) || "", endT0 = d.last != null ? d.last : d.lastAct;
+  if (isApoyo(d.ag)) return {...d, ln, apoyo: true, S: null, E: null, late: 0, early: 0, after: 0, span: endT0 != null ? Math.max(0, endT0 - d.first) : 0, shiftMs: 0, off: 0};
+  const {S, E} = shiftFor(ln, d.first), endT = endT0;
+  const late = Math.max(0, Math.floor((d.first - S) / 60000)), early = d.last != null ? Math.max(0, Math.ceil((E - d.last) / 60000)) : 0;
+  const after = d.last != null ? Math.max(0, Math.floor((d.last - E) / 60000)) : 0, span = endT != null ? Math.max(0, endT - d.first) : 0;
+  return {...d, ln, S, E, late, early, after, span, shiftMs: E - S, off: (late + early) * 60000};
+}
+const shiftLbl = x => x.apoyo ? "Apoyo" : `${clockHM(x.S)}–${clockHM(x.E)}`;
+const minTxt = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}` : `${m} min`;
+const weekOf = d => { const t = dayStart(d), w = new Date(t).getDay(), m = t - ((w + 6) % 7) * 86400000; return dkey(m); };
+const hHM = ms => { const m = Math.round((ms || 0) / 60000); return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`; };
+function schedMs(ln){ const sc = schedOf(ln); return Math.max(0, hm2ms(sc.c) - hm2ms(sc.a)); }
+let LOGGRP = "sem";
+const monthKey = d => d.slice(0, 7);
+function logWeeks(C){
+  const g = new Map();
+  for (const d0 of C.days) { const d = agDay(d0), k = d.ag + "|" + (LOGGRP === "mes" ? monthKey(d.day) : weekOf(d.day)); if (!g.has(k)) g.set(k, []); g.get(k).push(d); }
+  return [...g].map(([k, l]) => { const [ag, wk] = k.split("|"), sum = f => l.reduce((x, d) => x + (f(d) || 0), 0), lo = l.filter(d => d.last != null);
+    const conn = sum(d => d.span), prog = sum(d => d.shiftMs), lateN = l.filter(d => d.late > 0).length, earlyN = l.filter(d => d.early > 0).length;
+    return {ag, wk, days: l.sort((a, b) => a.day.localeCompare(b.day)), n: l.length, conn, prog, pProg: prog ? conn / prog : null,
+      lateN, lateM: sum(d => d.late), earlyN, earlyM: sum(d => d.early), afterN: l.filter(d => d.after > 0).length, offM: sum(d => d.late + d.early),
+      shifts: [...new Set(l.map(shiftLbl))].join(" / "), first: avgOf(l.map(d => d.first)), last: lo.length ? avgOf(lo.map(d => d.last)) : null,
+      noOut: l.filter(d => d.noOut).length, pz: sum(d => d.pz), talk: sum(d => d.talk)};
+  }).sort((a, b) => b.wk.localeCompare(a.wk) || a.ag.localeCompare(b.ag));
+}
+const OPENWK = new Set();
+function renderLogWeeks(C){
+  const W = logWeeks(C), mes = LOGGRP === "mes";
+  const fmtWk = wk => mes ? monthLabel(wk) : `${fmtD(wk)} al ${fmtD(dkey(dayStart(wk) + 6 * 86400000))}`;
+  const head = `<thead><tr><th><span>Agente</span></th><th><span>${mes ? "Mes" : "Semana"} / día</span></th><th><span>Días</span></th><th style="text-align:left"><span>Turno</span></th>
+    <th class="sep"><span>Primer<br>login</span></th><th class="mh"><span>Llegadas<br>tarde</span></th><th class="mh"><span>Tiempo<br>tarde</span></th>
+    <th class="sep"><span>Último<br>logout</span></th><th class="mh"><span>Se fue<br>antes</span></th><th><span>Salió<br>después</span></th>
+    <th class="sep"><span>Horas<br>conectado</span></th><th><span>Horas<br>de turno</span></th><th><span>% del<br>turno</span></th><th class="mh"><span>Tiempo off<br>(tarde + antes)</span></th>
+    <th class="sep"><span>Pausas</span></th><th><span>Hablado</span></th></tr></thead>`;
+  const pCls = p => p == null ? "" : p >= 0.98 ? "st-ok" : p >= 0.9 ? "st-wa" : "st-al";
+  const rows = W.map(w => { const id = w.ag + "|" + w.wk, open = OPENWK.has(id), ln = AGLINE.get(w.ag) || "";
+    const wr = `<tr class="wkrow${open ? " open" : ""}" data-wk="${esc(id)}" tabindex="0" aria-expanded="${open}"><td class="ag"><span class="chev">▸</span>${esc(short(w.ag))}<span class="sub">${esc(ln)} · ${zTag(ln)}</span></td><td><b>${fmtWk(w.wk)}</b></td><td>${fmtN(w.n)}</td><td style="text-align:left;white-space:normal" class="pct">${esc(w.shifts)}</td>
+      <td class="sep pct">${clockHM(w.first)}<span class="sub">promedio</span></td><td>${w.lateN ? `<b class="st-al">${fmtN(w.lateN)}</b>` : `<span class="st-ok">0</span>`}</td><td>${w.lateM ? `<b class="st-al">${minTxt(w.lateM)}</b><span class="sub">${minTxt(Math.round(w.lateM / w.n))} por día</span>` : "—"}</td>
+      <td class="sep pct">${clockHM(w.last)}<span class="sub">promedio</span></td><td>${w.earlyN ? `<b class="st-al">${fmtN(w.earlyN)}</b><span class="sub">${minTxt(w.earlyM)}</span>` : `<span class="st-ok">0</span>`}</td><td>${w.afterN ? `<span class="st-ok">${fmtN(w.afterN)}</span>` : "0"}</td>
+      <td class="sep pct"><b>${hHM(w.conn)}</b></td><td class="pct">${hHM(w.prog)}</td><td class="pct"><b class="${pCls(w.pProg)}">${fmtP(w.pProg)}</b></td><td>${w.offM ? `<b class="st-al">${minTxt(w.offM)}</b>` : `<span class="st-ok">0</span>`}</td>
+      <td class="sep pct">${hHM(w.pz)}</td><td class="pct">${hHM(w.talk)}</td></tr>`;
+    const dr = w.days.map(d => `<tr class="dayrow${open ? "" : " coll"}" data-of="${esc(id)}"><td></td><td>${fmtDL(d.day)}</td><td></td><td class="pct" style="text-align:left">${shiftLbl(d)}</td>
+      <td class="sep pct">${clockS(d.first)}</td><td colspan="2" style="text-align:left">${d.apoyo ? `<span class="st-na">Apoyo · no se mide</span>` : d.late ? `<span class="st-al">Tarde · ${minTxt(d.late)}</span>` : `<span class="st-ok">✓ A tiempo</span>`}</td>
+      <td class="sep pct">${d.last != null ? clockS(d.last) : d.cut ? `<span class="st-na">Conectado al corte</span>` : `<span class="st-al">⚠ Sin logout</span><span class="sub">última actividad ${clockHM(d.lastAct)}</span>`}</td>
+      <td colspan="2" style="text-align:left">${d.apoyo ? `<span class="st-na">Apoyo</span>` : d.last == null ? `<span class="st-na">—</span>` : d.early ? `<span class="st-al">Se fue ${minTxt(d.early)} antes</span>` : `<span class="st-ok">✓ A tiempo${d.after ? ` · salió ${minTxt(d.after)} después` : ""}</span>`}</td>
+      <td class="sep pct">${hHM(d.span)}</td><td class="pct">${hHM(d.shiftMs)}</td><td class="pct"><span class="${pCls(d.shiftMs ? d.span / d.shiftMs : null)}">${fmtP(d.shiftMs ? d.span / d.shiftMs : null)}</span></td><td>${d.late + d.early ? `<span class="st-al">${minTxt(d.late + d.early)}</span>` : "0"}</td>
+      <td class="sep pct">${hHM(d.pz)}</td><td class="pct">${hHM(d.talk)}</td></tr>`).join("");
+    return wr + dr; }).join("");
+  $("tLog").innerHTML = head + `<tbody>${rows || `<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin login ni logout en este filtro</td></tr>`}</tbody>`;
+  $("wkAll").textContent = W.length && W.every(w => OPENWK.has(w.ag + "|" + w.wk)) ? "Plegar todo" : "Desplegar todo";
+  document.querySelectorAll("#segGrp button").forEach(x => x.setAttribute("aria-pressed", x.dataset.g === LOGGRP ? "true" : "false"));
+}
+function toggleWk(id){ OPENWK.has(id) ? OPENWK.delete(id) : OPENWK.add(id);
+  const tr = $("tLog").querySelector(`tr.wkrow[data-wk="${CSS.escape(id)}"]`), open = OPENWK.has(id);
+  if (tr) { tr.classList.toggle("open", open); tr.setAttribute("aria-expanded", open); }
+  $("tLog").querySelectorAll(`tr.dayrow[data-of="${CSS.escape(id)}"]`).forEach(r => r.classList.toggle("coll", !open)); }
+$("tLog").addEventListener("click", e => { const tr = e.target.closest("tr.wkrow"); if (tr) toggleWk(tr.dataset.wk); });
+$("tLog").addEventListener("keydown", e => { const tr = e.target.closest("tr.wkrow"); if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toggleWk(tr.dataset.wk); } });
+$("wkAll").onclick = () => { const W = logWeeks(conexData()), all = W.every(w => OPENWK.has(w.ag + "|" + w.wk)); OPENWK.clear(); if (!all) W.forEach(w => OPENWK.add(w.ag + "|" + w.wk)); renderLogWeeks(conexData()); };
+document.querySelectorAll("#segGrp button").forEach(b => b.onclick = () => { LOGGRP = b.dataset.g; OPENWK.clear(); renderLogWeeks(conexData()); });
+function loginWeekAoa(){ const W = logWeeks(conexData());
+  return [["Agente","Línea", LOGGRP === "mes" ? "Mes" : "Semana (lunes)","Días","Turno(s)","Primer login promedio","Llegadas tarde","Tiempo tarde (min)","Último logout promedio","Se fue antes (días)","Se fue antes (min)","Salió después (días)","Horas conectado","Horas de turno","% del turno","Tiempo off (min)","Pausas","Hablado"],
+    ...W.map(w => [w.ag, AGLINE.get(w.ag) || "", w.wk, w.n, w.shifts, clockHM(w.first), w.lateN, w.lateM, clockHM(w.last), w.earlyN, w.earlyM, w.afterN, hHM(w.conn), hHM(w.prog), r4(w.pProg), w.offM, hHM(w.pz), hHM(w.talk)])]; }
 function apegoAoa(){ const L = lineData();
   return [["Línea","Horario","Días evaluados","Aperturas a tiempo","% apertura a tiempo","Cierres a tiempo","% cierre a tiempo","Días con apego total","% apego","Cobertura promedio","Sin agente conectado (h:mm:ss)"],
-    ...L.lines.map(x => [x.k, `${schedOf(x.k).a}-${schedOf(x.k).c}`, x.evalA, x.okA, r4(x.pA), x.okC, r4(x.pC), x.ok, r4(x.pApego), r4(x.cov), fmtT(x.unc / 1000)]),
-    ["Total", "", L.T.evalA, L.T.okA, r4(L.T.pA), L.T.okC, r4(L.T.pC), L.T.ok, r4(L.T.pApego), r4(L.T.cov), fmtT(L.T.unc / 1000)], [], [`Tolerancia: ${TOL} min. Horas en la hora del archivo.`]]; }
+    ...L.lines.map(x => [x.k, `${schedOf(x.k).a}-${schedOf(x.k).c} ${zTag(x.k)}`, x.evalA, x.okA, r4(x.pA), x.okC, r4(x.pC), x.ok, r4(x.pApego), r4(x.cov), fmtT(x.unc / 1000)]),
+    ["Total", "", L.T.evalA, L.T.okA, r4(L.T.pA), L.T.okC, r4(L.T.pC), L.T.ok, r4(L.T.pApego), r4(L.T.cov), fmtT(L.T.unc / 1000)], [], [`Tolerancia: ${TOL} min. COL = hora Colombia, CR = hora Costa Rica (la del archivo).`]]; }
 function lineAoa(){ const L = lineData();
   return [["Línea","Fecha","Horario","Hora apertura","Abrió (agente)","Hora cierre","Cerró (agente)","Estado apertura","Estado cierre","Apertura a tiempo","Cierre a tiempo","Cobertura","Sin agente conectado (h:mm:ss)"],
     ...L.rows.map(o => [o.line, o.day, o.sched, o.open == null ? "" : clockS(o.open), o.opener, o.close == null ? "" : clockS(o.close), o.closer, o.aTxt, o.cTxt, o.aOk ? "Sí" : "No", o.cOk == null ? "No evaluable" : o.cOk ? "Sí" : "No", r4(o.cov), fmtT((o.uncovered || 0) / 1000)])]; }
@@ -1593,12 +2015,6 @@ function informe(){
   const talk = T.talk;
   const pzTop = Object.entries(T.pz).sort((a, b) => b[1] - a[1])[0];
   if (T.pausa || sess) P.push(["Uso del tiempo", `${sess ? `Tiempo conectado según los login/logout del archivo: <b>${fmtT(sess)}</b>. ` : ""}Tiempo hablando en llamadas contestadas: <b>${fmtT(talk)}</b>${sess ? ` (${fmtP(talk / sess)} del tiempo conectado)` : ""}. Tiempo en pausa: <b>${fmtT(T.pausa)}</b>${pzTop ? `, sobre todo «${esc(pzTop[0])}» (${fmtT(pzTop[1])})` : ""}.`, ""]);
-  // login y líneas
-  const C = conexData();
-  if (ag && C.agents.length) { const g = C.agents[0];
-    P.push(["Login y logout", `Te conectaste ${plural(g.nDays, "día", "días")}. Primer login promedio: <b>${clockS(g.avgIn)}</b>; último logout promedio: <b>${g.avgOut == null ? "—" : clockS(g.avgOut)}</b>. Tiempo conectado: <b>${fmtT(g.conn / 1000)}</b> (promedio ${fmtT(g.conn / 1000 / g.nDays)} por día), con ${plural(g.reco, "reconexión", "reconexiones")}${g.noOut ? ` y <b class="st-al">${plural(g.noOut, "día", "días")} sin logout</b>` : ""}.`, g.noOut ? "al" : ""]); }
-  if (!ag) { const L = lineData();
-    if (L.lines.length) P.push(["Apertura y cierre de líneas", `Apego al horario: <b>${fmtP(L.T.pApego)}</b> (${fmtN(L.T.ok)} de ${fmtN(L.T.evalT)} días-línea abrieron y cerraron a tiempo). ${L.fails.length ? `Incumplimientos: ${L.fails.slice(0, 5).map(f => `${esc(f.line)} ${fmtDL(f.day)} (${esc(f.why)})`).join("; ")}${L.fails.length > 5 ? ` y ${L.fails.length - 5} más` : ""}.` : "Todas las líneas abrieron y cerraron a tiempo."}`, L.fails.length ? "al" : "ok"]); }
   // países
   const pa = S.byPais.filter(p => p.k !== SIN_PAIS);
   if (pa.length) P.push(["Países", `El país con más gestionadas fue <b>${esc(pa[0].k)}</b> con ${plural(pa[0].inf, "gestión", "gestiones")}${pa[1] ? `, seguido de ${esc(pa[1].k)} (${fmtN(pa[1].inf)})` : ""}${pa[2] ? ` y ${esc(pa[2].k)} (${fmtN(pa[2].inf)})` : ""}. ${(() => { const w = [...pa].filter(p => p.tot > 0).sort((a, b) => (b.pAb ?? 0) - (a.pAb ?? 0))[0]; return w && w.pAb > 0 ? `El país con más abandono fue ${esc(w.k)} (${fmtP(w.pAb)}).` : "Ningún país tuvo abandono."; })()}`, ""]);
@@ -1616,7 +2032,7 @@ function informeText(){
 }
 
 /* ---------- gráficos ---------- */
-function mk(id, cfg){ if (charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
+function mk(id, cfg){ if (!$(id)) return; if (charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
 function drawCharts(){
   if (!window.Chart) return;
   const fg = css("--muted"), line = css("--line"), red = css("--red"), deep = css("--red-deep"), rose = css("--rose"), warn = css("--warn"), slate = css("--slate"), surf = css("--surface");
@@ -1626,6 +2042,19 @@ function drawCharts(){
   const legend = {position:"bottom", labels:{boxWidth:10, boxHeight:10}};
   const yGrid = {beginAtZero:true, grid:{color:line}, ticks:{precision:0}};
   const v = VIEW, {byDay, byHour, T} = S;
+  if (v === "consol") {
+    const CD = causeData(), hrs = [...CD.byH.keys()].filter(h => !isNaN(h)).sort((a, b) => a - b);
+    mk("chCause", {type:"bar", data:{labels: hrs.map(fmtH), datasets: CAUSES.map(c => ({label: (c.grp === "ab" ? "Colgó · " : "No contestó · ") + c.t, data: hrs.map(h => CD.byH.get(h)[c.k] || 0), backgroundColor: css(c.col), stack: c.grp, borderRadius: 2}))},
+      options:{maintainAspectRatio:false, interaction:{mode:"index", intersect:false}, plugins:{legend:{...legend, labels:{...legend.labels, filter: (it, d) => d.datasets[it.datasetIndex].data.some(x => x > 0)}}, tooltip:{filter: it => it.raw > 0}},
+        scales:{x:{stacked:true, grid:{display:false}}, y:{...yGrid, stacked:true, title:{display:true, text:"Llamadas"}}}}});
+    const L = lostDetail().filter(g => g.lost > 0).slice(0, 20);
+    mk("chLost", {type:"bar", data:{labels: L.map(g => short(g.k)), datasets:[
+      {label:"Colgaron mientras le timbraba (agente libre)", data: L.map(g => g.abF), backgroundColor: red, stack:"s", borderRadius:3},
+      {label:"No contestó y pasó a otro agente (libre)", data: L.map(g => g.evF), backgroundColor: rose, stack:"s", borderRadius:3},
+      {label:"Perdidas estando en otra llamada", data: L.map(g => g.busy), backgroundColor: css("--line"), stack:"s", borderRadius:3}]},
+      options:{indexAxis:"y", maintainAspectRatio:false, interaction:{mode:"index", intersect:false}, plugins:{legend, tooltip:{callbacks:{footer: it => { const g = L[it[0].dataIndex]; return `Le timbraron ${g.rec} · perdió ${g.free} estando libre (${fmtP(g.pFree)})`; }}}},
+        scales:{x:{...yGrid, stacked:true, title:{display:true, text:"Llamadas perdidas"}}, y:{stacked:true, grid:{display:false}}}}});
+  }
   if (v === "resumen") {
     // Todos los días hábiles del rango elegido (y los fines de semana con llamadas), aunque no tengan datos
     const d = byDay.filter(x => x.tot > 0 || ![0,6].includes(dowOf(x.k)));
@@ -1638,7 +2067,7 @@ function drawCharts(){
       options:{maintainAspectRatio:false, interaction:{mode:"index", intersect:false}, plugins:{legend, tooltip:{callbacks:{label: c => c.dataset.yAxisID==="y2" ? ` % abandono: ${n2.format(c.raw ?? 0)}%` : ` ${c.dataset.label}: ${c.raw}`}}},
         scales:{x:{stacked:true, grid:{display:false}}, y:{...yGrid, stacked:true}, y2:{position:"right", beginAtZero:true, grid:{display:false}, ticks:{callback: x => x + "%"}}}}});
   }
-  if (v === "inflow") {
+  if (v === "inflow" || v === "abandonos") {
     const ex = extremes(byDay, "inf");
     const lbl = byDay.map(x => `${DOW[dowOf(x.k)]} ${fmtD(x.k)}`);
     const RC = resColors(deep, red, rose, slate, warn, fg);
@@ -1681,7 +2110,7 @@ function drawCharts(){
     mk("chAgP", {type:"bar", data:{labels:A.map(a => short(a.k)), datasets:S.pauseTypes.map((p, i) => ({label:p, data:A.map(a => +((a.pz[p]||0)/3600).toFixed(2)), backgroundColor:pal[i % pal.length], stack:"s", borderRadius:3}))},
       options:{indexAxis:"y", maintainAspectRatio:false, plugins:{legend, tooltip:{callbacks:{label: c => ` ${c.dataset.label}: ${fmtT(c.raw*3600)}`}}}, scales:{x:{beginAtZero:true, stacked:true, grid:{color:line}, title:{display:true, text:"Horas"}}, y:{stacked:true, grid:{display:false}}}}});
   }
-  if (v === "campanas") {
+  if (v === "campanas" || v === "agentes") {
     const RC = resColors(deep, red, rose, slate, warn, fg);
     const parts = S.resList.map(x => [x, T.rc[x] || 0, RC(x)]).filter(p => p[1] > 0);
     mk("chOut", doughnut(parts, fg, surf));
@@ -1721,6 +2150,10 @@ function showView(v){
   drawCharts();
 }
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => showView(t.dataset.v));
+document.querySelectorAll("#segBy button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#segBy button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  $("byAg").hidden = b.dataset.b !== "ag"; $("byCa").hidden = b.dataset.b !== "ca"; drawCharts();
+});
 document.querySelectorAll("#segMode button").forEach(b => b.onclick = () => {
   MODE = b.dataset.m; document.querySelectorAll("#segMode button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); render();
 });
@@ -1829,7 +2262,7 @@ addEventListener("drop", e => { e.preventDefault(); dragN = 0; $("dz").hidden = 
 let downloads = null;
 const r4 = v => v == null ? "" : Math.round(v * 10000) / 10000;
 const sec = v => v == null ? "" : Math.round(v);
-const EXP = [["gLl","Gestiones de llamada (entrantes contestadas + salientes)"],["inf","Gestionadas (filas con resultado)"],["reg","Registros totales"],["comp","Contestadas"],["abAll","Abandonadas (todas)"],["tot","Contestadas + abandonadas (según botón)"],["pComp","% Contestadas",r4],["pAb","% Tasa abandono",r4],
+const EXP = [["gLl","Gestiones de llamada (entrantes contestadas + salientes)"],["inf","Gestionadas (filas con resultado)"],["reg","Registros totales"],["comp","Contestadas"],["abAll","Abandonadas (todas)"],["tot","Contestadas + abandonadas (según botón)"],["pComp","% cumplimiento",r4],["pAb","% Tasa abandono",r4],
   ["abQ","Abandono en cola / IVR"],["pAbQ","Tasa abandono cola / IVR",r4],["abT","Abandono al timbrar al agente"],["pAbT","Tasa abandono al timbrar",r4],["abGe","Abandonadas mayor a 10 seg"],["pAbGe","% abandono mayor a 10 seg",r4],["abLt","Abandonadas menor a 10 seg"],["pAbLt","% abandono menor a 10 seg",r4],
   ["evad","Evadidas"],["canc","Canceladas"],["sinR","Sin respuesta"],["sinRes","Sin resultado (pausas, eventos…)"],["abEsp","Espera total al abandonar (seg)",sec],["abEspProm","Espera prom. al abandonar (seg)",sec],["nDays","Días activos"],["tmo","TMO contestadas (seg)",sec],["talk","Tiempo hablado (seg)",sec],["talkIn","Tiempo hablado entrantes (seg)",sec],["talkOut","Tiempo hablado salientes (seg)",sec],["pzCnt","Cantidad de pausas"],["pausa","Tiempo pausa (seg)",sec]];
 const PCT_IDX = EXP.map((e, i) => e[1].startsWith("%") ? i + 1 : -1).filter(i => i > 0);
@@ -1865,7 +2298,7 @@ function pauseAoa(){ const A = S.byAg.filter(a => a.pzCnt > 0), PT = S.pauseType
   return [["Agente", ...PT.flatMap(p => [p + " (cantidad)", p + " (h:mm:ss)", p + " (min)"]), "Total (cantidad)", "Total (h:mm:ss)", "Total (min)"],
     ...A.map(a => [a.k, ...PT.flatMap(p => [a.pzN[p] || 0, fmtT(a.pz[p] || 0), Math.round((a.pz[p]||0)/60)]), a.pzCnt, fmtT(a.pausa), Math.round(a.pausa/60)]),
     ["Total", ...PT.flatMap(p => [S.T.pzN[p] || 0, fmtT(S.T.pz[p] || 0), Math.round((S.T.pz[p]||0)/60)]), S.T.pzCnt, fmtT(S.T.pausa), Math.round(S.T.pausa/60)]]; }
-function caHourAoa(){ return [["Hora","Contestadas entrantes","Contestadas salientes","Contestadas total",`Abandonadas (${modeLabel()})`,"Contestadas + abandonadas","% contestadas","% abandono"],
+function caHourAoa(){ return [["Hora","Contestadas entrantes","Contestadas salientes","Contestadas total",`Abandonadas (${modeLabel()})`,"Contestadas + abandonadas","% cumplimiento","% abandono"],
   ...S.byHour.filter(h => h.inf > 0 || h.tot > 0).map(h => [fmtH(h.k), h.compIn, h.compOut, h.comp, h.ab, h.tot, r4(h.pComp), r4(h.pAb)]),
   ["Total", S.T.compIn, S.T.compOut, S.T.comp, S.T.ab, S.T.tot, r4(S.T.pComp), r4(S.T.pAb)]]; }
 function talkAoa(){ return [["Agente","Contestadas","Tiempo hablado (h:mm:ss)","Tiempo hablado (seg)","Entrantes contestadas","Hablado entrantes (h:mm:ss)","Salientes contestadas","Hablado salientes (h:mm:ss)","Promedio por llamada (h:mm:ss)"],
@@ -1909,12 +2342,17 @@ async function doDownload(kind){
   if (kind === "disp") return save(`ADIUM_ConVoz_disponibilidad_agente_${st}.csv`, toCSV(dispAoa()));
   if (kind === "detalle") return save(`ADIUM_ConVoz_detalle_llamadas_${st}.csv`, toCSV(detAoa(false)));
   if (kind === "aband") return save(`ADIUM_ConVoz_abandonos_${st}.csv`, toCSV(abAoa()));
+  if (kind === "causas") return save(`ADIUM_ConVoz_causas_llamadas_perdidas_${st}.csv`, toCSV(causesAoa()));
+  if (kind === "perdidas") return save(`ADIUM_ConVoz_perdidas_agente_libre_${st}.csv`, toCSV(lostAoa()));
+  if (kind === "consag") return save(`ADIUM_ConVoz_consolidado_agentes_${st}.csv`, toCSV(consAoa(true)));
+  if (kind === "consca") return save(`ADIUM_ConVoz_consolidado_cuentas_${st}.csv`, toCSV(consAoa(false)));
   if (kind === "abdet") return save(`ADIUM_ConVoz_abandonadas_numero_y_devolucion_${st}.csv`, toCSV(abDetAoa()));
   if (kind === "horaca") return save(`ADIUM_ConVoz_contestadas_abandonadas_por_hora_${st}.csv`, toCSV(caHourAoa()));
   if (kind === "hablado") return save(`ADIUM_ConVoz_tiempo_hablado_${st}.csv`, toCSV(talkAoa()));
   if (kind === "pausas") return save(`ADIUM_ConVoz_pausas_por_tipo_${st}.csv`, toCSV(pauseAoa()));
   if (kind === "apego") return save(`ADIUM_ConVoz_apego_lineas_${st}.csv`, toCSV(apegoAoa()));
   if (kind === "lineas") return save(`ADIUM_ConVoz_apertura_cierre_lineas_${st}.csv`, toCSV(lineAoa()));
+  if (kind === "loginsem") return save(`ADIUM_ConVoz_login_logout_por_semana_${st}.csv`, toCSV(loginWeekAoa()));
   if (kind === "login") return save(`ADIUM_ConVoz_login_logout_por_dia_${st}.csv`, toCSV(loginAoa()));
   if (kind === "loginres") return save(`ADIUM_ConVoz_login_logout_resumen_${st}.csv`, toCSV(loginResAoa()));
   if (kind === "heat") return save(`ADIUM_ConVoz_mapa_${$("hView").value}_${st}.csv`, toCSV(heatAoa(HEAT)));
@@ -1922,11 +2360,10 @@ async function doDownload(kind){
     if (!window.XLSX) return toast("No se pudo cargar el generador de Excel.");
     const T = S.T, wb = XLSX.utils.book_new();
     const ex = extremes(S.byDay, "inf"), hx = extremes(S.byHour, "inf"), top = S.byAg.find(a => a.k !== SIN_AG);
-    const LN = lineData();
     const res = [["ADIUM · Programa Con Voz"],["Filtro", `${$("fDesde").value} a ${$("fHasta").value}`, `Campaña: ${msLabel("fCamp", "Todas")}`, `Agente: ${msLabel("fAg", "Todos")}`, `Tipo de llamada: ${dirLabel() || "todas"}`],[],
       ["Gestionadas (filas con resultado)", T.inf],["Registros totales del archivo", T.reg],["contestadas", T.comp],[`abandonadas (${modeLabel()})`, T.ab],["suma contestadas + abandonadas", T.tot],["%contestadas = contestadas/(contestadas+abandonadas)", r4(T.pComp)],["%tasa abandono = 100%-%contestadas", r4(T.pAb)],[],
       ["abandonadas mayor a 10 seg · tasa", T.abGe, r4(T.pAbGe)],["abandonadas menor a 10 seg · tasa", T.abLt, r4(T.pAbLt)],[],
-      ["Día con más gestionadas", ex.max ? joinY(ex.max.ks) : "", ex.max ? ex.max.v : ""],["Día con menos gestionadas", ex.min ? joinY(ex.min.ks) : "", ex.min ? ex.min.v : ""],["Hora pico del periodo (total de gestiones)", hx.max ? joinY(hx.max.ks.map(fmtH)) : "", hx.max ? hx.max.v : ""],["Hora más cargada de un solo día", peakDH() || "", ""],["Agente con más gestiones de llamada (entrantes contestadas + salientes)", top ? top.k : "", top ? top.gLl : ""],[],["Tiempo hablado total", fmtT(T.talk), T.talk],["Apego al horario de líneas", r4(LN.T.pApego)],["Fuente", SOURCE]];
+      ["Día con más gestionadas", ex.max ? joinY(ex.max.ks) : "", ex.max ? ex.max.v : ""],["Día con menos gestionadas", ex.min ? joinY(ex.min.ks) : "", ex.min ? ex.min.v : ""],["Hora pico del periodo (total de gestiones)", hx.max ? joinY(hx.max.ks.map(fmtH)) : "", hx.max ? hx.max.v : ""],["Hora más cargada de un solo día", peakDH() || "", ""],["Agente con más gestiones de llamada (entrantes contestadas + salientes)", top ? top.k : "", top ? top.gLl : ""],[],["Tiempo hablado total", fmtT(T.talk), T.talk],["Fuente", SOURCE]];
     const ws0 = XLSX.utils.aoa_to_sheet(res); ws0["!cols"] = [{wch:52},{wch:26},{wch:22},{wch:40}];
     ["B8","B9","C11","C12"].forEach(a => { if (ws0[a]) ws0[a].z = "0.00%"; });
     XLSX.utils.book_append_sheet(wb, ws0, "Resumen");
@@ -1948,13 +2385,13 @@ async function doDownload(kind){
       XLSX.utils.book_append_sheet(wb, sheet(heatAoa(H), [{wch:30}, ...H.cols.map(() => ({wch:9})), {wch:9}]), name);
     });
     XLSX.utils.book_append_sheet(wb, sheet(pauseAoa(), [{wch:36}, ...S.pauseTypes.flatMap(() => [{wch:14},{wch:14},{wch:10}]), {wch:14},{wch:14},{wch:10}]), "Pausas por tipo");
+    XLSX.utils.book_append_sheet(wb, sheet(consAoa(true), [{wch:36}, ...Array(30).fill({wch:14})]), "Consolidado agentes");
+    XLSX.utils.book_append_sheet(wb, sheet(causesAoa(), [{wch:24}, ...Array(11).fill({wch:18})]), "Causas de pérdidas");
+    XLSX.utils.book_append_sheet(wb, sheet(lostAoa(), [{wch:36}, ...Array(12).fill({wch:15})], [6]), "Perdidas agente libre");
+    XLSX.utils.book_append_sheet(wb, sheet(consAoa(false), [{wch:24}, ...Array(30).fill({wch:14})]), "Consolidado cuentas");
     XLSX.utils.book_append_sheet(wb, sheet(abDetAoa(), [{wch:12},{wch:10},{wch:11},{wch:18},{wch:18},{wch:14},{wch:20},{wch:20},{wch:10},{wch:34},{wch:24},{wch:44},{wch:12}]), "Abandonadas y devolución");
     XLSX.utils.book_append_sheet(wb, sheet(caHourAoa(), [{wch:10}, ...Array(7).fill({wch:16})], [6,7]), "Contest y aband por hora");
     XLSX.utils.book_append_sheet(wb, sheet(talkAoa(), [{wch:36}, ...Array(8).fill({wch:18})]), "Tiempo hablado");
-    XLSX.utils.book_append_sheet(wb, sheet(apegoAoa(), [{wch:24}, ...Array(10).fill({wch:16})], [4,6,8,9]), "Apego líneas");
-    XLSX.utils.book_append_sheet(wb, sheet(lineAoa(), [{wch:22},{wch:12},{wch:14},{wch:12},{wch:30},{wch:12},{wch:30},{wch:24},{wch:24},{wch:12},{wch:16},{wch:12}], [11]), "Apertura y cierre líneas");
-    XLSX.utils.book_append_sheet(wb, sheet(loginResAoa(), [{wch:36}, ...Array(10).fill({wch:16})]), "Login logout resumen");
-    XLSX.utils.book_append_sheet(wb, sheet(loginAoa(), [{wch:36},{wch:12},{wch:20},{wch:12},{wch:12},{wch:10},{wch:16},{wch:16},{wch:16},{wch:16},{wch:12},{wch:16}], [10]), "Login logout por día");
     XLSX.utils.book_append_sheet(wb, sheet(abAoa(), [{wch:20},{wch:36},{wch:20},{wch:12},{wch:18},{wch:18}]), "Abandonos");
     XLSX.utils.book_append_sheet(wb, sheet(pivotAoa(), [{wch:22}, ...Array(10).fill({wch:13})]), "Tipo x Resultado");
     XLSX.utils.book_append_sheet(wb, sheet(dispAoa(), [{wch:36}, ...Array(8).fill({wch:16})]), "Disponibilidad agente");
@@ -1968,6 +2405,42 @@ document.querySelectorAll(".dl").forEach(b => { b.disabled = true; b.style.opaci
   const ok = !!downloads || !IN_VIEWER;
   document.querySelectorAll(".dl,.tdl").forEach(b => { b.disabled = !ok; b.style.opacity = ok ? 1 : .55; b.title = ok ? "" : "Descargas no disponibles en esta vista; use Copiar"; });
 })();
+
+/* ---------- ⓘ fórmula en cada tarjeta ---------- */
+const INFO = [
+  [/no pudo atender/, "Llamadas perdidas porque el agente estaba en otra llamada."],
+  [/estando disponible|estando libre/, "Le timbró al agente, no estaba en otra llamada ni en pausa, estaba conectado y no contestó."],
+  [/perdid/, "Abandono al timbrar + evadidas del agente."],
+  [/devol|contactad/, "Después del abandono hubo una saliente a ese número o una nueva llamada suya que sí fue atendida."],
+  [/cumplimiento|% contestadas/, "% cumplimiento = contestadas ÷ (contestadas + abandonadas)."],
+  [/tasa|% abandono|abandono$/, "% abandono = abandonadas ÷ (contestadas + abandonadas)."],
+  [/evadid|timbrados/, "Le timbró al agente, no contestó y la llamada pasó a otro. No suma al abandono."],
+  [/abandonad|colgaron/, "Resultado «Abandonada»: el paciente colgó antes de ser atendido (en cola o mientras le timbraba al agente)."],
+  [/apego/, "Días en que la línea abrió y cerró a tiempo ÷ días evaluados."],
+  [/apertura/, "A tiempo si el primer login llega a más tardar a la hora de apertura + tolerancia."],
+  [/cierre/, "A tiempo si el último logout es como más pronto a la hora de cierre − tolerancia."],
+  [/cobertura/, "Parte del horario con al menos un agente de la línea conectado."],
+  [/sin agente conectado/, "Tiempo del horario en que no había ningún agente de la línea conectado."],
+  [/ocupaci/, "Tiempo hablado ÷ tiempo conectado."],
+  [/hablado/, "Suma de la Duración de las llamadas contestadas."],
+  [/conectado/, "Tiempo entre login y logout."],
+  [/espera|esperaron/, "Tiempo que esperó el paciente (columna Espera)."],
+  [/pausa/, "Suma de la duración de las pausas."],
+  [/gestiones de llamada|más gestiones/, "Entrantes contestadas + salientes hechas."],
+  [/gestionadas/, "Llamadas con resultado: entrantes, salientes e intentos de timbrado."],
+  [/contestadas/, "Resultado «Contestada», entrantes y salientes."],
+  [/en rojo|en amarillo|en verde/, "Semáforo: verde 0% de abandono · amarillo hasta 1% · rojo más de 1%."]];
+function addInfo(){
+  document.querySelectorAll("main .kpi .lab, main .lost-hero small").forEach(l => {
+    if (l.closest("#v-resumen") || l.querySelector(".info")) return;
+    const t = l.textContent.toLowerCase(), hit = INFO.find(([re]) => re.test(t));
+    if (!hit) return;
+    const i = document.createElement("span"); i.className = "info"; i.textContent = "i"; i.title = hit[1]; i.setAttribute("aria-label", hit[1]); i.tabIndex = 0;
+    l.appendChild(i); l.title = hit[1];
+  });
+}
+let infoT = null;
+new MutationObserver(() => { clearTimeout(infoT); infoT = setTimeout(addInfo, 30); }).observe(document.querySelector("main"), {childList:true, subtree:true});
 
 /* ---------- herramientas por tabla: buscar, Excel, copiar ---------- */
 const TQ = {};
@@ -2035,6 +2508,8 @@ new MutationObserver(() => { drawCharts(); renderHeat(); }).observe(document.doc
 ROWS = fromSample(SAMPLE);
 loadSched(); prep(); buildIndex(); fillFilters(); render();
 let startTab = "resumen"; try { startTab = localStorage.getItem("adium-tab") || "resumen"; } catch(e) {}
+if (startTab === "detalle" || startTab === "campanas") startTab = "agentes";
+if (startTab === "conex") startTab = "resumen";
 showView(document.getElementById("v-" + startTab) ? startTab : "resumen");
 if (!window.Chart) addEventListener("load", drawCharts);
 dataWarn(); restoreSaved();
