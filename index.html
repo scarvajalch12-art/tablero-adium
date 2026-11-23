@@ -251,6 +251,47 @@ table.data tr.dimrow td{color:var(--muted);font-style:italic}
 #tLog tr.dayrow.coll{display:none}
 .hl-table td.ag{max-width:none;white-space:normal}
 .hl-table{min-width:0}
+table.cov td{vertical-align:middle}
+table.cov td.cv{text-align:center;padding:6px 8px}
+.cc{display:grid;gap:2px;justify-items:center;border-radius:10px;padding:7px 10px;min-width:150px}
+.cc b{font:800 17px/1 var(--display);font-variant-numeric:tabular-nums}
+.cc small{font:500 11.5px/1.35 var(--body);color:var(--muted);white-space:nowrap}
+.cc.g{background:var(--ok-soft)} .cc.g b{color:var(--ok)}
+.cc.y{background:var(--warn-soft)} .cc.y b{color:var(--warn)}
+.cc.r{background:var(--red-soft)} .cc.r b{color:var(--red)}
+table.cov tfoot td{background:var(--surface-2)}
+.pb{position:relative;display:block;width:100%;min-width:120px;height:7px;border-radius:4px;background:color-mix(in srgb,var(--fg) 9%,transparent);margin:5px 0 3px}
+.pb.big{height:14px;border-radius:7px}
+.pf{position:absolute;inset:0 auto 0 0;border-radius:inherit;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
+.pf.g{background:var(--ok)} .pf.y{background:#e0a100} .pf.r{background:linear-gradient(90deg,var(--rose),var(--red))}
+.pm{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);border-radius:1px;opacity:.75}
+@keyframes grow{from{width:0}}
+table.agv th:first-child,table.agv td:first-child{position:sticky;left:0;z-index:1;background:var(--surface)}
+table.agv thead th:first-child{z-index:2;background:var(--surface-2)}
+table.agv tfoot td:first-child{background:var(--surface-2)}
+table.agv .cc{min-width:118px;padding:6px 8px}
+table.agv .cc b{font-size:15px}
+table.agv .pb{min-width:96px}
+table.agv tr.dimrow td:first-child{color:var(--muted);font-style:italic}
+/* toque en movimiento */
+h1 .shine{background:linear-gradient(100deg,currentColor 0%,currentColor 38%,#ffd2d8 50%,currentColor 62%,currentColor 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 5.5s ease-in-out infinite}
+@keyframes shine{0%{background-position:100% 0}55%,100%{background-position:0 0}}
+.view:not([hidden]) > .card,.view:not([hidden]) > .kpis > .kpi,.view:not([hidden]) > .grid2 > .card,.view:not([hidden]) .meters > .mt{animation:rise .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 55ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.sem.r i{animation:beat 1.8s ease-in-out infinite}
+@keyframes beat{0%,100%{box-shadow:0 0 0 0 rgba(200,16,46,.45)}50%{box-shadow:0 0 0 5px rgba(200,16,46,0)}}
+.mt{transition:transform .2s ease,box-shadow .2s ease}.mt:hover{transform:translateY(-3px);box-shadow:0 10px 24px -14px rgba(120,0,20,.45)}
+@media (prefers-reduced-motion:reduce){h1 .shine{animation:none;-webkit-text-fill-color:currentColor}.view .card,.view .kpi,.view .mt{animation:none!important}.sem.r i{animation:none}}
+#foot.no-glos > h2, #foot.no-glos > .foot-grid{display:none}
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mt{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:6px;min-width:0}
+.mt.tot{background:var(--surface-2)}
+.mt-n{font:700 14px/1.3 var(--display);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mt-v{font:800 32px/1 var(--display);font-variant-numeric:tabular-nums}
+.mt-v.g{color:var(--ok)} .mt-v.y{color:var(--warn)} .mt-v.r{color:var(--red)}
+.mt-s{font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.pf{animation:none}}
+table.cov td.per{font-weight:700;white-space:nowrap}
 .leg{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:12.5px;color:var(--muted)}
 .callout{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--muted);margin-top:12px}
 .callout b{color:var(--fg)}
@@ -309,7 +350,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
   <div class="wrap">
     <div class="brand">
       <div class="org"><span class="org-logo" id="orgLogo"><span class="org-slot" aria-hidden="true"></span><span class="org-name">Conexus Group</span></span><span class="eyebrow">Cuenta ADIUM · Programa Con Voz</span></div>
-      <h1>Abandono, gestionadas <span>y conexiones</span></h1>
+      <h1>Abandono, gestionadas <span class="shine">y agentes</span></h1>
       <div class="sub" id="meta">Cargando…</div>
     </div>
     <div class="actions">
@@ -327,6 +368,8 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
     <nav class="tabs" role="tablist" aria-label="Vistas del tablero">
       <button class="tab" role="tab" data-v="resumen" id="tab-resumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13h4v7H4zM10 8h4v12h-4zM16 4h4v16h-4z"/></svg>Resumen</button>
       <button class="tab" role="tab" data-v="consol" id="tab-consol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>Consolidado</button>
+      <button class="tab" role="tab" data-v="campov" id="tab-campov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Campañas overall</button>
+      <button class="tab" role="tab" data-v="agov" id="tab-agov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M17 11l2 2 3-4"/></svg>Agentes overall</button>
       <button class="tab" role="tab" data-v="inflow" id="tab-inflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/><path d="m17 15 3 3-3 3"/></svg>Demanda</button>
       <button class="tab" role="tab" data-v="abandonos" id="tab-abandonos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/><path d="m16 3 5 5M21 3l-5 5"/></svg>Abandono</button>
       <button class="tab" role="tab" data-v="agentes" id="tab-agentes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Agentes y cuentas</button>
@@ -408,7 +451,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
 
   <!-- INFLOW -->
   <section class="view" id="v-inflow" role="tabpanel" aria-labelledby="tab-inflow" hidden>
-    <p class="qline">¿Cuándo y de dónde entran las llamadas? <span>Gestionadas = llamadas con resultado (entrantes, salientes y timbrados).</span></p>
+    <p class="qline">¿Cuánto, cuándo y de dónde entra? <span>Volumen por fecha, hora, día y país, y el resultado de todo lo que entró.</span></p>
     <div class="kpis" id="kpisIn"></div>
     <div class="card">
       <div class="card-head">
@@ -448,6 +491,21 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
         <button class="btn-sm dl" data-dl="pais" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
       </div>
       <div class="tbl-wrap"><table class="data narrow" id="tPais"></table></div>
+    </div>
+  
+    <h2 class="sec-h">¿Qué resultado tuvo lo que entró?</h2>
+    <p class="qline" style="margin-top:-4px"><span>Todos los registros del archivo por tipo y resultado.</span></p>
+    <div class="card">
+      <div class="card-head"><div><h2>Gestionadas por resultado</h2><p class="hint">Todas las campañas del filtro</p></div></div>
+      <div class="chart-box sm"><canvas id="chOut" role="img" aria-label="Resultado de llamadas salientes"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Tipo de llamada × Resultado</h2><p class="hint" id="pvHint">Igual que una tabla dinámica: cuenta todas las filas del archivo. Elija un agente arriba para ver solo el suyo.</p></div>
+        <button class="btn-sm dl" data-dl="pivot" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="f" style="margin-bottom:12px"><span class="lb">Filtrar por resultado (clic para quitar o poner)</span><div class="chips" id="resChips"></div></div>
+      <div class="tbl-wrap"><table class="data narrow" id="tPivot"></table></div>
     </div>
   </section>
   <!-- MAPA DE CALOR -->
@@ -496,10 +554,18 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
 
   <!-- AGENTES -->
   <section class="view" id="v-agentes" role="tabpanel" aria-labelledby="tab-agentes" hidden>
-    <p class="qline">¿Cómo trabaja cada agente o cada cuenta? <span>Gestiones, tiempo hablado, pausas y, abajo, el detalle llamada por llamada.</span></p>
+    <p class="qline">¿Cómo trabaja cada agente y cada cuenta? <span>Productividad: gestiones, tiempo hablado y pausas, métricas por cuenta y, abajo, el detalle llamada por llamada.</span></p>
     <div class="viewby"><span class="lb" id="lbBy">Ver por</span><div class="seg" role="group" aria-labelledby="lbBy" id="segBy"><button type="button" data-b="ag" aria-pressed="true">Agente</button><button type="button" data-b="ca" aria-pressed="false">Cuenta</button></div></div>
     <div class="subview" id="byAg">
     <div class="kpis" id="kpisAg"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Métricas por agente</h2><p class="hint">Haga clic en un encabezado para ordenar. La fila resaltada (★) es el agente con más gestiones de llamada: entrantes contestadas + salientes.</p></div>
+        <button class="btn-sm dl" data-dl="agente" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por agente</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tAg"></table></div>
+    </div>
+    <h2 class="sec-h">Gestiones y pausas por agente</h2>
     <div class="grid2 even">
       <div class="card">
         <div class="card-head"><div><h2>Gestionadas por agente</h2><p class="hint">Registros de cada agente por resultado</p></div></div>
@@ -537,15 +603,9 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       </div>
       <div class="tbl-wrap"><table class="data" id="tPz"></table></div>
     </div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Métricas por agente</h2><p class="hint">Haga clic en un encabezado para ordenar. La fila resaltada (★) es el agente con más gestiones de llamada: entrantes contestadas + salientes.</p></div>
-        <button class="btn-sm dl" data-dl="agente" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por agente</button>
-      </div>
-      <div class="tbl-wrap"><table class="data" id="tAg"></table></div>
-    </div>
   </div>
     <div class="subview" id="byCa" hidden>
+    <h2 class="sec-h">Por cuenta</h2>
     <div class="kpis" id="kpisCa"></div>
     <div class="card">
       <div class="card-head">
@@ -554,29 +614,9 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       </div>
       <div class="tbl-wrap"><table class="data" id="tCa"></table></div>
     </div>
-    <div class="card">
-      <div class="card-head"><div><h2>Gestionadas por resultado</h2><p class="hint">Todas las campañas del filtro</p></div></div>
-      <div class="chart-box sm"><canvas id="chOut" role="img" aria-label="Resultado de llamadas salientes"></canvas></div>
-    </div>
   </div>
     <h2 class="sec-h">Detalle llamada por llamada</h2>
     <div class="subview">
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Tipo de llamada × Resultado</h2><p class="hint" id="pvHint">Igual que una tabla dinámica: cuenta todas las filas del archivo. Elija un agente arriba para ver solo el suyo.</p></div>
-        <button class="btn-sm dl" data-dl="pivot" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
-      </div>
-      <div class="f" style="margin-bottom:12px"><span class="lb">Filtrar por resultado (clic para quitar o poner)</span><div class="chips" id="resChips"></div></div>
-      <div class="tbl-wrap"><table class="data narrow" id="tPivot"></table></div>
-    </div>
-    <div class="kpis" id="kpisDisp"></div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Llamadas perdidas y disponibilidad del agente</h2><p class="hint">Para cada entrante abandonada y cada intento de timbrado evadido, revisa si ese agente estaba en otra llamada en ese momento. Si no lo estaba, se marca como alerta.</p></div>
-        <button class="btn-sm dl" data-dl="disp" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por agente</button>
-      </div>
-      <div class="tbl-wrap"><table class="data narrow" id="tDisp"></table></div>
-    </div>
     <div class="card">
       <div class="card-head">
         <div><h2>Detalle de llamadas</h2><p class="hint" id="detHint"></p></div>
@@ -634,7 +674,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
 
   <!-- CONSOLIDADO -->
   <section class="view" id="v-consol" role="tabpanel" aria-labelledby="tab-consol" hidden>
-    <p class="qline">¿Quién y qué cuenta está en rojo, y por qué se pierden las llamadas?</p>
+    <p class="qline">¿Por qué se pierden las llamadas? <span>Causa de cada abandono y evadida, llamadas perdidas con el agente disponible y la disponibilidad en cada pérdida. La tasa por agente y cuenta está en Campañas overall y Agentes overall.</span></p>
     <div class="card" id="causeCard">
       <div class="card-head">
         <div><h2>¿Por qué se pierden las llamadas?</h2><p class="hint" id="causeHint">Cada llamada perdida se asigna a una sola causa, según lo que pasaba en ese momento con los agentes de la cuenta.</p></div>
@@ -650,21 +690,6 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       <h3 class="sub-h">Por cuenta</h3>
       <div class="tbl-wrap"><table class="data" id="tCauseCa"></table></div>
     </div>
-    <div class="kpis" id="kpisCons"></div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Semáforo de abandono</h2><p class="hint" id="consHint"></p></div>
-        <div class="leg"><span class="sem g"><i>✓</i>Sin abandono · 0%</span><span class="sem y"><i>!</i>En observación · hasta 1%</span><span class="sem r"><i>✕</i>Crítico · más de 1%</span></div>
-      </div>
-      <div class="callout" style="margin-top:0">El semáforo de esta pestaña usa la tasa de abandono con la fórmula del tablero y respeta todos los filtros de arriba: fechas, campaña, agente, tipo de llamada y abandono mayor o menor a 10 seg. <b>Le timbraron</b> = entrantes que llegaron al agente (contestadas, abandonadas al timbrar y timbrados evadidos). <b>No pudo atender</b> = llamadas que se le perdieron mientras estaba en otra llamada.</div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <div><h2>Consolidado por agente y mes</h2><p class="hint">Cada mes muestra el % de abandono y, entre paréntesis, las abandonadas. Las abandonadas en cola no tienen agente y van en su propia fila.</p></div>
-        <button class="btn-sm dl" data-dl="consag" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
-      </div>
-      <div class="tbl-wrap"><table class="data" id="tConsAg"></table></div>
-    </div>
     <div class="card" id="lostCard">
       <div class="card-head">
         <div><h2>Llamadas que se perdieron con el agente disponible</h2><p class="hint">El sistema le timbró al agente, no estaba en otra llamada, no estaba en pausa y estaba conectado, y no contestó.</p></div>
@@ -675,12 +700,97 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       <div class="leg" style="margin:14px 0 10px"><span class="sem g"><i>✓</i>Sin pérdidas · 0%</span><span class="sem y"><i>!</i>Atención · hasta 5% de lo que le timbró</span><span class="sem r"><i>✕</i>Grave · más de 5%</span></div>
       <div class="tbl-wrap"><table class="data" id="tLost" style="min-width:1250px"></table></div>
     </div>
+    <div class="kpis" id="kpisDisp"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Llamadas perdidas y disponibilidad del agente</h2><p class="hint">Para cada entrante abandonada y cada intento de timbrado evadido, revisa si ese agente estaba en otra llamada en ese momento. Si no lo estaba, se marca como alerta.</p></div>
+        <button class="btn-sm dl" data-dl="disp" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV por agente</button>
+      </div>
+      <div class="tbl-wrap"><table class="data narrow" id="tDisp"></table></div>
+    </div>
+  </section>
+
+  <!-- CAMPAÑAS OVERALL -->
+  <section class="view" id="v-campov" role="tabpanel" aria-labelledby="tab-campov" hidden>
+    <p class="qline">¿Cómo va el abandono de cada campaña, día a día, por semana y en el mes? <span>Solo Llamada Entrante · % abandono = abandonadas ÷ (contestadas + abandonadas) · % cumplimiento = contestadas ÷ (contestadas + abandonadas).</span></p>
+    <div class="card" style="padding:14px 18px"><div class="leg"><span class="sem g"><i>✓</i>Sin abandono · 0%</span><span class="sem y"><i>!</i>En observación · hasta 1%</span><span class="sem r"><i>✕</i>Crítico · más de 1%</span><span id="covHint"></span></div></div>
+    <div class="kpis" id="kpisCov"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Mes a mes · acumulado</h2><p class="hint">Lo acumulado de cada mes por campaña, con el total de todas las campañas.</p></div>
+        <button class="btn-sm dl" data-dl="covmes" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data cov" id="tCovMes"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Semana a semana</h2><p class="hint">Semanas de lunes a domingo.</p></div>
+        <button class="btn-sm dl" data-dl="covsem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data cov" id="tCovSem"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Día a día</h2><p class="hint">Cada día con llamadas entrantes.</p></div>
+        <button class="btn-sm dl" data-dl="covdia" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap" style="max-height:620px;overflow-y:auto"><table class="data cov" id="tCovDia"></table></div>
+    </div>
+  
+    <h2 class="sec-h">Consolidado mensual por cuenta</h2>
+    <p class="qline" style="margin-top:-4px"><span>La misma tasa por cuenta, con el detalle de abandonadas en cola y al timbrar.</span></p>
     <div class="card">
       <div class="card-head">
         <div><h2>Consolidado por cuenta y mes</h2><p class="hint">Misma lectura por cuenta (campaña). Aquí sí entran las abandonadas en cola.</p></div>
         <button class="btn-sm dl" data-dl="consca" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
       </div>
       <div class="tbl-wrap"><table class="data" id="tConsCa"></table></div>
+    </div>
+  </section>
+
+  <!-- AGENTES OVERALL -->
+  <section class="view" id="v-agov" role="tabpanel" aria-labelledby="tab-agov" hidden>
+    <p class="qline">¿Cómo va el abandono de cada agente, por mes, semana y día? <span>Solo Llamada Entrante. Al agente se le cuentan las entrantes que contestó y las que el paciente colgó mientras le timbraba; las abandonadas en cola no tienen agente y van en su propia fila.</span></p>
+    <div class="card" style="padding:14px 18px"><div class="leg"><span class="sem g"><i>✓</i>Sin abandono · 0%</span><span class="sem y"><i>!</i>En observación · hasta 1%</span><span class="sem r"><i>✕</i>Crítico · más de 1%</span><span id="agvHint"></span></div></div>
+    <div id="kpisAgv"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Mes a mes · acumulado</h2><p class="hint">Cada agente en las filas; lo acumulado de cada mes en las columnas.</p></div>
+        <button class="btn-sm dl" data-dl="agvmes" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data cov agv" id="tAgvMes"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Semana a semana</h2><p class="hint">Semanas de lunes a domingo.</p></div>
+        <button class="btn-sm dl" data-dl="agvsem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data cov agv" id="tAgvSem"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Día a día</h2><p class="hint">Deslice hacia la derecha para ver todos los días. El nombre del agente queda fijo.</p></div>
+        <button class="btn-sm dl" data-dl="agvdia" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data cov agv" id="tAgvDia"></table></div>
+    </div>
+  
+    <h2 class="sec-h">Consolidado mensual por agente</h2>
+    <p class="qline" style="margin-top:-4px"><span>La misma tasa, con le timbraron, no pudo atender y evadidas de cada agente.</span></p>
+    <div class="kpis" id="kpisCons"></div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Semáforo de abandono</h2><p class="hint" id="consHint"></p></div>
+        <div class="leg"><span class="sem g"><i>✓</i>Sin abandono · 0%</span><span class="sem y"><i>!</i>En observación · hasta 1%</span><span class="sem r"><i>✕</i>Crítico · más de 1%</span></div>
+      </div>
+      <div class="callout" style="margin-top:0">El semáforo de esta pestaña usa la tasa de abandono con la fórmula del tablero y respeta todos los filtros de arriba: fechas, campaña, agente y abandono mayor o menor a 10 seg. <b>Le timbraron</b> = entrantes que llegaron al agente (contestadas, abandonadas al timbrar y timbrados evadidos). <b>No pudo atender</b> = llamadas que se le perdieron mientras estaba en otra llamada.</div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Consolidado por agente y mes</h2><p class="hint">Cada mes muestra el % de abandono y, entre paréntesis, las abandonadas. Las abandonadas en cola no tienen agente y van en su propia fila.</p></div>
+        <button class="btn-sm dl" data-dl="consag" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>CSV</button>
+      </div>
+      <div class="tbl-wrap"><table class="data" id="tConsAg"></table></div>
     </div>
   </section>
 
@@ -733,7 +843,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
     </div>
   </section>
 
-  <section class="foot">
+  <section class="foot" id="foot">
     <h2 class="sub-h" style="margin:0">Glosario: cómo se calcula cada cifra</h2>
     <div class="foot-grid">
       <div><b>Gestionadas</b>Llamadas con resultado: entrantes, salientes e intentos de timbrado. No cuenta pausas, eventos, mute ni hold.</div>
@@ -985,7 +1095,7 @@ function render(){
   $("meta").textContent = periodText(ds);
   $("src").textContent = "Fuente: " + SOURCE;
   renderPulse();
-  renderResumen(); renderTipos(); renderInforme(); renderInflow(); renderHeat(); renderAgentes(); renderCampanas(); kpiTable("kpisAg", "Lo más destacado por agente", "Agente / cifra"); kpiTable("kpisCa", "Lo más destacado por cuenta", "Cuenta / cifra"); renderAbandonos(); renderDetalle(); renderConsol();
+  renderResumen(); renderTipos(); renderInforme(); renderInflow(); renderHeat(); renderAgentes(); renderCampanas(); kpiTable("kpisAg", "Lo más destacado por agente", "Agente / cifra"); kpiTable("kpisCa", "Lo más destacado por cuenta", "Cuenta / cifra"); renderAbandonos(); renderDetalle(); renderConsol(); renderCampOv(); renderAgOv(); requestAnimationFrame(liven);
   drawCharts();
 }
 
@@ -1649,6 +1759,72 @@ function consAoa(isAg){
       return [a.k, semOf(a.pAb).t, ...a.m.flatMap(x => x && x.tot ? [r4(x.pAb), x.ab] : ["", ""]), a.comp, a.ab, r4(a.pAb), r4(a.pComp), dim ? "" : a.lo.rec, dim ? "" : a.lo.busy, dim || !a.lo.rec ? "" : r4(a.lo.busy / a.lo.rec), dim ? "" : a.lo.free]; })];
 }
 
+/* ---------- Campañas overall: por día, semana y mes ---------- */
+function covScale(Ds){ const mx = Math.max(0, ...Ds.flatMap(D => [...D.cell.values(), ...D.tot.values()]).filter(a => a.tot).map(a => a.pAb || 0)); return Math.min(0.3, Math.max(0.02, Math.ceil(mx * 100) / 100)); }
+// Barra: escala de 0 a COVSC (máximo del filtro, mínimo 2%); la línea marca la meta de 1%
+let COVSC = 0.02;
+const covBar = (p, c, big) => `<span class="pb${big ? " big" : ""}" role="img" aria-label="${fmtP(p)} de abandono"><span class="pf ${c}" style="width:${Math.min(100, p / COVSC * 100).toFixed(1)}%"></span><span class="pm" style="left:${Math.min(100, 0.01 / COVSC * 100).toFixed(1)}%" title="Meta 1%"></span></span>`;
+const covCell = a => { if (!a || !a.tot) return `<span class="st-na">—</span>`; const x = semOf(a.pAb);
+  return `<div class="cc ${x.c}" title="${esc(x.t)}"><b>${fmtP(a.pAb)}</b>${covBar(a.pAb, x.c)}<small>${fmtN(a.ab)} abandonadas · ${fmtN(a.comp)} contestadas</small><small>${fmtP(a.pComp)} cumplimiento</small></div>`; };
+function covData(keyFn, dimFn = r => r.camp || "(sin campaña)", dims = null){
+  const rows = S.rows.filter(r => r.tipo === IN), camps = dims || S.byCa.filter(c => c.tot > 0).map(c => c.k).sort();
+  const cell = new Map(group(rows, r => dimFn(r) + "|" + keyFn(r)).map(a => [a.k, a]));
+  const tot = new Map(group(rows, keyFn).map(a => [a.k, a]));
+  const pers = [...tot.keys()].filter(k => tot.get(k).tot > 0).sort();
+  return {camps, pers, cell, tot, byCamp: new Map(group(rows, dimFn).map(a => [a.k, a]))};
+}
+function covTable(id, D, label){
+  const head = `<thead><tr><th><span>Periodo</span></th>${D.camps.map(c => `<th style="text-align:center"><span>${esc(c)}</span></th>`).join("")}<th class="sep" style="text-align:center"><span>Todas las campañas</span></th></tr></thead>`;
+  const body = D.pers.map(p => `<tr><td class="per">${label(p)}</td>${D.camps.map(c => `<td class="cv">${covCell(D.cell.get(c + "|" + p))}</td>`).join("")}<td class="cv sep">${covCell(D.tot.get(p))}</td></tr>`).join("")
+    || `<tr><td colspan="${D.camps.length + 2}" style="text-align:left;color:var(--muted)">Sin llamadas entrantes en este filtro</td></tr>`;
+  const T = S.T, foot = D.pers.length ? `<tfoot><tr><td class="per">Total del periodo</td>${D.camps.map(c => `<td class="cv">${covCell(D.byCamp.get(c))}</td>`).join("")}<td class="cv sep">${covCell({tot:T.tot, ab:T.ab, comp:T.comp, pAb:T.pAb, pComp:T.pComp})}</td></tr></tfoot>` : "";
+  $(id).innerHTML = head + `<tbody>${body}</tbody>` + foot;
+  $(id).style.minWidth = (170 + (D.camps.length + 1) * 175) + "px";
+}
+const covLblDia = d => fmtDL(d), covLblSem = w => `${fmtD(w)} al ${fmtD(dkey(dayStart(w) + 6 * 86400000))}`, covLblMes = m => monthLabel(m);
+function renderCampOv(){
+  const DM = covData(monthOf), DS = covData(r => weekOf(dayOf(r))), DD = covData(dayOf);
+  COVSC = covScale([DM, DS]);
+  covTable("tCovMes", DM, covLblMes); covTable("tCovSem", DS, covLblSem); covTable("tCovDia", DD, covLblDia);
+  $("covHint").textContent = `Abandono: ${modeLabel()} · las barras van de 0% a ${fmtP(COVSC)}; la línea negra marca la meta de 1%.`;
+  const cs = DM.camps.map(c => ({c, a: DM.byCamp.get(c)})).filter(x => x.a && x.a.tot), cnt = k => cs.filter(x => semOf(x.a.pAb).c === k).length;
+  const days = DD.pers.length, redDays = DD.pers.filter(p => semOf(DD.tot.get(p).pAb).c === "r").length;
+  const meter = (name, a, tot) => { const x = semOf(a.pAb); return `<div class="mt${tot ? " tot" : ""}"><div class="mt-n">${esc(name)}<span class="sem ${x.c}"><i>${x.ico}</i>${x.t}</span></div>
+      <div class="mt-v ${x.c}">${fmtP(a.pAb)}</div>${covBar(a.pAb, x.c, true)}<div class="mt-s">${fmtN(a.ab)} abandonadas · ${fmtN(a.comp)} contestadas · ${fmtP(a.pComp)} cumplimiento</div></div>`; };
+  $("kpisCov").innerHTML = `<div class="card"><div class="card-head" style="margin-bottom:12px"><div><h2>Tasa de abandono por campaña</h2><p class="hint">${fmtN(cnt("r"))} de ${fmtN(cs.length)} campañas en rojo · ${fmtN(redDays)} de ${fmtN(days)} días en rojo (todas juntas)</p></div></div>
+    <div class="meters">${cs.map(x => meter(x.c, x.a)).join("")}${S.T.tot ? meter("Todas las campañas", S.T, true) : ""}</div></div>`;
+  $("kpisCov").className = "";
+}
+// Agentes overall: filas = agentes, columnas = periodos
+const agDim = r => r.ag || SIN_AG;
+function agvTable(id, D, label){
+  const head = `<thead><tr><th><span>Agente</span></th>${D.pers.map(p => `<th style="text-align:center"><span>${label(p)}</span></th>`).join("")}<th class="sep" style="text-align:center"><span>Total del periodo</span></th></tr></thead>`;
+  const body = D.camps.map(a => `<tr class="${a === SIN_AG ? "dimrow" : ""}"><td class="ag" title="${esc(a)}">${esc(a === SIN_AG ? "Sin agente (abandonó en cola)" : short(a))}</td>${D.pers.map(p => `<td class="cv">${covCell(D.cell.get(a + "|" + p))}</td>`).join("")}<td class="cv sep">${covCell(D.byCamp.get(a))}</td></tr>`).join("")
+    || `<tr><td colspan="${D.pers.length + 2}" style="text-align:left;color:var(--muted)">Sin llamadas entrantes en este filtro</td></tr>`;
+  const T = S.T, foot = D.camps.length ? `<tfoot><tr><td>Todos</td>${D.pers.map(p => `<td class="cv">${covCell(D.tot.get(p))}</td>`).join("")}<td class="cv sep">${covCell({tot:T.tot, ab:T.ab, comp:T.comp, pAb:T.pAb, pComp:T.pComp})}</td></tr></tfoot>` : "";
+  $(id).innerHTML = head + `<tbody>${body}</tbody>` + foot;
+  $(id).style.minWidth = (200 + (D.pers.length + 1) * 140) + "px";
+}
+function agvDims(){ const L = S.byAg.filter(a => a.tot > 0); return L.sort((a, b) => (a.k === SIN_AG) - (b.k === SIN_AG) || (b.pAb ?? -1) - (a.pAb ?? -1) || b.tot - a.tot).map(a => a.k); }
+function renderAgOv(){
+  const dims = agvDims(), DM = covData(monthOf, agDim, dims), DS = covData(r => weekOf(dayOf(r)), agDim, dims), DD = covData(dayOf, agDim, dims);
+  COVSC = covScale([DM, DS]);
+  agvTable("tAgvMes", DM, covLblMes); agvTable("tAgvSem", DS, covLblSem); agvTable("tAgvDia", DD, covLblDia);
+  $("agvHint").textContent = `Abandono: ${modeLabel()} · las barras van de 0% a ${fmtP(COVSC)}; la línea negra marca la meta de 1%.`;
+  const ags = dims.filter(a => a !== SIN_AG).map(a => ({c: a, a: DM.byCamp.get(a)})).filter(x => x.a && x.a.tot), cnt = k => ags.filter(x => semOf(x.a.pAb).c === k).length;
+  const meter = (name, a, tot) => { const x = semOf(a.pAb); return `<div class="mt${tot ? " tot" : ""}"><div class="mt-n">${esc(name)}<span class="sem ${x.c}"><i>${x.ico}</i>${x.t}</span></div>
+      <div class="mt-v ${x.c}">${fmtP(a.pAb)}</div>${covBar(a.pAb, x.c, true)}<div class="mt-s">${fmtN(a.ab)} abandonadas · ${fmtN(a.comp)} contestadas · ${fmtP(a.pComp)} cumplimiento</div></div>`; };
+  $("kpisAgv").innerHTML = `<div class="card"><div class="card-head" style="margin-bottom:12px"><div><h2>Tasa de abandono por agente</h2><p class="hint">${fmtN(cnt("r"))} en rojo · ${fmtN(cnt("y"))} en amarillo · ${fmtN(cnt("g"))} en verde · de ${fmtN(ags.length)} agentes con entrantes</p></div></div>
+    <div class="meters">${ags.map(x => meter(short(x.c), x.a)).join("")}</div></div>`;
+}
+function agvAoa(keyFn, label){ const D = covData(keyFn, agDim, agvDims());
+  return [["Agente", "Periodo", "Contestadas", "Abandonadas", "% abandono", "% cumplimiento", "Semáforo"],
+    ...D.camps.flatMap(a => D.pers.map(p => { const x = D.cell.get(a + "|" + p); return x && x.tot ? [a, label(p), x.comp, x.ab, r4(x.pAb), r4(x.pComp), semOf(x.pAb).t] : null; }).filter(Boolean))]; }
+function covAoa(D, label){
+  return [["Periodo", ...D.camps.flatMap(c => [`${c} · contestadas`, `${c} · abandonadas`, `${c} · % abandono`, `${c} · % cumplimiento`, `${c} · semáforo`]), "Todas · contestadas", "Todas · abandonadas", "Todas · % abandono", "Todas · % cumplimiento", "Todas · semáforo"],
+    ...D.pers.map(p => [label(p), ...[...D.camps.map(c => D.cell.get(c + "|" + p)), D.tot.get(p)].flatMap(a => a && a.tot ? [a.comp, a.ab, r4(a.pAb), r4(a.pComp), semOf(a.pAb).t] : ["", "", "", "", ""])])];
+}
+
 /* ---------- abandonadas: número y devolución ---------- */
 const num8 = v => { const d = String(v || "").replace(/\D/g, ""); return d.length >= 7 ? d.slice(-8) : ""; };
 let NUMIDX = new Map();
@@ -2138,11 +2314,32 @@ function doughnut(parts, fg, surf){
     options:{maintainAspectRatio:false, cutout:"62%", plugins:{legend:{position:"right", labels:{boxWidth:10, boxHeight:10, generateLabels: ch => ch.data.labels.map((l,i) => ({text:`${l}  ${ch.data.datasets[0].data[i]}`, fillStyle:parts[i][2], strokeStyle:parts[i][2], fontColor:fg, index:i}))}}}}};
 }
 
+/* ---------- números que suben y entrada escalonada ---------- */
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function countUp(root){
+  if (RM || !root) return;
+  root.querySelectorAll(".kpi .val, .pv, .mt-v, .lost-hero b").forEach(el => {
+    if (el.children.length) return;
+    const txt = el.textContent.trim(), m = txt.match(/^([\d.]+)(?:,(\d+))?(\s?%)?$/);
+    if (!m) return;
+    const dec = m[2] ? m[2].length : 0, end = parseFloat(m[1].replace(/\./g, "") + (dec ? "." + m[2] : "")), suf = m[3] || "";
+    if (!isFinite(end) || end === 0) return;
+    const fmt = v => v.toLocaleString("es-CO", {minimumFractionDigits: dec, maximumFractionDigits: dec, useGrouping: true}).replace(/ /g, " ") + suf;
+    const t0 = performance.now(), D = 900;
+    const step = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3); el.textContent = k < 1 ? fmt(end * e) : txt; if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+function stagger(view){ if (!view) return; let i = 0; view.querySelectorAll(":scope > .card, :scope > .kpis > .kpi, :scope > .grid2 > .card, .meters > .mt").forEach(el => { el.style.setProperty("--i", Math.min(i++, 12)); el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }); }
+function liven(){ const v = document.querySelector(".view:not([hidden])"); stagger(v); countUp(v); countUp(document.querySelector(".pulse") || document.querySelector("header")); }
+
 /* ---------- pestañas, filtros ---------- */
 function showView(v){
   VIEW = v;
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.v === v ? "true" : "false"));
   document.querySelectorAll(".view").forEach(s => s.hidden = s.id !== "v-" + v);
+  $("foot").classList.toggle("no-glos", v !== "resumen");
+  setTimeout(() => { const w = document.querySelector(".view:not([hidden])"); stagger(w); countUp(w); }, 0);
   try { localStorage.setItem("adium-tab", v); } catch(e) {}
   drawCharts();
 }
@@ -2339,6 +2536,12 @@ async function doDownload(kind){
   if (kind === "disp") return save(`ADIUM_ConVoz_disponibilidad_agente_${st}.csv`, toCSV(dispAoa()));
   if (kind === "detalle") return save(`ADIUM_ConVoz_detalle_llamadas_${st}.csv`, toCSV(detAoa(false)));
   if (kind === "aband") return save(`ADIUM_ConVoz_abandonos_${st}.csv`, toCSV(abAoa()));
+  if (kind === "agvmes") return save(`ADIUM_ConVoz_agentes_por_mes_${st}.csv`, toCSV(agvAoa(monthOf, covLblMes)));
+  if (kind === "agvsem") return save(`ADIUM_ConVoz_agentes_por_semana_${st}.csv`, toCSV(agvAoa(r => weekOf(dayOf(r)), covLblSem)));
+  if (kind === "agvdia") return save(`ADIUM_ConVoz_agentes_por_dia_${st}.csv`, toCSV(agvAoa(dayOf, covLblDia)));
+  if (kind === "covmes") return save(`ADIUM_ConVoz_campanas_por_mes_${st}.csv`, toCSV(covAoa(covData(monthOf), covLblMes)));
+  if (kind === "covsem") return save(`ADIUM_ConVoz_campanas_por_semana_${st}.csv`, toCSV(covAoa(covData(r => weekOf(dayOf(r))), covLblSem)));
+  if (kind === "covdia") return save(`ADIUM_ConVoz_campanas_por_dia_${st}.csv`, toCSV(covAoa(covData(dayOf), covLblDia)));
   if (kind === "causas") return save(`ADIUM_ConVoz_causas_llamadas_perdidas_${st}.csv`, toCSV(causesAoa()));
   if (kind === "perdidas") return save(`ADIUM_ConVoz_perdidas_agente_libre_${st}.csv`, toCSV(lostAoa()));
   if (kind === "consag") return save(`ADIUM_ConVoz_consolidado_agentes_${st}.csv`, toCSV(consAoa(true)));
@@ -2383,6 +2586,12 @@ async function doDownload(kind){
     });
     XLSX.utils.book_append_sheet(wb, sheet(pauseAoa(), [{wch:36}, ...S.pauseTypes.flatMap(() => [{wch:14},{wch:14},{wch:10}]), {wch:14},{wch:14},{wch:10}]), "Pausas por tipo");
     XLSX.utils.book_append_sheet(wb, sheet(consAoa(true), [{wch:36}, ...Array(30).fill({wch:14})]), "Consolidado agentes");
+    XLSX.utils.book_append_sheet(wb, sheet(agvAoa(monthOf, covLblMes), [{wch:36},{wch:16},...Array(5).fill({wch:14})], [4,5]), "Agentes por mes");
+    XLSX.utils.book_append_sheet(wb, sheet(agvAoa(r => weekOf(dayOf(r)), covLblSem), [{wch:36},{wch:16},...Array(5).fill({wch:14})], [4,5]), "Agentes por semana");
+    XLSX.utils.book_append_sheet(wb, sheet(agvAoa(dayOf, covLblDia), [{wch:36},{wch:16},...Array(5).fill({wch:14})], [4,5]), "Agentes por día");
+    XLSX.utils.book_append_sheet(wb, sheet(covAoa(covData(monthOf), covLblMes), [{wch:16}, ...Array(30).fill({wch:13})]), "Campañas por mes");
+    XLSX.utils.book_append_sheet(wb, sheet(covAoa(covData(r => weekOf(dayOf(r))), covLblSem), [{wch:16}, ...Array(30).fill({wch:13})]), "Campañas por semana");
+    XLSX.utils.book_append_sheet(wb, sheet(covAoa(covData(dayOf), covLblDia), [{wch:16}, ...Array(30).fill({wch:13})]), "Campañas por día");
     XLSX.utils.book_append_sheet(wb, sheet(causesAoa(), [{wch:24}, ...Array(11).fill({wch:18})]), "Causas de pérdidas");
     XLSX.utils.book_append_sheet(wb, sheet(lostAoa(), [{wch:36}, ...Array(12).fill({wch:15})], [6]), "Perdidas agente libre");
     XLSX.utils.book_append_sheet(wb, sheet(consAoa(false), [{wch:24}, ...Array(30).fill({wch:14})]), "Consolidado cuentas");
