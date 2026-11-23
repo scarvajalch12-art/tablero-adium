@@ -54,6 +54,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .f label,.f .lb{font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .f select,.f input{font:500 13px var(--body);color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
 .f select{max-width:260px}
+.mesnav{display:flex;gap:4px;align-items:stretch}
+.mesnav select{min-width:150px;font-weight:600}
+.mn{font:600 16px/1 var(--body);color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;width:34px;cursor:pointer;transition:background .15s,transform .15s}
+.mn:hover:not(:disabled){background:var(--accent,#c8102e);color:#fff;transform:translateY(-1px)}
+.mn:disabled{opacity:.35;cursor:default}
 .ms{position:relative}
 .ms-btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:space-between;gap:10px;min-width:170px;max-width:260px;font:500 13px var(--body);color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer}
 .ms-btn:hover{border-color:var(--red)}
@@ -376,6 +381,7 @@ table.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surfac
       <button class="tab" role="tab" data-v="calor" id="tab-calor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Mapa de calor</button>
     </nav>
     <div class="filters">
+      <div class="f"><label for="fMes">Mes</label><div class="mesnav"><button type="button" class="mn" id="mesPrev" aria-label="Mes anterior">‹</button><select id="fMes"></select><button type="button" class="mn" id="mesNext" aria-label="Mes siguiente">›</button></div></div>
       <div class="f"><label for="fDesde">Desde</label><input type="date" id="fDesde"></div>
       <div class="f"><label for="fHasta">Hasta</label><input type="date" id="fHasta"></div>
       <div class="f"><span class="lb" id="lb-fCamp">Campaña</span><div class="ms" id="fCamp" data-plural="campañas"><button type="button" class="ms-btn" id="fCampBtn" aria-haspopup="true" aria-expanded="false" aria-labelledby="lb-fCamp fCampBtn"><span class="ms-txt">Todas</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="ms-pop" hidden><div class="ms-act"><button type="button" data-a="all">Seleccionar todas</button><button type="button" data-a="none">Quitar selección</button></div><input type="search" class="ms-q" placeholder="Buscar" aria-label="Buscar en Campaña"><div class="ms-list" role="group" aria-label="Campaña"></div></div></div></div>
@@ -2362,8 +2368,36 @@ function fillFilters(){
   msRender("fCamp"); msRender("fAg");
   const d = ROWS.map(dayOf).filter(Boolean).sort();
   $("fDesde").value = d[0] || ""; $("fHasta").value = d[d.length-1] || "";
+  const ms = [...new Set(d.map(x => x.slice(0, 7)))];
+  $("fMes").innerHTML = `<option value="">Todo el archivo</option>` + ms.map(m => `<option value="${m}">${MESES[+m.slice(5) - 1].replace(/^./, c => c.toUpperCase())} ${m.slice(0, 4)}</option>`).join("") + `<option value="_" hidden>Rango personalizado</option>`;
+  syncMes();
 }
-["fDesde","fHasta"].forEach(id => $(id).addEventListener("input", render));
+function dataSpan(){ const d = ROWS.map(dayOf).filter(Boolean).sort(); return [d[0] || "", d[d.length-1] || ""]; }
+function syncMes(){
+  const d1 = $("fDesde").value, d2 = $("fHasta").value, [a, b] = dataSpan(), sel = $("fMes");
+  let v = "_";
+  if (d1 === a && d2 === b) v = "";
+  else if (d1 && d1.slice(0, 7) === d2.slice(0, 7)) { const m = d1.slice(0, 7), last = new Date(+m.slice(0, 4), +m.slice(5), 0).getDate();
+    if ((d1 === m + "-01" || d1 === a) && (d2 === m + "-" + String(last).padStart(2, "0") || d2 === b) && sel.querySelector(`option[value="${m}"]`)) v = m; }
+  sel.value = v;
+  const opts = [...sel.options].filter(o => o.value && o.value !== "_").map(o => o.value), i = opts.indexOf(v);
+  $("mesPrev").disabled = !opts.length || i === 0 || (i < 0 && v !== ""); $("mesNext").disabled = !opts.length || i === opts.length - 1 || (i < 0 && v !== "");
+  if (v === "" || v === "_") { $("mesPrev").disabled = !opts.length; $("mesNext").disabled = !opts.length; }
+}
+function setMes(m){
+  const [a, b] = dataSpan();
+  if (!m) { $("fDesde").value = a; $("fHasta").value = b; }
+  else { const last = new Date(+m.slice(0, 4), +m.slice(5), 0).getDate(), s1 = m + "-01", s2 = m + "-" + String(last).padStart(2, "0");
+    $("fDesde").value = s1 < a ? a : s1; $("fHasta").value = s2 > b ? b : s2; }
+  syncMes(); if (m && $("fMes").value === "") { $("fMes").value = m; const o = [...$("fMes").options].filter(x => x.value && x.value !== "_").map(x => x.value), i = o.indexOf(m); $("mesPrev").disabled = i === 0; $("mesNext").disabled = i === o.length - 1; }
+  render();
+}
+$("fMes").addEventListener("change", e => setMes(e.target.value));
+const mesStep = k => { const opts = [...$("fMes").options].filter(o => o.value && o.value !== "_").map(o => o.value); if (!opts.length) return;
+  const cur = $("fMes").value, i = opts.indexOf(cur), di = opts.indexOf(($("fDesde").value || "").slice(0, 7));
+  const j = i >= 0 ? i + k : cur === "_" && di >= 0 ? Math.min(opts.length - 1, Math.max(0, di + (k > 0 ? 0 : 0))) : (k > 0 ? 0 : opts.length - 1); if (j >= 0 && j < opts.length) setMes(opts[j]); };
+$("mesPrev").addEventListener("click", () => mesStep(-1)); $("mesNext").addEventListener("click", () => mesStep(1));
+["fDesde","fHasta"].forEach(id => $(id).addEventListener("input", () => { syncMes(); render(); }));
 msInit("fCamp"); msInit("fAg");
 $("hView").addEventListener("input", renderHeat);
 ["onlyLost","onlyAlert"].forEach(id => $(id).addEventListener("input", renderDetalle));
